@@ -1,0 +1,97 @@
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(35, 21, 61, 0.8), rgba(154, 14, 189, 0.6));
+    z-index: -1;  /* Viktigt! */
+  }
+
+body {
+    background: /*linear-gradient( rgba(35, 21, 61, 0.6), rgba(35, 21, 61, 0.6)), */
+    url('../static/backgrounds/background.jpg') no-repeat center center fixed;
+    
+    background-size: cover;
+    font-family: "Helvetica Neue", sans-serif;
+    color: #fff;
+}
+
+.blurb-heading {
+    color: #f5f5f5;
+}
+
+/* 📌 Rubriker */
+h1, h2, h3 {
+    font-weight: 600;             /* Halvfet */
+    letter-spacing: 0.5px;
+    margin-bottom: 0.75rem;
+    color: white;                 /* Ljust för mörk bakgrund */
+}
+
+/* 📝 Brödtext */
+p, li {
+    font-weight: 300;             /* Tunnare text */
+    font-size: 1rem;              /* Standardstorlek */
+    line-height: 1.6;             /* Luft mellan rader */
+    color: #f0f0f0;               /* Ljusgrå för bättre kontrast */
+}
+
+/* 🔠 Små underrubriker eller text */
+.small {
+    font-size: 0.9rem;
+    color: #cccccc;
+}
+
+
+.module-blurb {
+    background-color: #23153D;  /* Mörklila bakgrund */
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    transition: background-color 0.3s ease;
+}
+
+/* 🔁 Hover-effekt */
+.module-blurb:hover {
+    background-color: #432774;  /* Ljusare lila vid hover */
+    transform: scale(1.02);
+    cursor: pointer;
+}
+
+.btn-outline-light {
+    border-color: #fff;
+    color: #fff;
+}
+
+.btn-outline-light:hover {
+    background-color: #fff;
+    color: #6a0dad;
+    font-weight: bold;
+}
+
+.blurb-icon-container {
+    font-size: 2.5rem;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .home-icon img {
+    transition: transform 0.2s;
+  }
+  
+  .home-icon img:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+  }
