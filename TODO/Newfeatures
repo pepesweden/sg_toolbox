@@ -1,3 +1,21 @@
 💡 Sociala medier sökning - hur går det att kolla
 
 💡 Säl
+
+Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och stil matcha
+✅ REKOMMENDERAD ARKITEKTUR
+🧩 Steg 0: samla och chunka input till prompt
+
+🧱 Steg 1: Generera sammanfattning på engelska
+Prompten är på engelska = maximal precision
+
+Outputen blir konsekvent, detaljerad, korrekt strukturerad
+
+🔁 Steg 2: Översätt & tonmatcha till svenska
+Ny prompt: “Översätt detta till svenska och anpassa språk och stil efter [stilreferens]”
+
+Du kan även lägga till: “Behåll struktur, rubriker och kronologi exakt som i originalet”
+
+Alternativ: kör det via ett separat API-call (t.ex. med GPT-4 Turbo för kostnadseffektivitet)
+
+
