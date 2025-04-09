@@ -9,40 +9,40 @@
 def create_prompt(doc_text, mall_text, style_text, transcript_text=None):
         if transcript_text:
             transcript_section = f"""
-📚 Här är ett kompletterande transkript från samtalet.  
-🟡 Använd det endast som *stöd* för att tolka eller förstärka information i intervjuanteckningarna.  
-🟡 Om det finns skillnader – prioritera intervjuanteckningarna.  
-🟡 Du behöver inte sammanfatta hela transcriptet – plocka bara relevanta delar:
+📚 This is a complementary transcript from the interview.  
+🟡 Use it *only* to support or expand upon the information in the interview notes.  
+🟡 If there are discrepancies – prioritize the interview notes.  
+🟡 You do not need to summarize the entire transcript – only extract relevant details:
 {transcript_text}
 """
         else:
             transcript_section = ""
         return f"""
-Du är en rekryterare som ska skapa en professionell sammanfattning efter en intervju. 
+You are a professional recruiter tasked with writing a detailed summary based on an interview.
 
-📄 Här är intervjuanteckningarna om kandidaten:
+📄 Below are the interview notes about the candidate:
 {doc_text}
 {transcript_section}
 
-🎯 Ditt uppdrag är att:
-1. Skapa en så detaljerad sammanfattning utifrån anteckningarna & transcriptet det bara gå
-2. Lyft särskilt fram kunskaper och kompetenser från filerna, denna del är extra viktigså detaljerade som möjligt, gärna med exempel.
-2. Följ formatet i den här mallen:
+🎯 Your task:
+1. Write a highly detailed and structured summary based on the interview notes (primary) and the transcript (secondary).
+2. Pay **special attention** to technical knowledge, skills, tools, environments, and examples. This is **extremely important** – include as much technical detail and depth as possible.
+3. Follow the structure provided in this format template:
 {mall_text}
-3. Använd språk, struktur och tonalitet som i detta exempel:
+4. Use the tone, language, and structure of this style reference:
 {style_text}
 
-📌 Viktiga riktlinjer:
-- Inledas med en **punktlista** över nyckelinformation (t.ex. kompetenser, mål, lön, tillgänglighet)
-- Sammanfattningen ska vara **så detaljerad som möjligt** utifrån innehållet i anteckningarna
-- Skriv kronologiskt, konkret och reflekterande – precis som en rekryterare skulle beskriva en kandidat
-- Undvik punktlistor (om inte mallen uttryckligen innehåller det)
-- Använd ett professionellt men avslappnat tonfall – det ska kännas skrivet av en människa
+📌 Important guidelines:
+- Begin with a **bullet point list** containing key facts (e.g. skills, goals, salary expectations, availability).
+- The summary must be **as detailed as possible**, based only on the information in the files.
+- Write in a **chronological, reflective and concrete** style – just like a recruiter describing a candidate.
+- Avoid bullet points in the main body (unless the template specifically uses them).
+- Use a **professional but relaxed** tone – it should sound like it was written by a person.
 
-Formattering:
-- Lägg till ** före och efter för alla rubriker (t.ex. **Allmänt**, **Teknisk kunskap och färdigheter** etc)
-- Lämna en tom rad före varje rubrik
+🛠️ Formatting:
+- Add **double asterisks** before and after all headings (e.g. **General**, **Technical skills**, etc.).
+- Leave one empty line before each heading.
 
-🚫 Begränsning:
-Du får inte lägga till, gissa eller formulera information som inte tydligt kan härledas från intervjuanteckningarna ovan. Allt innehåll ska vara baserat på information som finns i texten.
+🚫 Limitations:
+You may not invent, guess, or add any information that cannot be clearly derived from the interview notes or transcript. All content must be directly based on what is written above.
 """
