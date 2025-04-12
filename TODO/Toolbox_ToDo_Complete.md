@@ -2,8 +2,8 @@
 
 // ✅ Toolbox Project – To-Do List (inkl. GCP & Terraform)
 
-✅ Flask-app med filuppladdning och summering
-✅ Visuell styling enligt Salesgroup
+✅ Flask-app med filuppladdning och summering  
+✅ Visuell styling enligt Salesgroup  
 ✅ Word-formattering (rubriker, brödtext, logga)
 ✅ Automatisk punktlista av första stycket
 ✅ Webbgenerering fungerar med filval
