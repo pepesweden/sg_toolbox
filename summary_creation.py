@@ -13,6 +13,7 @@ import os
 from library.prompt_builder import create_prompt
 from library.summary_generation import generate_summary
 from library.save_to_docx import save_summary_to_docx
+from library.text_extractor import read_docx_text
 
 
 # Skapa en klient (plockar API-nyckel automatiskt från .env eller miljövariabel)
@@ -20,20 +21,7 @@ from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Läser in en Word-fil och extraherar texten
-def read_docx_text(file_path):
-    doc = Document(file_path)
-    return "\n".join([p.text for p in doc.paragraphs])
 
-
-#lista tillgänliga modeller
-#if __name__ == "__main__":
-    # Testa att lista tillgängliga modeller
-#    models = client.models.list()
-
-#    print("\n📦 Tillgängliga modeller:\n")
-#    for model in models.data:
-#        print(f"🔹 {model.id}")    
 
 
 # 📦 5. Kör hela flödet
