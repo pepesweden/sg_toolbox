@@ -11,6 +11,7 @@ from docx.oxml import OxmlElement
 import os
 
 from library.prompt_builder import create_prompt
+from library.prompt_builder import create_kp_prompt
 from library.summary_generation import generate_summary
 from library.save_to_docx import save_summary_to_docx
 from library.text_extractor import read_docx_text
@@ -26,21 +27,44 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # 📦 5. Kör hela flödet
 if __name__ == "__main__":
-    # 📥 Låt användaren skriva in filnamn
+    # Låt användaren välja KP/Sammanfattning
+    print("❓ Välj 1.Sammanfattning eller 2.KP ")
+    while True:
+        doc_choice = input()
+        if doc_choice in ["1", "2"]: 
+            doc_choice = int(doc_choice)
+            break
+        else:
+            print("Ogiltigt val. Vänligen välj 1 eller 2.")
+
+    #  Låt användaren skriva in filnamn
+    
     filnamn = input("📥 Ange filnamn i mappen 'input/' (inklusive .docx): ")
     intervju_path = f"input/{filnamn}"
 
     # 👤 Låt användaren ange kandidatens namn
     candidate_name = input("👤 Ange kandidatens namn (för filnamn och rubrik): ")
 
-    # Ladda mall, stilreferens och intervjuanteckningar
+
+    # Sammanfattning Ladda mall och stilreferens
     mall_text = read_docx_text("reference/mall_sammanfattning.docx")
     style_text = read_docx_text("reference/Sammanfattning-claes.docx")
     doc_text = read_docx_text(intervju_path)
+
+     # KP Ladda mall och stilreferens
+    kpmall_text = read_docx_text("reference/kp_mall.docx")
+    kpstyle_text = read_docx_text("reference/kp_ic.docx")
     
-    # 🧠 Kör GPT-flödet:  Skapa prompt och generera sammanfattning
-    prompt = create_prompt(doc_text, mall_text, style_text)
-    summary = generate_summary(prompt)
+    
+    # Skapa prompt och generera sammanfattning eller KP
+    if doc_choice == 1:
+        prompt = create_prompt(doc_text, mall_text, style_text)
+        summary = generate_summary(prompt)
+    elif doc_choice == 2:
+        prompt = create_kp_prompt(doc_text, kpmall_text, style_text)
+        summary = generate_summary(prompt)
+    else: 
+        print("❌ Fel i KP generering.")
 
     # 🔍 Visa exakt GPT-output
     #print("\n📥 GPT-Output:\n" + "="*40)
@@ -53,4 +77,3 @@ if __name__ == "__main__":
         print("✅ Sammanfattningenär klar.")
     else:
         print("❌ Sammanfattningen kunde inte genereras.")
-    
