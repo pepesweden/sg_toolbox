@@ -2,68 +2,74 @@
 
 // ✅ Toolbox Project – To-Do List (inkl. GCP & Terraform)
 
-✅ Flask-app med filuppladdning och summering
-✅ Visuell styling enligt Salesgroup
-✅ Word-formattering (rubriker, brödtext, logga)
-✅ Automatisk punktlista av första stycket
-✅ Webbgenerering fungerar med filval
-✅ Coming soon-sidor för SEO och offert
-✅ Hem-knapp och logotyp med länkar
-✅ Gradient + bakgrundsbild fixad
-✅ Toolbox startsida med blurb-navigering
-✅ CSS-standardstruktur etablerad
-✅ Lägg till startsidan toolbox.salesgroup
-✅ Undersidor: summeringsautomation, SEO-text, offert
-✅ Component-ifiera summary_creation.py – bryt ut funktioner till separata moduler (`create_prompt`, `generate_summary`)
-✅ Prompten hanterar transcript korrekt – används endast som stöd
-✅ Word-dokument genereras med formatering enligt Salesgroup-stil (logotyp, färger, rubriker, punktlista)
-✅ Upload fungerar och resultat går att ladda ner
-✅ Lokal DNS-entry toolbox.salesgroup via hosts-fil (fungerar endast lokalt)
-✅ Layout för sammanfattningsverktyget (upload, knapp etc.) är fixad
-✅ Flytta `create_prompt()` till `prompt_builder.py`
-✅ Flytta `generate_summary()` till `summary_generation.py`
-✅ Fixa `save_summary_to_docx()` med korrekt rubrikstruktur
-✅ Hantera promptlängd och token overflow
-✅ Felsökning: .docx-nedladdning, rubriker, GPT-prompt
-✅ Debug-visning av GPT-svar i terminal
-✅ Korrekt API-nyckelhantering via `.env`
-✅ Strukturering av `generate()` i `app.py`
-✅ Återställning av `openai.ChatCompletion.create()`
-✅ Felsökning: `name 'openai' is not defined`, `None`-returns
-
-🧠 **Arkitektur & Struktur**
-☐ Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och sti
-☐ Bygg Openai chunks för prompt
-☐ Skapa ett prompt-bibliotek (`prompt_library.py`)
-☐ Skapa en `load_references()`-funktion för mall + stil
-☐ Möjlighet att välja filnamn i terminal/web GUI
-☐ Avancerat promptläge (visa/ändra prompt direkt)
-☐ Hantera flera dokumenttyper (t.ex. sammanfattning vs. kandidatpresentation)
-☐ Stöd för uppladdning av flera filer som input
-☐ Lägg till möjlighet att hämta kandidatnamn automatiskt
-☐ Lägg till CLI-läge för att köra `summary_creation.py`
-☐ Lägg till roll (titel) som inputfält i gränssnitt + rad i .docx
-☐ Lägg till testläge (GPT-output utan .docx)
-☐ Component-ifiera ytterligare (ex. `document_writer.py`, `input_loader.py`)
-☐ Anonymisera input-sträng till OpenAI-anropet (ta bort namn etc.)
-☐ Kör en webbsökning (via OpenAI) för att testa om anonymiserad input ändå kan avslöja person – för framtida integritetsanalys (Proof of Concept)
-
-🌐 **UI & Användarupplevelse**
-☐ Lägg till språkval i gränssnittet (svenska/engelska)
-☐ Lägg in översättningsflagga i backend
-☐ Lägg till språkidentifiering i backend (fallback)
-☐ Översätt prompt till engelska
-☐ Visa “Skickar till GPT...” och liknande indikatorer i UI
-☐ Lägg till progress-output (t.ex. "Läser fil", "Skickar till GPT", "Genererar svar..." etc.) i browsern
+✅ Flask-app med filuppladdning och summering  
+✅ Visuell styling enligt Salesgroup  
+✅ Word-formattering (rubriker, brödtext, logga)  
+✅ Automatisk punktlista av första stycket  
+✅ Webbgenerering fungerar med filval  
+✅ Coming soon-sidor för SEO och offert  
+✅ Hem-knapp och logotyp med länkar  
+✅ Gradient + bakgrundsbild fixad  
+✅ Toolbox startsida med blurb-navigering  
+✅ CSS-standardstruktur etablerad  
+✅ Lägg till startsidan toolbox.salesgroup  
+✅ Undersidor: summeringsautomation, SEO-text, offert  
+✅ Component-ifiera summary_creation.py – bryt ut funktioner till separata moduler (`create_prompt`, `generate_summary`)  
+✅ Prompten hanterar transcript korrekt – används endast som stöd  
+✅ Word-dokument genereras med formatering enligt Salesgroup-stil (logotyp, färger, rubriker, punktlista)  
+✅ Upload fungerar och resultat går att ladda ner  
+✅ Lokal DNS-entry toolbox.salesgroup via hosts-fil (fungerar endast lokalt)  
+✅ Layout för sammanfattningsverktyget (upload, knapp etc.) är fixad  
+✅ Flytta `create_prompt()` till `prompt_builder.py`  
+✅ Flytta `generate_summary()` till `summary_generation.py`  
+✅ Fixa `save_summary_to_docx()` med korrekt rubrikstruktur  
+✅ Hantera promptlängd och token overflow  
+✅ Felsökning: .docx-nedladdning, rubriker, GPT-prompt  
+✅ Debug-visning av GPT-svar i terminal  
+✅ Korrekt API-nyckelhantering via `.env`  
+✅ Strukturering av `generate()` i `app.py`  
+✅ Återställning av `openai.ChatCompletion.create()`  
+✅ Felsökning: `name 'openai' is not defined`, `None`-returns  
+  
+🧠 **Arkitektur & Struktur**  
+☐ Bygg KP generering  
+☐ Bygg Säljmail generering  
+☐ bygg annonsgenerering  
+☐ Bygg rapportgenerering  
+☐ Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och sti  
+☐ Bygg Openai chunks för prompt  
+☐ Skapa ett prompt-bibliotek (`prompt_library.py`)  
+☐ Skapa en `load_references()`-funktion för mall + stil  
+☐ Möjlighet att välja filnamn i terminal/web GUI  
+☐ Avancerat promptläge (visa/ändra prompt direkt)  
+☐ Hantera flera dokumenttyper (t.ex. sammanfattning vs. kandidatpresentation)  
+☐ Stöd för uppladdning av flera filer som input  
+☐ Lägg till möjlighet att hämta kandidatnamn automatiskt  
+☐ Lägg till CLI-läge för att köra `summary_creation.py`  
+☐ Lägg till roll (titel) som inputfält i gränssnitt + rad i .docx  
+☐ Lägg till testläge (GPT-output utan .docx)  
+☐ Component-ifiera ytterligare (ex. `document_writer.py`, `input_loader.py`)  
+☐ Anonymisera input-sträng till OpenAI-anropet (ta bort namn etc.)  
+☐ Kör en webbsökning (via OpenAI) för att testa om anonymiserad input ändå kan avslöja person – för framtida  
+ integritetsanalys (Proof of Concept)  
+  
+🌐 **UI & Användarupplevelse**  
+☐ Lägg till språkval i gränssnittet (svenska/engelska)  
+☐ Lägg in översättningsflagga i backend  
+☐ Lägg till språkidentifiering i backend (fallback)  
+☐ Översätt prompt till engelska  
+☐ Visa “Skickar till GPT...” och liknande indikatorer i UI  
+☐ Lägg till progress-output (t.ex. "Läser fil", "Skickar till GPT", "Genererar svar..." etc.) i browsern  
 
 📥 **Filhantering & Nedladdning**
-☐ Lägg till nedladdningsknapp för .docx istället för direktnedladdning
-☐ Skapa HTML-dokument under blurben efter generering
-☐ Formatera HTML snyggt med CSS och visa i sidan
-☐ Lägg till nedladdningsknappar för HTML och DOCX
-☐ Exportera sammanfattning som HTML och PDF
-☐ Återställ .docx-nedladdning med korrekt filnamn
-☐ Lägg till TikToken token-räknare som räknar antal tokens före anrop – stoppa om över gräns (för att undvika onödiga API-försök/kostnad)
+☐ Lägg till nedladdningsknapp för .docx istället för direktnedladdning  
+☐ Skapa HTML-dokument under blurben efter generering  
+☐ Formatera HTML snyggt med CSS och visa i sidan  
+☐ Lägg till nedladdningsknappar för HTML och DOCX  
+☐ Exportera sammanfattning som HTML och PDF  
+☐ Återställ .docx-nedladdning med korrekt filnamn  
+☐ Lägg till TikToken token-räknare som räknar antal tokens före anrop – stoppa om över gräns (för att undvika onödiga API- 
+försök/kostnad)  
 
 🧰 **Webbapp-funktioner**
 ☐ Ladda upp referensmallar + återanvända
