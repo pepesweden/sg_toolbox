@@ -32,10 +32,10 @@
 ✅ Felsökning: `name 'openai' is not defined`, `None`-returns  
   
 🧠 **Arkitektur & Struktur**  
-☐ Bygg KP generering
-☐ Bygg Säljmail generering
-☐ bygg annonsgenerering
-☐ Bygg rapportgenerering
+☐ Bygg KP generering  
+☐ Bygg Säljmail generering  
+☐ bygg annonsgenerering  
+☐ Bygg rapportgenerering  
 ☐ Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och sti  
 ☐ Bygg Openai chunks för prompt  
 ☐ Skapa ett prompt-bibliotek (`prompt_library.py`)  
