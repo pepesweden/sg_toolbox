@@ -33,12 +33,12 @@ if __name__ == "__main__":
     # 👤 Låt användaren ange kandidatens namn
     candidate_name = input("👤 Ange kandidatens namn (för filnamn och rubrik): ")
 
-    # Ladda mall och stilreferens
+    # Ladda mall, stilreferens och intervjuanteckningar
     mall_text = read_docx_text("reference/mall_sammanfattning.docx")
     style_text = read_docx_text("reference/Sammanfattning-claes.docx")
     doc_text = read_docx_text(intervju_path)
     
-    # Skapa prompt och generera sammanfattning
+    # 🧠 Kör GPT-flödet:  Skapa prompt och generera sammanfattning
     prompt = create_prompt(doc_text, mall_text, style_text)
     summary = generate_summary(prompt)
 
