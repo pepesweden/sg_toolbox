@@ -36,9 +36,10 @@
 ☐ Bygg Säljmail generering  
 ☐ bygg annonsgenerering  
 ☐ Bygg rapportgenerering  
-☐ Dokumentformatering KP
-☐ Förbättra KP prompt
-☐ Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och sti  
+☐ Dokumentformatering KP  
+☐ Förbättra KP prompt  
+☐ Rensa app.py från onödig kod. gör fler funktioner  
+☐ Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och stil  
 ☐ Bygg Openai chunks för prompt  
 ☐ Skapa ett prompt-bibliotek (`prompt_library.py`)  
 ☐ Skapa en `load_references()`-funktion för mall + stil  
