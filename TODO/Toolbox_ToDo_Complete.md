@@ -35,6 +35,7 @@
 🧠 **Arkitektur & Struktur**   
 ☐ Bygg Säljmail generering - https://chatgpt.com/c/67f433e4-7070-8008-99e2-b68e46669d79  
 ☐ bygg annonsgenerering  
+☐ bygg referensammanfattning  
 ☐ Bygg rapportgenerering  
 ☐ Dokumentformatering KP  
 ☐ Förbättra KP prompt  
