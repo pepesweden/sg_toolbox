@@ -39,7 +39,7 @@
 ☐ Bygg rapportgenerering  
 ☐ Dokumentformatering KP  
 ☐ Förbättra KP prompt  
-  ☐ Bygg ett separat OpenAI script som skickar ut texten i CLI
+  - Bygg ett separat OpenAI script som skickar ut texten i CLI
   ☐ Starta med KP skrivning
   ☐ Kopiera prmopt builder koppla till scriptet
   ☐ LÄgg till referensgenerering. 
