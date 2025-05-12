@@ -31,18 +31,19 @@
 ✅ Återställning av `openai.ChatCompletion.create()`  
 ✅ Felsökning: `name 'openai' is not defined`, `None`-returns  
 ✅ Bygg KP generering
-  
+
+---
 🧠 **Arkitektur & Struktur**   
 ☐ Bygg Säljmail generering - https://chatgpt.com/c/67f433e4-7070-8008-99e2-b68e46669d79  
 ☐ bygg annonsgenerering  
 ☐ bygg referensammanfattning  
 ☐ Bygg rapportgenerering  
 ☐ Dokumentformatering KP  
-☐ Förbättra KP prompt  
+- [] Förbättra KP prompt  
   - Bygg ett separat OpenAI script som skickar ut texten i CLI
-  ☐ Starta med KP skrivning
-  ☐ Kopiera prmopt builder koppla till scriptet
-  ☐ LÄgg till referensgenerering. 
+  - Starta med KP skrivning
+  - Kopiera prmopt builder koppla till scriptet
+  - LÄgg till referensgenerering. 
 ☐ Rensa app.py från onödig kod. gör fler funktioner  
 ☐ Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och stil  
 ☐ Bygg Openai chunks för prompt  
