@@ -25,6 +25,13 @@
               <h1>Skapa kandidatsammanfattning</h1>
               <form action="/generate" method="post" enctype="multipart/form-data">
                 <div class="mb-3">
+                  <label for="doc_choice">Välj format:</label>
+                  <select name="doc_choice" required>
+                    <option value="" disabled selected>-- Välj format --</option>
+                    <option value="1">Sammanfattning</option>
+                    <option value="2">Kandidatpresentation</option>
+                  </select>
+                <div class="mb-3">
                   <label for="intervjufil" class="form-label">Ladda upp intervjuanteckningar (.docx):</label>
                   <input class="form-control" type="file" id="intervjufil" name="intervjufil" accept=".docx" required>
                 </div>
