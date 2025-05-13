@@ -30,22 +30,29 @@
 ✅ Strukturering av `generate()` i `app.py`  
 ✅ Återställning av `openai.ChatCompletion.create()`  
 ✅ Felsökning: `name 'openai' is not defined`, `None`-returns  
-  
-🧠 **Arkitektur & Struktur**  
-☐ Bygg KP generering  
-☐ Bygg Säljmail generering  
+✅ Bygg KP generering
+
+---
+🧠 **Arkitektur & Struktur**   
+☐ Bygg Säljmail generering - https://chatgpt.com/c/67f433e4-7070-8008-99e2-b68e46669d79  
 ☐ bygg annonsgenerering  
+☐ bygg referensammanfattning  
 ☐ Bygg rapportgenerering  
-☐ Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och sti  
+☐ Dokumentformatering KP  
+- [] Förbättra KP prompt  
+  - Bygg ett separat OpenAI script som skickar ut texten i CLI
+  - Starta med KP skrivning
+  - Kopiera prmopt builder koppla till scriptet
+  - LÄgg till referensgenerering. 
+☐ Rensa app.py från onödig kod. gör fler funktioner  
+☐ Förbättra output från prompt - 1. chunka input (fler filer), 2. gör summering 3. översätt 4. ton och stil  
 ☐ Bygg Openai chunks för prompt  
 ☐ Skapa ett prompt-bibliotek (`prompt_library.py`)  
 ☐ Skapa en `load_references()`-funktion för mall + stil  
 ☐ Möjlighet att välja filnamn i terminal/web GUI  
 ☐ Avancerat promptläge (visa/ändra prompt direkt)  
-☐ Hantera flera dokumenttyper (t.ex. sammanfattning vs. kandidatpresentation)  
 ☐ Stöd för uppladdning av flera filer som input  
 ☐ Lägg till möjlighet att hämta kandidatnamn automatiskt  
-☐ Lägg till CLI-läge för att köra `summary_creation.py`  
 ☐ Lägg till roll (titel) som inputfält i gränssnitt + rad i .docx  
 ☐ Lägg till testläge (GPT-output utan .docx)  
 ☐ Component-ifiera ytterligare (ex. `document_writer.py`, `input_loader.py`)  

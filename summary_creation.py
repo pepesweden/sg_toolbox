@@ -13,7 +13,7 @@ import os
 from library.prompt_builder import create_prompt
 from library.prompt_builder import create_kp_prompt
 from library.summary_generation import generate_summary
-from library.save_to_docx import save_summary_to_docx
+from library.save_to_docx import save_summary_to_docx, save_kp_to_docx
 from library.text_extractor import read_docx_text
 
 
@@ -57,10 +57,10 @@ if __name__ == "__main__":
     
     
     # Skapa prompt och generera sammanfattning eller KP
-    if doc_choice == 1:
+    if doc_choice == 1: #skapaa sammanfattning
         prompt = create_prompt(doc_text, mall_text, style_text)
         summary = generate_summary(prompt)
-    elif doc_choice == 2:
+    elif doc_choice == 2: # skapa KP
         prompt = create_kp_prompt(doc_text, kpmall_text, style_text)
         summary = generate_summary(prompt)
     else: 
