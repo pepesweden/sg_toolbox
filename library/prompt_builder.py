@@ -61,33 +61,48 @@ def create_kp_prompt(doc_text, kpmall_text, kpstyle_text, transcript_text=None):
     else:
         transcript_section = ""
     return f"""
-Du är en erfaren rekryterare som skriver professionella kandidatpresentationer för ett svenskt rekryteringsbolag. 
+Du är en erfaren rekryterare som skriver professionella och detaljerade kandidatpresentationer för ett svenskt rekryteringsbolag.
 
-Skriv en komplett **kandidatpresentation** baserad på innehållet i följande intervjutext och CV. Presentationen ska:
+🎯 Din uppgift:
+Skriv en **komplett och strukturerad kandidatpresentation** baserad på innehållet i följande intervjutext och CV.
+
+📐 Presentationen ska:
 
 1. **Följa strukturen i dokumentmallen {kpmall_text}**:
    - Rubriker: ALLMÄNT, Drivkrafter, Kompetens, utbildning, NYCKELTAL, Rekryterarens kommentarer, privat
    - Överst: Grunddata (namn, ålder, befattning, kontakt, uppsägningstid, publicerad, lönenivå, förmåner, nivå)
-   - Alla fält fylls i, även om du får uppskatta vissa (t.ex. ålder) utifrån innehållet.
+   - Alla fält fylls i. Om ett fält saknas i materialet, skriv "Ej angivet"
 
-2. **Använda tonaliteten från tidigare presentationer som finns i dokumenten {kpstyle_text}** (ex: Dotun, Lou, Joachim):
-   - Reflekterande, personlig och konkret
-   - Skriven i tredje person men utifrån rekryterarens perspektiv
-   - Kombinera teknisk beskrivning med observationer om arbetssätt, kommunikation och personlighet
+2. **Använda tonaliteten från tidigare presentationer i {kpstyle_text}** (ex: Dotun, Lou, Joachim):
+   - Reflekterande, konkret och personlig
+   - Skriven i tredje person och med rekryterarens öga för nyanser
+   - Kombinera beskrivning av kompetens och ansvar med observationer kring arbetssätt, kommunikation och driv
 
-3. **Prioritera rekryteringsrelevant innehåll**:
-   - Beskriv teknisk kontext, ansvar, övergångar och sammanhang
-   - Lyft exempel på driv, problemlösning, och hur kandidaten kommunicerar
-   - Avslöja inte att texten är AI-genererad
+3. **För varje sektion, följ dessa riktlinjer**:
 
-Här är underlaget för presentationen:
+   - **ALLMÄNT**: Kronologisk, löpande sammanfattning av karriären. Sätt erfarenheterna i kontext. Lyft fram yrkesroll, ansvar, miljö, förändringar och exempel.
+   - **Drivkrafter**: En kommaseparerad lista med ord (ex: nyfikenhet, ansvar, problemlösning)
+   - **Kompetens**: En kommaseparerad lista med ord om kandidatens yrkesmässiga kompetenser, metoder, verktyg eller områden – oavsett roll (t.ex. försäljning, utveckling, ledarskap, analys, marknad etc.)
+   - **Utbildning**: Punktlista med utbildningar, certifikat och eventuella kurser
+   - **NYCKELTAL**: Punktlista med siffror *om de finns i materialet* (ex: teamstorlek, budgetansvar, antal kunder, försäljningsmål, projektantal, etc.)
+   - **Rekryterarens kommentarer**: Reflekterande text om kandidatens arbetssätt, kommunikationsstil, personlighet och professionella nivå
+   - **Privat**: Endast om relevant information finns – håll det kort
+
+4. **Prioritera konkret yrkesmässig kontext och detaljer**:
+   - Beskriv miljö, ansvar, prestationer, förändringar och metoder
+   - Lyft exempel på problemlösning, driv, anpassning, och kommunikation
+   - Oavsett om kandidaten arbetar med teknik, sälj, analys, projektledning eller något annat – inkludera yrkesspecifika detaljer
+
+🚫 Begränsningar:
+- Du får **inte gissa, lägga till eller anta** något som inte framgår tydligt i materialet
+- Hela texten ska bygga på {doc_text} och {transcript_section}
+- Använd aldrig spekulationer, generaliseringar eller fluff – var tydlig, faktabaserad och detaljerad
+
+🛠️ Underlag:
 ---
 {doc_text}
 {transcript_section}
 ---
 
-Returnera endast texten till kandidatpresentationen enligt ovan – utan extrakommentarer eller förklaringar.
-
-🚫 Begräsningsar:
-Du får inte hitta på, gissa eller lägga till någon information som inte tydligt kan härledas från intervjuanteckningarna eller transkriptionen. Allt innehåll måste vara direkt baserat på det som står ovan.
+✍️ Returnera endast texten till kandidatpresentationen – utan några extrakommentarer, förklaringar eller rubriker utöver mallen.
 """
