@@ -27,7 +27,7 @@ def generate_summary(prompt, retries=1, delay=5):
             #print(prompt[:1000])  # Förkortad debug
 
             response = openai.ChatCompletion.create(
-                model="gpt-4",
+                model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7
                 )
