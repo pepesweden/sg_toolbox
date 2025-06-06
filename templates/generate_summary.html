@@ -21,32 +21,82 @@
             <!--<p class="text-muted">Skapa proffsiga kandidatsammanfattningar på sekunder</p>-->
         </div>
         <div class="container mt-5">
-            <div class="module-blurb">
-              <h1>Skapa kandidatsammanfattning</h1>
-              <form action="/generate" method="post" enctype="multipart/form-data">
-                <div class="mb-3">
-                  <label for="doc_choice">Välj format:</label>
-                  <select name="doc_choice" required>
-                    <option value="" disabled selected>-- Välj format --</option>
-                    <option value="1">Sammanfattning</option>
-                    <option value="2">Kandidatpresentation</option>
-                  </select>
-                <div class="mb-3">
-                  <label for="intervjufil" class="form-label">Ladda upp intervjuanteckningar (.docx):</label>
-                  <input class="form-control" type="file" id="intervjufil" name="intervjufil" accept=".docx" required>
-                </div>
-                <!--<div class="mb-3">
-                  <label for="transcript" class="form-label">Ladda upp transcript (.docx):</label>
-                  <input class="form-control" type="file" id="transcript" name="transcript" accept=".docx">
-                </div>-->
-                <div class="mb-3">
-                  <label for="namn" class="form-label">Kandidatens namn:</label>
-                  <input class="form-control" type="text" id="namn" name="namn" placeholder="Förnamn Efternamn" required>
-                </div>
-                <button type="submit" class="btn btn-outline-light">Skapa sammanfattning</button>
-              </form>
+          <div class="module-blurb">
+            <div class="blurb-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
+              <!-- Sammanfattning -->
+              <div class="blurb" onclick="showForm('summary')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
+                <h3>📝 Sammanfattning</h3>
+                <p>Skapa en traditionell kandidatsammanfattning baserat på intervjuanteckningar.</p>
+              </div>
+
+              <!-- KP -->
+              <div class="blurb" onclick="showForm('kp')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
+                <h3>📄 Kandidatpresentation</h3>
+                <p>Generera en presentation enligt Salesgroup-mallen.</p>
+              </div>
+
+              <!-- Referens -->
+              <div class="blurb" onclick="showForm('reference')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
+                <h3>👥 Referenssammanfattning</h3>
+                <p>Skapa en referenssammanställning från referensintervjuer.</p>
+              </div>
             </div>
+          </div>
+          <div class="module-blurb">  
+              <h1>Skapa kandidatsammanfattning</h1>
+              <div id="summary-form" class="form-section" style="display: none;">
+                <form action="/generate" method="post" enctype="multipart/form-data">
+                  <div class="mb-3">
+                    <label for="doc_choice">Välj format:</label>
+                    <select name="doc_choice" required>
+                      <option value="" disabled selected>-- Välj format --</option>
+                      <option value="1">Sammanfattning</option>
+                      <option value="2">Kandidatpresentation</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="intervjufil" class="form-label">Ladda upp intervjuanteckningar (.docx):</label>
+                    <input class="form-control" type="file" id="intervjufil" name="intervjufil" accept=".docx" required>
+                  </div>
+                  <!--<div class="mb-3">
+                    <label for="transcript" class="form-label">Ladda upp transcript (.docx):</label>
+                    <input class="form-control" type="file" id="transcript" name="transcript" accept=".docx">
+                  </div>-->
+                  <div class="mb-3">
+                    <label for="namn" class="form-label">Kandidatens namn:</label>
+                    <input class="form-control" type="text" id="namn" name="namn" placeholder="Förnamn Efternamn" required>
+                  </div>
+                  <button type="submit" class="btn btn-outline-light">Skapa sammanfattning</button>
+                </form>
+              </div>
+              <div id="kp-form" class="form-section" style="display: none;">
+                <div class="card p-4 mb-4 bg-white shadow-sm">
+                  <h3>📄 Kandidatpresentation (Kommer snart)</h3>
+                  <p>Här kommer du kunna generera en kandidatpresentation baserat på intervjuanteckningar.</p>
+                </div>
+              </div>
+              <div id="reference-form" class="form-section" style="display: none;">
+                <div class="card p-4 mb-4 bg-white shadow-sm">
+                  <h3>👥 Referenssammanfattning (Kommer snart)</h3>
+                  <p>Här kommer du kunna skapa en referenssammanställning från referensintervjuer.</p>
+                </div>
+              </div>
+          </div>
         </div>
+      <script>
+        function showForm(type) {
+          // Dölj alla formulär
+          document.querySelectorAll('.form-section').forEach(div => {
+          div.style.display = 'none';
+          });
+
+          // Visa det valda formuläret
+          const target = document.getElementById(type + '-form');
+          if (target) {
+            target.style.display = 'block';
+          }
+        }
+      </script>
     </body>
 </html>
 
