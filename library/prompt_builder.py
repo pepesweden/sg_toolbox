@@ -73,7 +73,7 @@ Skriv en **komplett och strukturerad kandidatpresentation** baserad på innehål
    - Överst: Grunddata (namn, ålder, befattning, kontakt, uppsägningstid, publicerad, lönenivå, förmåner, nivå)
    - Alla fält fylls i. Om ett fält saknas i materialet, skriv "Ej angivet"
 
-2. **Använda tonaliteten från tidigare presentationer i {kpstyle_text}** (ex: Dotun, Lou, Joachim):
+2. **Använda tonaliteten från tidigare presentationer i {kpstyle_text}**:
    - Reflekterande, konkret och personlig
    - Skriven i tredje person och med rekryterarens öga för nyanser
    - Kombinera beskrivning av kompetens och ansvar med observationer kring arbetssätt, kommunikation och driv
@@ -105,4 +105,31 @@ Skriv en **komplett och strukturerad kandidatpresentation** baserad på innehål
 ---
 
 ✍️ Returnera endast texten till kandidatpresentationen – utan några extrakommentarer, förklaringar eller rubriker utöver mallen.
+"""
+
+
+def create_refsum_prompt(doc_text, refmall_text, refstyle_text, transcript_text=None):
+        if transcript_text:
+            transcript_section = f"""
+📚 This is a complementary transcript from the interview.  
+🟡 Use it *only* to support or expand upon the information in the interview notes.  
+🟡 If there are discrepancies – prioritize the interview notes.  
+🟡 You do not need to summarize the entire transcript – only extract relevant details:
+{transcript_text}
+"""
+        else:
+            transcript_section = ""
+        return f"""
+Här är referensanteckningar från kollegor till en kandidat:
+
+Referens 1:
+{doc_text}
+
+Referens 2:
+[KLIPP IN FULLTEXT FRÅN REFERENSINTERVJU 2]
+
+Och här är mallen som sammanfattningen ska följa: {refmall_text}
+Använda tonaliteten från tidigare sammanfattning i {refstyle_text}, Obs ingen information från denna text ska användas i sammanfattningen.
+
+Skriv en färdig referenssammanställning enligt mallen ovan. Håll en professionell och sammanhängande ton. Sammanfatta innehållet konkret och strukturera texten tydligt under varje rubrik. Inkludera en avslutande punkt med vilka gemensamma teman som återkommer i båda referenserna.
 """
