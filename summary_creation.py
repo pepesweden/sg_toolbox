@@ -10,11 +10,11 @@ from docx.oxml import OxmlElement
 
 import os
 
-from library.prompt_builder import create_prompt
-from library.prompt_builder import create_kp_prompt
+
+from library.prompt_builder import create_kp_prompt, create_refsum_prompt, create_prompt
 from library.summary_generation import generate_summary
 from library.save_to_docx import save_summary_to_docx, save_kp_to_docx
-from library.text_extractor import read_docx_text
+from library.text_extractor import read_docx_text, extract_texts_from_docx
 
 
 # Skapa en klient (plockar API-nyckel automatiskt från .env eller miljövariabel)
@@ -28,14 +28,14 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 # 📦 5. Kör hela flödet
 if __name__ == "__main__":
     # Låt användaren välja KP/Sammanfattning
-    print("❓ Välj 1.Sammanfattning eller 2.KP ")
+    print("❓ Välj 1.Sammanfattning, 2.KP eller 3. Referenssammanfattning:")
     while True:
         doc_choice = input()
-        if doc_choice in ["1", "2"]: 
+        if doc_choice in ["1", "2", "3"]: 
             doc_choice = int(doc_choice)
             break
         else:
-            print("Ogiltigt val. Vänligen välj 1 eller 2.")
+            print("Ogiltigt val. Vänligen välj 1-3.")
 
     #  Låt användaren skriva in filnamn
     
@@ -54,6 +54,10 @@ if __name__ == "__main__":
      # KP Ladda mall och stilreferens
     kpmall_text = read_docx_text("reference/kp_mall.docx")
     kpstyle_text = read_docx_text("reference/kp_ic.docx")
+
+    # Referenss Ladda mall och stilreferens
+    refmall_text = read_docx_text("reference/refsum_mall.docx")
+    refstyle_text = read_docx_text("reference/refsum_referencev2.docx")
     
     
     # Skapa prompt och generera sammanfattning eller KP
@@ -63,6 +67,9 @@ if __name__ == "__main__":
     elif doc_choice == 2: # skapa KP
         prompt = create_kp_prompt(doc_text, kpmall_text, style_text)
         summary = generate_summary(prompt)
+    elif doc_choice == 3: # skapa Referenssammanfattning
+        prompt = create_refsum_prompt(doc_text, refmall_text, refstyle_text)
+        summary = generate_summary(prompt)    
     else: 
         print("❌ Fel i KP generering.")
 

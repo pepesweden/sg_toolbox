@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, send_file
 import os
 from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, save_kp_to_docx
+from library.text_extractor import extract_texts_from_docx
 
 # 🚀 Initiera Flask-app
 app = Flask(__name__)
@@ -93,7 +94,17 @@ def generate():
     print(f"✅ Fil sparad: {filepath}")
     return send_file(filepath, as_attachment=True)
 
+# 🚀 Generera referenssammanfattning från uppladdade file   r
+@app.route("/generate_reference_summary", methods=["POST"])
+def generate_reference_summary_route():
+    files = request.files.getlist("files")
+    if not files:
+        return jsonify({"error": "No files uploaded"}), 400
 
+    texts = extract_texts_from_docx(files)
+
+    # Du kan returnera eller bearbeta texten vidare här
+    return jsonify({"texts": texts})
 
 
 if __name__ == "__main__":

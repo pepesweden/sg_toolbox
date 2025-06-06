@@ -29,6 +29,8 @@ build/
 # Node (om frontend finns)
 node_modules/
 
+# venv filer och binärer
+venv/
 
 #wordfile e.g. content
 *.docx
