@@ -129,7 +129,7 @@ Referens 2:
 [KLIPP IN FULLTEXT FRÅN REFERENSINTERVJU 2]
 
 Och här är mallen som sammanfattningen ska följa: {refmall_text}
-Använda tonaliteten från tidigare sammanfattning i {refstyle_text}, Obs ingen information från denna text ska användas i sammanfattningen.
 
 Skriv en färdig referenssammanställning enligt mallen ovan. Håll en professionell och sammanhängande ton. Sammanfatta innehållet konkret och strukturera texten tydligt under varje rubrik. Inkludera en avslutande punkt med vilka gemensamma teman som återkommer i båda referenserna.
+Använda tonaliteten från tidigare sammanfattning i {refstyle_text}, Obs ingen information från denna text ska användas i sammanfattningen.
 """
