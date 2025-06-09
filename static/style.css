@@ -1,3 +1,11 @@
+:root {
+    --box-width: min(100vw, 1680px);
+    --scale-ratio: 0.8;
+    --text-negative-level-1-color: #fff;
+    --text-negative-level-2-color: #d0c9dd;
+    --text-main-level-4-color: #725d97;
+}
+
 body::before {
     content: "";
     position: fixed;
@@ -22,20 +30,38 @@ body {
     color: #f5f5f5;
 }
 
-/* 📌 Rubriker */
-h1, h2, h3 {
-    font-weight: 600;             /* Halvfet */
+/* Keep general headings for other parts of the page */
+h1, h2 {
+    font-weight: 600;
     letter-spacing: 0.5px;
     margin-bottom: 0.75rem;
-    color: white;                 /* Ljust för mörk bakgrund */
+    color: white;
 }
 
-/* 📝 Brödtext */
+/* Blurb headings - matching company style */
+.blurb h3 {
+    font-weight: 600;
+    letter-spacing: 0.002em;
+    line-height: 140%;
+    color: var(--text-negative-level-1-color);
+    margin-bottom: 0.75rem;
+}
+
+/* General text */
 p, li {
-    font-weight: 300;             /* Tunnare text */
-    font-size: 1rem;              /* Standardstorlek */
-    line-height: 1.6;             /* Luft mellan rader */
-    color: #f0f0f0;               /* Ljusgrå för bättre kontrast */
+    font-weight: 300;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #f0f0f0;
+}
+
+/* Blurb text - matching company small text style */
+.blurb p {
+    font-weight: 400;
+    font-size: 0.9rem;
+    line-height: 140%;
+    color: var(--text-negative-level-2-color);
+    letter-spacing: 0.002em;
 }
 
 /* 🔠 Små underrubriker eller text */
@@ -95,3 +121,35 @@ p, li {
     transform: scale(1.1);
     cursor: pointer;
   }
+
+
+  /* Form sections styling to match module-blurb */
+.form-section {
+    background-color: #23153D;  /* Same purple as module-blurb */
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect for form sections */
+.form-section:hover {
+    background-color: #432774;  /* Same lighter purple as module-blurb hover */
+    transform: scale(1.02);
+}
+
+/* Style the cards inside form sections */
+.form-section .card {
+    background-color: rgba(255, 255, 255, 0.1) !important;  /* Semi-transparent white */
+    color: white !important;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-section .card h3 {
+    color: white !important;
+}
+
+.form-section .card p {
+    color: #f0f0f0 !important;
+}

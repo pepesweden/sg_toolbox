@@ -1,7 +1,10 @@
 from flask import Flask, render_template, request, send_file
 import os
-from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, save_kp_to_docx
-from library.text_extractor import extract_texts_from_docx
+from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, save_kp_to_docx, create_refsum_prompt, save_refsum_to_docx
+from library.save_to_docx import save_summary_to_docx, save_kp_to_docx, save_refsum_to_docx
+from library.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt
+from library.summary_generation import generate_summary
+from library.text_extractor import extract_texts_from_docx, read_docx_text
 
 # 🚀 Initiera Flask-app
 app = Flask(__name__)
@@ -95,16 +98,50 @@ def generate():
     return send_file(filepath, as_attachment=True)
 
 # 🚀 Generera referenssammanfattning från uppladdade file   r
-@app.route("/generate_reference_summary", methods=["POST"])
-def generate_reference_summary_route():
-    files = request.files.getlist("files")
-    if not files:
-        return jsonify({"error": "No files uploaded"}), 400
+@app.route("/generate_reference", methods=["POST"])
+def generate_reference():
+    # 📎 Hämta val, filer och namn från formuläret
+    fil = request.files["intervjufil"]
+    kandidatnamn = request.form["namn"]
 
-    texts = extract_texts_from_docx(files)
+    # ⚠️ Kontrollera att det är en .docx-fil
+    if not fil or not fil.filename.endswith(".docx"):
+        return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
-    # Du kan returnera eller bearbeta texten vidare här
-    return jsonify({"texts": texts})
+    # 💾 Spara intervju filen i input/
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
+    fil.save(filepath)
+
+    #läs innehållet i filerna efter att de sparats
+    doc_text = read_docx_text(filepath)
+
+    # Bygg prompt baserat på val av dokumenttyp
+    refmall_text = read_docx_text("reference/refsum_mall.docx")
+    refstyle_text = read_docx_text("reference/refsum_referencev2.docx")
+
+
+    # Skapa prompt och generera sammanfattning eller KP
+    #prompt = create_prompt(doc_text, mall_text, style_text, transcript_text)
+    prompt = create_refsum_prompt(doc_text, refmall_text, refstyle_text)
+    summary = generate_summary(prompt) 
+    if summary is None:
+        print("❌ Sammanfattningen kunde inte genereras.")
+        return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
+
+    # 💾 Spara och returnera .docx
+     # Skapa output-mapp om den inte finns
+    os.makedirs("output", exist_ok=True)
+    # Spara filen i output-mappen
+    if summary:
+        # Skapa filnamn och spara sammanfattningen
+        filename = f"refsum_{kandidatnamn.lower().replace(' ', '_')}.docx"
+        filepath = os.path.join("output", filename)
+        save_refsum_to_docx(summary, kandidatnamn)
+    else:
+        filename = f"output_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
+
+    print(f"✅ Fil sparad: {filepath}")
+    return send_file(filepath, as_attachment=True)
 
 
 if __name__ == "__main__":
