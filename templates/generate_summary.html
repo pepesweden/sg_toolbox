@@ -73,12 +73,28 @@
                   <button type="submit" class="btn btn-outline-light">Skapa sammanfattning</button>
                 </form>
               </div>
+
+              <!--<h1>Skapa Kandidatpresentation </h1>-->
               <div id="kp-form" class="form-section" style="display: none;">
                 <div class="card p-4 mb-4 bg-white shadow-sm">
                   <h3>📄 Kandidatpresentation (Kommer snart)</h3>
                   <p>Här kommer du kunna generera en kandidatpresentation baserat på intervjuanteckningar.</p>
                 </div>
+                <form action="/generate_kp" method="post" enctype="multipart/form-data">
+                  <div class="mb-3">
+                    <label for="intervjufil" class="form-label">Ladda upp intervjuanteckningar (.docx):</label>
+                    <input class="form-control" type="file" id="intervjufil" name="intervjufil" accept=".docx" required>
+                  </div>    
+                  <div class="mb-3">
+                    <label for="namn" class="form-label">Kandidatens namn:</label>
+                    <input class="form-control" type="text" id="namn" name="namn" placeholder="Förnamn Efternamn" required>
+                  </div>
+                  <button type="submit" class="btn btn-outline-light">Skapa sammanfattning</button>
+                </form>
               </div>
+
+
+              <!-- Referenssammanfattning endpoint-->
               <div id="reference-form" class="form-section" style="display: none;">
                 <div class="card p-4 mb-4 bg-white shadow-sm">
                   <h3>👥 Referenssammanfattning</h3>
