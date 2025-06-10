@@ -5,6 +5,7 @@ from library.save_to_docx import save_summary_to_docx, save_kp_to_docx, save_ref
 from library.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt
 from library.summary_generation import generate_summary
 from library.text_extractor import extract_texts_from_docx, read_docx_text
+from flask import redirect
 
 # 🚀 Initiera Flask-app
 app = Flask(__name__)
@@ -19,6 +20,22 @@ def index():
 @app.route("/generate-summary")
 def generate_summary_page():
     return render_template("generate_summary.html")
+
+@app.route('/login', methods=['POST'])
+def login():
+    #username = request.form['username']
+    #password = request.form['password']
+    
+    # För tillfället - bara redirect
+    return redirect('/welcome_page')
+    
+    # Senare - lägg till riktig autentisering här
+    #return render_template("welcome_page.html")
+
+@app.route("/welcome_page")
+def welcome_page():
+    return render_template("welcome_page.html")
+
 
 @app.route("/generate-seo")
 def generate_seo_page():
