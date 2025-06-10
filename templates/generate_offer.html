@@ -19,8 +19,77 @@
       </div>
       <div class="container mt-5">
         <div class="module-blurb">
-          <h1>Skapa en offer - Coming soon!</h1>
+          <h1>Säljverktyg</h1>
         </div>
       </div>
+      <div class="text-center mb-4">
+            <h1 class="display-5">Säljverktyg</h1>
+        </div>
+        <div class="container mt-5">
+          <div class="module-blurb">
+            <div class="blurb-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
+              <!-- Leadgen -->
+              <div class="blurb" onclick="showForm('leadgen')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
+                <div class="blurb-icon-container">
+                  <i class="fas fa-file-alt"></i>
+                </div>
+                <h3>Lead tracker</h3>
+                <p>Följ status på annonser, när de är publicerade och avpublicerade samt antal dagar</p>
+              </div>
+
+              <!-- Offert -->
+              <div class="blurb" onclick="showForm('offert')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
+                <h3>📄 Offert</h3>
+                <p>Generera en offert enligt Salesgroup-mallen.</p>
+              </div>
+
+              <!-- Annat -->
+              <div class="blurb" onclick="showForm('other')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
+                <h3>👥 Annat</h3>
+                <p>Annnan funktion.</p>
+              </div>
+            </div>
+          </div>
+          <div class="module-blurb">  
+              <!--<h1>Leads tracker</h1>-->
+              <div id="leadgen-form" class="form-section" style="display: none;">
+                <div class="card p-4 mb-4 bg-white shadow-sm">
+                  <h3>📄 Leads tracker (Kommer snart)</h3>
+                  <p>Här kommer du kunna följa dina leads.</p>
+                </div>
+              </div>
+
+              <!--<h1>Skapa offert </h1>-->
+              <div id="offert-form" class="form-section" style="display: none;">
+                <div class="card p-4 mb-4 bg-white shadow-sm">
+                  <h3>📄 Offertgenerering (Kommer snart)</h3>
+                  <p>Här kommer du snart kunna gerenera offerter</p>
+                </div>
+              </div>
+
+
+              <!-- Referenssammanfattning endpoint-->
+              <div id="other-form" class="form-section" style="display: none;">
+                <div class="card p-4 mb-4 bg-white shadow-sm">
+                  <h3>👥 Annat</h3>
+                  <p>Här kan man göra annat om man har lust.</p>
+                </div>
+              </div>
+          </div>
+        </div>
+      <script>
+        function showForm(type) {
+          // Dölj alla formulär
+          document.querySelectorAll('.form-section').forEach(div => {
+          div.style.display = 'none';
+          });
+
+          // Visa det valda formuläret
+          const target = document.getElementById(type + '-form');
+          if (target) {
+            target.style.display = 'block';
+          }
+        }
+      </script>
     </body>
 </html>
