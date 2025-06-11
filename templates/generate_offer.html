@@ -54,16 +54,17 @@
               <!--<h1>Leads tracker</h1>-->
               <div id="leadgen-form" class="form-section" style="display: none;">
                 <div class="card p-4 mb-4 bg-white shadow-sm">
-                  <h3>📄 Leads tracker (Kommer snart)</h3>
-                  <p>Här kommer du kunna följa dina leads.</p>
+                  <h3>📄 Leads tracker (under uppbyggnad)</h3>
+                  <p>Följ dina leads.</p>
+                  <div id="delta-output" class="mt-3" style="font-family: monospace;"></div>
                 </div>
               </div>
 
               <!--<h1>Skapa offert </h1>-->
               <div id="offert-form" class="form-section" style="display: none;">
                 <div class="card p-4 mb-4 bg-white shadow-sm">
-                  <h3>📄 Offertgenerering (Kommer snart)</h3>
-                  <p>Här kommer du snart kunna gerenera offerter</p>
+                  <h3>📄 Offertgenerering - Kommer (troligtvis inte) snart</h3>
+                  <p>Här kommer du nog aldrig kunna gerenera offerter 😉</p>
                 </div>
               </div>
 
@@ -78,18 +79,47 @@
           </div>
         </div>
       <script>
-        function showForm(type) {
-          // Dölj alla formulär
-          document.querySelectorAll('.form-section').forEach(div => {
-          div.style.display = 'none';
-          });
+          function showForm(type) {
+            // Dölj alla formulär
+            document.querySelectorAll('.form-section').forEach(div => {
+              div.style.display = 'none';
+            });
 
-          // Visa det valda formuläret
-          const target = document.getElementById(type + '-form');
-          if (target) {
-            target.style.display = 'block';
+            // Visa det valda formuläret
+            const target = document.getElementById(type + '-form');
+            if (target) {
+              target.style.display = 'block';
+
+              // Anropa rätt funktion om du klickade på "leadgen"
+              if (type === 'leadgen') {
+                loadLeadDelta();  // 👈 Nu fungerar det!
+              }
+            }
           }
-        }
+
+          // ✅ Nu ligger funktionen utanför showForm()
+          function loadLeadDelta() {
+            fetch("http://localhost:5050/leadgen/delta-json")
+              .then(response => response.json())
+              .then(data => {
+                let html = "<h4>Jobbförändringar senaste 60 dagarna</h4><pre>";
+                data.forEach(job => {
+                  let emoji = {
+                    "NEW": "🟦",
+                    "ACTIVE": "✅",
+                    "REMOVED": "❌"
+                  }[job.status] || "";
+
+                  html += `${emoji} [${job.status.padEnd(8)}] ${job.role.padEnd(45)} - ${job.company} (${job.date})\n`;
+                });
+                html += "</pre>";
+                document.getElementById("delta-output").innerHTML = html;
+              })
+              .catch(err => {
+                document.getElementById("delta-output").innerHTML = "<p style='color:red;'>Kunde inte läsa data från leadgen-tjänsten.</p>";
+              });
+          }
       </script>
+
     </body>
 </html>
