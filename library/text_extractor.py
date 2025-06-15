@@ -18,7 +18,7 @@ from werkzeug.datastructures import FileStorage
 def read_docx_text(file_path):
     doc = Document(file_path)
     return "\n".join([p.text for p in doc.paragraphs])
-
+    
 ###ny funktion som extraherar text från en eller flera docx-filer
 def extract_texts_from_docx(files: List[Union[str, Path, FileStorage]]) -> List[str]:
     results = []

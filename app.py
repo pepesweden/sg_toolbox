@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, send_file
 import os
-from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, save_kp_to_docx, create_refsum_prompt, save_refsum_to_docx
-from library.save_to_docx import save_summary_to_docx, save_kp_to_docx, save_refsum_to_docx
+from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, create_refsum_prompt
+from library.save_to_docx import save_summary_to_docx
 from library.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt
 from library.summary_generation import generate_summary
 from library.text_extractor import extract_texts_from_docx, read_docx_text
@@ -102,9 +102,9 @@ def generate():
         filepath = os.path.join("output", filename)
         save_summary_to_docx(summary, kandidatnamn)
     elif doc_choice == "2":
-        filename = f"kp_{kandidatnamn.lower().replace(' ', '_')}.docx"
+        filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join("output", filename)
-        save_kp_to_docx(summary, kandidatnamn)
+        save_summary_to_docx(summary, kandidatnamn)
     else:
         filename = f"output_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
 
@@ -141,7 +141,7 @@ def generate_kp():
     transcript_text = read_docx_text(transcript_path) if transcript_path else None
 
     # Bygg prompt baserat på val av dokumenttyp
-    
+    ###Borde kunna hämtas från Summary creation###
     kpmall_text = read_docx_text("reference/kp_mall.docx")
     kpstyle_text = read_docx_text("reference/kp_ic.docx")
     prompt = create_kp_prompt(doc_text, kpmall_text, kpstyle_text, transcript_text)
@@ -158,9 +158,9 @@ def generate_kp():
     os.makedirs("output", exist_ok=True)
     # Spara filen i output-mappen
     if summary:
-        filename = f"kp_{kandidatnamn.lower().replace(' ', '_')}.docx"
+        filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join("output", filename)
-        save_kp_to_docx(summary, kandidatnamn)
+        save_summary_to_docx(summary, kandidatnamn)
     else:
         filename = f"output_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
 
@@ -204,9 +204,9 @@ def generate_reference():
     # Spara filen i output-mappen
     if summary:
         # Skapa filnamn och spara sammanfattningen
-        filename = f"refsum_{kandidatnamn.lower().replace(' ', '_')}.docx"
+        filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join("output", filename)
-        save_refsum_to_docx(summary, kandidatnamn)
+        save_summary_to_docx(summary, kandidatnamn)
     else:
         filename = f"output_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
 

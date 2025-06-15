@@ -13,7 +13,7 @@ import os
 
 from library.prompt_builder import create_kp_prompt, create_refsum_prompt, create_prompt
 from library.summary_generation import generate_summary
-from library.save_to_docx import save_summary_to_docx, save_kp_to_docx, save_refsum_to_docx
+from library.save_to_docx import save_summary_to_docx
 from library.text_extractor import read_docx_text, extract_texts_from_docx
 
 
