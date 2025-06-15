@@ -76,7 +76,7 @@ def save_summary_to_docx(summary_text, candidate_name):
     filename = f"output/sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
     doc.save(filename)
 
-
+"""
     # Sparar kp i en word fil
 def save_kp_to_docx(summary_text, candidate_name):
     doc = Document()
@@ -134,7 +134,9 @@ def save_kp_to_docx(summary_text, candidate_name):
     # 💾 Spara fil
     filename = f"output/kp_{candidate_name.lower().replace(' ', '_')}.docx"
     doc.save(filename)
+"""
 
+"""
 def save_refsum_to_docx(summary_text, candidate_name):
     doc = Document()
 
@@ -191,3 +193,4 @@ def save_refsum_to_docx(summary_text, candidate_name):
     # 💾 Spara fil
     filename = f"output/refsum_{candidate_name.lower().replace(' ', '_')}.docx"
     doc.save(filename)
+"""
