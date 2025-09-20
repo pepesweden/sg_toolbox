@@ -1,26 +1,23 @@
-version: "3.9"
-
 services:
   web:
     build:
-      context: ..                 # projektroten som build context
+      context: ..
       dockerfile: infrastructure/docker/Dockerfile
     image: summary_automation:${TAG:-dev}
     container_name: summary_automation
 
-    # .env kommer vi ge vid körning från PROD-mappen via deploy-scriptet.
-    # Antingen låter vi deploy-scriptet lägga .env bredvid compose (kopiera),
-    # eller så kör vi compose från PROD och pekar på denna compose via -f.
-    # Vi väljer -f-varianten i nästa steg, så vi lägger inte env_file här.
+    # Låt Compose ladda variabler från .env i repo-roten
+    env_file:
+      - ../.env
 
-    ports:
-      - "${HOST_PORT:-8000}:8000"
-
-    restart: unless-stopped
-
-    # Mounta mappar som du ofta vill jobba med utanför containern
+    # Mounta själva .env in i containern om din kod kör load_dotenv()
     volumes:
+      - ../.env:/app/.env:ro
       - ../input:/app/input
       - ../reference:/app/reference
       - ../static/logo:/app/static/logo
       - ../static/backgrounds:/app/static/backgrounds
+
+    ports:
+      - "${HOST_PORT:-8000}:8000"
+    restart: unless-stopped
