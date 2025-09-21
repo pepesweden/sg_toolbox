@@ -1,9 +1,4 @@
 #Skapar prompten som används vid API anropet till OpenAI
-#🧠 GPT prioriterar:
-#Tydliga instruktioner i prompten
-#Tidigare innehåll i prompten (det som kommer först)
-#Det som är mest konkret och strukturerat
-#➡️ Det betyder att intervjuanteckningar vinner över transcriptet i nästan alla fall – så länge prompten säger det.
 
 #rad för att git skall plocka upp
 
@@ -63,10 +58,10 @@ def create_kp_prompt(doc_text, kpmall_text, kpstyle_text, transcript_text=None):
     return f"""
 Du är en erfaren rekryterare som skriver professionella och detaljerade kandidatpresentationer för ett svenskt rekryteringsbolag.
 
-🎯 Din uppgift:
+ Din uppgift:
 Skriv en **komplett och strukturerad kandidatpresentation** baserad på innehållet i följande intervjutext och CV.
 
-📐 Presentationen ska:
+ Presentationen ska:
 
 1. **Följa strukturen i dokumentmallen {kpmall_text}**:
    - Rubriker: ALLMÄNT, Drivkrafter, Kompetens, utbildning, NYCKELTAL, Rekryterarens kommentarer, privat
@@ -93,7 +88,7 @@ Skriv en **komplett och strukturerad kandidatpresentation** baserad på innehål
    - Lyft exempel på problemlösning, driv, anpassning, och kommunikation
    - Oavsett om kandidaten arbetar med teknik, sälj, analys, projektledning eller något annat – inkludera yrkesspecifika detaljer
 
-🚫 Begränsningar:
+ Begränsningar:
 - Du får **inte gissa, lägga till eller anta** något som inte framgår tydligt i materialet
 - Hela texten ska bygga på {doc_text} och {transcript_section}
 - Använd aldrig spekulationer, generaliseringar eller fluff – var tydlig, faktabaserad och detaljerad

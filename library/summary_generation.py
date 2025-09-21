@@ -15,7 +15,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
     # Testa att lista tillgängliga modeller
 #    models = client.models.list()
 
-#    print("\n📦 Tillgängliga modeller:\n")
+#    print("\n Tillgängliga modeller:\n")
 #    for model in models.data:
 #        print(f"🔹 {model.id}")    
 

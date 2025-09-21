@@ -121,15 +121,15 @@ def generate_kp():
     transcript_file = request.files.get("transcript")
     kandidatnamn = request.form["namn"]
 
-    # ⚠️ Kontrollera att det är en .docx-fil
+    # Kontrollera att det är en .docx-fil
     if not fil or not fil.filename.endswith(".docx"):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
-    # 💾 Spara intervju filen i input/
+    #  Spara intervju filen i input/
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
     fil.save(filepath)
 
-    # 💾 Spara transcript (om det finns)
+    # Spara transcript (om det finns)
     transcript_path = None
     if transcript_file and transcript_file.filename.endswith(".docx"):
         os.makedirs("transcript", exist_ok=True)
@@ -198,7 +198,7 @@ def generate_reference():
         print("❌ Referensummeringe kunde inte genereras.")
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
 
-    # 💾 Spara och returnera .docx
+    #  Spara och returnera .docx
      # Skapa output-mapp om den inte finns
     os.makedirs("output", exist_ok=True)
     # Spara filen i output-mappen

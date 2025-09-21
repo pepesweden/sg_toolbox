@@ -25,7 +25,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 
-# 📦 5. Kör hela flödet
+#  5. Kör hela flödet
 if __name__ == "__main__":
     # Låt användaren välja KP/Sammanfattning
     print("❓ Välj 1.Sammanfattning, 2.KP eller 3. Referenssammanfattning:")
@@ -42,7 +42,7 @@ if __name__ == "__main__":
     filnamn = input("📥 Ange filnamn i mappen 'input/' (inklusive .docx): ")
     intervju_path = f"input/{filnamn}"
 
-    # 👤 Låt användaren ange kandidatens namn
+    #  Låt användaren ange kandidatens namn
     candidate_name = input("👤 Ange kandidatens namn (för filnamn och rubrik): ")
 
 
@@ -73,8 +73,8 @@ if __name__ == "__main__":
     else: 
         print("❌ Fel i KP generering.")
 
-    # 🔍 Visa exakt GPT-output
-    #print("\n📥 GPT-Output:\n" + "="*40)
+    #  Visa exakt GPT-output
+    #print("\n GPT-Output:\n" + "="*40)
     #print(summary)
     #print("="*40 + "\n")
 

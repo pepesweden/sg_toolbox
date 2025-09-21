@@ -22,7 +22,7 @@ def add_bullet_list(items, doc):
 def save_summary_to_docx(summary_text, candidate_name):
     doc = Document()
 
-    # 🖼️ Lägg till logotyp i sidhuvud
+    # Lägg till logotyp i sidhuvud
     section = doc.sections[0]
     header = section.header
     header_paragraph = header.paragraphs[0]
@@ -30,7 +30,7 @@ def save_summary_to_docx(summary_text, candidate_name):
     run.add_picture("static/logo/standard.png", width=Inches(1.5))
     header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 
-    # 🎯 Extrahera rubriken (första raden)
+    #  Extrahera rubriken (första raden)
     lines = summary_text.strip().split("\n")
     title_line = lines[0].strip()
     remaining_lines = lines[1:]
@@ -72,7 +72,7 @@ def save_summary_to_docx(summary_text, candidate_name):
             run.font.name = "Arial"
             run.font.color.rgb = RGBColor(0, 0, 0)
 
-    # 💾 Spara fil
+    #  Spara fil
     filename = f"output/sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
     doc.save(filename)
 
@@ -81,7 +81,7 @@ def save_summary_to_docx(summary_text, candidate_name):
 def save_kp_to_docx(summary_text, candidate_name):
     doc = Document()
 
-    # 🖼️ Lägg till logotyp i sidhuvud
+    # Lägg till logotyp i sidhuvud
     section = doc.sections[0]
     header = section.header
     header_paragraph = header.paragraphs[0]
@@ -89,7 +89,7 @@ def save_kp_to_docx(summary_text, candidate_name):
     run.add_picture("static/logo/standard.png", width=Inches(1.5))
     header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 
-    # 🎯 Extrahera rubriken (första raden)
+    #  Extrahera rubriken (första raden)
     lines = summary_text.strip().split("\n")
     title_line = lines[0].strip()
     remaining_lines = lines[1:]
@@ -131,7 +131,7 @@ def save_kp_to_docx(summary_text, candidate_name):
             run.font.name = "Arial"
             run.font.color.rgb = RGBColor(0, 0, 0)
 
-    # 💾 Spara fil
+    # Spara fil
     filename = f"output/kp_{candidate_name.lower().replace(' ', '_')}.docx"
     doc.save(filename)
 """
@@ -140,7 +140,7 @@ def save_kp_to_docx(summary_text, candidate_name):
 def save_refsum_to_docx(summary_text, candidate_name):
     doc = Document()
 
-    # 🖼️ Lägg till logotyp i sidhuvud
+    #  Lägg till logotyp i sidhuvud
     section = doc.sections[0]
     header = section.header
     header_paragraph = header.paragraphs[0]
@@ -148,7 +148,7 @@ def save_refsum_to_docx(summary_text, candidate_name):
     run.add_picture("static/logo/standard.png", width=Inches(1.5))
     header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 
-    # 🎯 Extrahera rubriken (första raden)
+    #  Extrahera rubriken (första raden)
     lines = summary_text.strip().split("\n")
     title_line = lines[0].strip()
     remaining_lines = lines[1:]
@@ -190,7 +190,7 @@ def save_refsum_to_docx(summary_text, candidate_name):
             run.font.name = "Arial"
             run.font.color.rgb = RGBColor(0, 0, 0)
 
-    # 💾 Spara fil
+    # Spara fil
     filename = f"output/refsum_{candidate_name.lower().replace(' ', '_')}.docx"
     doc.save(filename)
 """
