@@ -101,16 +101,16 @@ def generate():
 
     # 💾 Spara och returnera .docx
      # Skapa output-mapp om den inte finns
-    os.makedirs("DOWNLOAD_FOLDER", exist_ok=True)
+    os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
     # Spara filen i output-mappen
     
     if doc_choice == "1":
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join("DOWNLOAD_FOLDER", filename)
+        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
         save_summary_to_docx(summary, kandidatnamn, filepath)
     elif doc_choice == "2":
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join("DOWNLOAD_FOLDER", filename)
+        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
         save_summary_to_docx(summary, kandidatnamn, filepath)
     else:
         filename = f"DOWNLOAD_FOLDER_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
@@ -119,7 +119,8 @@ def generate():
 
 
     print(f"✅ Fil sparad: {filepath}")
-    return send_file(filepath, as_attachment=True)
+    return send_file(os.path.abspath(filepath), as_attachment=True)
+    #return send_file(filepath, as_attachment=True)
 
 @app.route("/generate_kp", methods=["POST"])
 def generate_kp():
@@ -139,8 +140,8 @@ def generate_kp():
     # Spara transcript (om det finns)
     transcript_path = None
     if transcript_file and transcript_file.filename.endswith(".docx"):
-        os.makedirs("transcript", exist_ok=True)
-        transcript_path = os.path.join("transcript", transcript_file.filename)
+        os.makedirs("data/transcript", exist_ok=True)
+        transcript_path = os.path.join("data/transcript", transcript_file.filename)
         transcript_file.save(transcript_path)
 
     #läs innehållet i filerna efter att de sparats
@@ -167,12 +168,13 @@ def generate_kp():
     if summary:
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-        save_summary_to_docx(summary, kandidatnamn)
+        save_summary_to_docx(summary, kandidatnamn, filepath)
     else:
         filename = f"DOWNLOAD_FOLDER_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
 
     print(f"✅ Fil sparad: {filepath}")
-    return send_file(filepath, as_attachment=True)
+    return send_file(os.path.abspath(filepath), as_attachment=True)
+    #return send_file(filepath, as_attachment=True)
 
 # 🚀 Generera referenssammanfattning från uppladdade filer
 @app.route("/generate_reference", methods=["POST"])
@@ -193,8 +195,8 @@ def generate_reference():
     doc_text = read_docx_text(filepath)
 
     # Bygg prompt baserat på val av dokumenttyp
-    refmall_text = read_docx_text("reference/refsum_mall.docx")
-    refstyle_text = read_docx_text("reference/refsum_referencev2.docx")
+    refmall_text = read_docx_text("data/reference/refsum_mall.docx")
+    refstyle_text = read_docx_text("data/reference/refsum_referencev2.docx")
 
 
     # Skapa prompt och generera sammanfattning eller KP
@@ -213,13 +215,14 @@ def generate_reference():
         # Skapa filnamn och spara sammanfattningen
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-        save_summary_to_docx(summary, kandidatnamn)
+        save_summary_to_docx(summary, kandidatnamn, filepath)
     else:
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
 
     print(f"✅ Fil sparad: {filepath}")
-    return send_file(filepath, as_attachment=True)
+    return send_file(os.path.abspath(filepath), as_attachment=True)
+    #return send_file(filepath, as_attachment=True)
 
 
 if __name__ == "__main__":
