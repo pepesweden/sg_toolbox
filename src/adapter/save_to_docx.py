@@ -6,6 +6,8 @@ from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
 
+#Definera mappar för static content
+
 
 # Definierar punktlista definerar punklista
 def add_bullet_list(items, doc):
@@ -19,7 +21,7 @@ def add_bullet_list(items, doc):
 
 
 # Sparar sammanfattning i en word fil
-def save_summary_to_docx(summary_text, candidate_name):
+def save_summary_to_docx(summary_text, candidate_name, filepath):
     doc = Document()
 
     # Lägg till logotyp i sidhuvud
@@ -27,7 +29,7 @@ def save_summary_to_docx(summary_text, candidate_name):
     header = section.header
     header_paragraph = header.paragraphs[0]
     run = header_paragraph.add_run()
-    run.add_picture("static/logo/standard.png", width=Inches(1.5))
+    run.add_picture("ui/static/logo/standard.png", width=Inches(1.5))
     header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
 
     #  Extrahera rubriken (första raden)
@@ -73,8 +75,8 @@ def save_summary_to_docx(summary_text, candidate_name):
             run.font.color.rgb = RGBColor(0, 0, 0)
 
     #  Spara fil
-    filename = f"output/sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
-    doc.save(filename)
+    filename = f"data/output/sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
+    doc.save(filepath)
 
 """
     # Sparar kp i en word fil
