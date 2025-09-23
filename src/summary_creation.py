@@ -47,17 +47,17 @@ if __name__ == "__main__":
 
 
     # Sammanfattning Ladda mall och stilreferens
-    mall_text = read_docx_text("reference/mall_sammanfattning.docx")
-    style_text = read_docx_text("reference/Sammanfattning-claes.docx")
+    mall_text = read_docx_text("data/reference/mall_sammanfattning.docx")
+    style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
     doc_text = read_docx_text(intervju_path)
 
      # KP Ladda mall och stilreferens
-    kpmall_text = read_docx_text("reference/kp_mall.docx")
-    kpstyle_text = read_docx_text("reference/kp_ic.docx")
+    kpmall_text = read_docx_text("data/reference/kp_mall.docx")
+    kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
 
     # Referenss Ladda mall och stilreferens
-    refmall_text = read_docx_text("reference/refsum_mall.docx")
-    refstyle_text = read_docx_text("reference/refsum_referencev2.docx")
+    refmall_text = read_docx_text("data/reference/refsum_mall.docx")
+    refstyle_text = read_docx_text("data/reference/refsum_referencev2.docx")
     
     
     # Skapa prompt och generera sammanfattning eller KP

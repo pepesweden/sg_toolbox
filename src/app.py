@@ -8,9 +8,16 @@ from adapter.text_extractor import read_docx_text
 from flask import redirect
 
 # 🚀 Initiera Flask-app
-app = Flask(__name__)
-UPLOAD_FOLDER = "input"
+app = Flask(__name__,
+            template_folder='../ui/templates',    # Redirects to a higher folder level, ui/templates
+            static_folder='../ui/static',)         # Redirects to a higher folder level, ui/static
+
+#Definerar mapparna där filer som väljs i UI skall sparas
+UPLOAD_FOLDER = "data/input"
+DOWNLOAD_FOLDER = "data/output"   
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["DOWNLOAD_FOLDER"] = DOWNLOAD_FOLDER    
+
 
 # 🌐 Visar startsidan med formuläret
 @app.route("/")
@@ -75,12 +82,12 @@ def generate():
 
     # Bygg prompt baserat på val av dokumenttyp
     if doc_choice == "1":
-        mall_text = read_docx_text("reference/mall_sammanfattning.docx")
-        style_text = read_docx_text("reference/Sammanfattning-claes.docx")
+        mall_text = read_docx_text("data/reference/mall_sammanfattning.docx")
+        style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
         prompt = create_prompt(doc_text, mall_text, style_text, transcript_text)
     elif doc_choice == "2":
-        kpmall_text = read_docx_text("reference/kp_mall.docx")
-        kpstyle_text = read_docx_text("reference/kp_ic.docx")
+        kpmall_text = read_docx_text("data/reference/kp_mall.docx")
+        kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
         prompt = create_kp_prompt(doc_text, kpmall_text, kpstyle_text, transcript_text)
     else:
         return "❌ Ogiltigt val. Vänligen välj 1 eller 2."
@@ -94,19 +101,19 @@ def generate():
 
     # 💾 Spara och returnera .docx
      # Skapa output-mapp om den inte finns
-    os.makedirs("output", exist_ok=True)
+    os.makedirs("DOWNLOAD_FOLDER", exist_ok=True)
     # Spara filen i output-mappen
     
     if doc_choice == "1":
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join("output", filename)
-        save_summary_to_docx(summary, kandidatnamn)
+        filepath = os.path.join("DOWNLOAD_FOLDER", filename)
+        save_summary_to_docx(summary, kandidatnamn, filepath)
     elif doc_choice == "2":
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join("output", filename)
-        save_summary_to_docx(summary, kandidatnamn)
+        filepath = os.path.join("DOWNLOAD_FOLDER", filename)
+        save_summary_to_docx(summary, kandidatnamn, filepath)
     else:
-        filename = f"output_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
+        filename = f"DOWNLOAD_FOLDER_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
 
    
 
@@ -142,8 +149,8 @@ def generate_kp():
 
     # Bygg prompt baserat på val av dokumenttyp
     ###Borde kunna hämtas från Summary creation###
-    kpmall_text = read_docx_text("reference/kp_mall.docx")
-    kpstyle_text = read_docx_text("reference/kp_ic.docx")
+    kpmall_text = read_docx_text("data/reference/kp_mall.docx")
+    kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
     prompt = create_kp_prompt(doc_text, kpmall_text, kpstyle_text, transcript_text)
     
     # Skapa prompt och generera sammanfattning eller KP
@@ -155,14 +162,14 @@ def generate_kp():
 
     # 💾 Spara och returnera .docx
      # Skapa output-mapp om den inte finns
-    os.makedirs("output", exist_ok=True)
+    os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
     # Spara filen i output-mappen
     if summary:
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join("output", filename)
+        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
         save_summary_to_docx(summary, kandidatnamn)
     else:
-        filename = f"output_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
+        filename = f"DOWNLOAD_FOLDER_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
 
     print(f"✅ Fil sparad: {filepath}")
     return send_file(filepath, as_attachment=True)
@@ -200,15 +207,16 @@ def generate_reference():
 
     #  Spara och returnera .docx
      # Skapa output-mapp om den inte finns
-    os.makedirs("output", exist_ok=True)
+    os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
     # Spara filen i output-mappen
     if summary:
         # Skapa filnamn och spara sammanfattningen
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join("output", filename)
+        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
         save_summary_to_docx(summary, kandidatnamn)
     else:
-        filename = f"output_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
+        filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
+        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
 
     print(f"✅ Fil sparad: {filepath}")
     return send_file(filepath, as_attachment=True)
