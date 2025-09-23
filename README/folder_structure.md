@@ -1,22 +1,22 @@
 summary_automation/
 ├── src/
 │   ├── app/
-│   │   ├── __init__.py
+│   │   ├── __init__.py                 # Finns inte ännu
 │   │   ├── domain/
-│   │   │   ├── anonymizer.py
-│   │   │   ├── chunker.py
-│   │   │   ├── prompt_engine.py
-│   │   │   └── interfaces.py          # gränssnitt (summarizer, formatter...)
+│   │   │   ├── anonymizer.py           # TBD - inte utvecklad ännu
+│   │   │   ├── chunker.py              # TBD - inte utvecklad ännu
+│   │   │   ├── prompt_builder.py
+│   │   │   └── interfaces.py           # gränssnitt (summarizer, formatter...)
 │   │   ├── core/
-│   │   │   └── orchestrator.py        # pipeline 1→5
+│   │   │   └── orchestrator.py         # pipeline 1→5 OBS används inte ännu
 │   │   ├── adapters/
-│   │   │   ├── doc_reader.py
-│   │   │   ├── openai_summarizer.py
-│   │   │   ├── docx_renderer.py
-│   │   │   ├── ats_client.py
+│   │   │   ├── text_extractor.py
+│   │   │   ├── summary_generation.py   
+│   │   │   ├── save_to_docx.py
+│   │   │   ├── ats_client.py           # TBD - inte utvecklad ännu
 │   │   │   └── storage_fs.py
 │   │   └── api/
-│   │       └── http.py                # Flask endpoints
+│   │       └── http.py                 # Flask endpoints - finns inte ännu
 │   └── wsgi.py
 ├── infra/
 │   ├── docker/

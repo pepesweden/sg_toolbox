@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, send_file
 import os
 from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, create_refsum_prompt
-from library.save_to_docx import save_summary_to_docx
-from library.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt
-from library.summary_generation import generate_summary
-from library.text_extractor import extract_texts_from_docx, read_docx_text
+from adapter.save_to_docx import save_summary_to_docx
+from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt
+from adapter.summary_generation import generate_summary
+from adapter.text_extractor import read_docx_text
 from flask import redirect
 
 # 🚀 Initiera Flask-app
