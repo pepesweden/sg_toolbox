@@ -75,7 +75,7 @@ def save_summary_to_docx(summary_text, candidate_name, filepath):
             run.font.color.rgb = RGBColor(0, 0, 0)
 
     #  Spara fil
-    filename = f"data/output/sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
+    # filename = f"data/output/sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
     doc.save(filepath)
 
 """
