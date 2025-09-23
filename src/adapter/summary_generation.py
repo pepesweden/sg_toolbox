@@ -3,7 +3,7 @@ import time
 import openai
 from dotenv import load_dotenv
 
-from .prompt_builder import create_prompt
+from domain.prompt_builder import create_prompt
 
 # Ladda API-nyckeln från .env
 from dotenv import load_dotenv
