@@ -13,10 +13,10 @@ services:
     # Mounta själva .env in i containern om din kod kör load_dotenv()
     volumes:
       - ../.env:/app/.env:ro
-      - ../data/input:/app/input
-      - ../data/reference:/app/reference
-      - ../ui/static/logo:/app/static/logo
-      - ../ui/static/backgrounds:/app/static/backgrounds
+      - ../data/input:/app/data/input
+      - ../data/reference:/app/data/reference
+      - ../ui/static/logo:/app/ui/static/logo
+      - ../ui/static/backgrounds:/app/ui/static/backgrounds
 
     ports:
       - "${HOST_PORT:-8000}:8000"
