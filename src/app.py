@@ -7,36 +7,38 @@ from adapter.summary_generation import generate_summary
 from adapter.text_extractor import read_docx_text
 from flask import redirect
 
-# 🚀 Initiera Flask-app
+# Initiate Flask-app
 app = Flask(__name__,
             template_folder='../ui/templates',    # Redirects to a higher folder level, ui/templates
             static_folder='../ui/static',)         # Redirects to a higher folder level, ui/static
 
-#Definerar mapparna där filer som väljs i UI skall sparas
+# Definer folders where files from UI should be saved
 UPLOAD_FOLDER = "data/input"
 DOWNLOAD_FOLDER = "data/output"   
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["DOWNLOAD_FOLDER"] = DOWNLOAD_FOLDER    
 
 
-# 🌐 Visar startsidan med formuläret
+# render start-page with login form
 @app.route("/")
 def index():
     return render_template("index.html")
 
+# render Summary creation page with login form
 @app.route("/generate-summary")
 def generate_summary_page():
     return render_template("generate_summary.html")
 
+# render start-page with login form
 @app.route('/login', methods=['POST'])
 def login():
     #username = request.form['username']
     #password = request.form['password']
     
-    # För tillfället - bara redirect
+    # For now - just redirect
     return redirect('/welcome_page')
     
-    # Senare - lägg till riktig autentisering här
+    # Later - add proper authentication
     #return render_template("welcome_page.html")
 
 @app.route("/welcome_page")
@@ -52,7 +54,7 @@ def generate_seo_page():
 def generate_offer_page():
     return render_template("generate_offer.html")
 
-# 🔁 Skapa sammanfattning från upladdade filer
+# Create Summary from uploaded files
 @app.route("/generate", methods=["POST"])
 def generate():
     # 📎 Hämta val, filer och namn från formuläret

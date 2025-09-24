@@ -1,6 +1,63 @@
 #Skapar prompten som används vid API anropet till OpenAI
 
+#Imports
+from adapter.text_extractor import read_docx_text  # Needed for build_prompt_for_document_type()
+
+#Doctype constants
+DOC_TYPE_SUMMARY = "summary"
+DOC_TYPE_KP = "kp" 
+DOC_TYPE_REFERENCE = "reference"
+#DOC_TYPE_JOB_AD = "job-ad"
+
 #rad för att git skall plocka upp
+
+#Function to build prompt dependen on documen chosen to generate
+def build_prompt_for_document_type(doc_type, doc_text):
+    """Bygger prompt för given dokumenttyp"""
+    
+    if doc_type == DOC_TYPE_SUMMARY:
+        mall_text = read_docx_text("data/reference/mall_sammanfattning.docx")
+        style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
+        
+        #Create the LLM summary creation prompt
+        prompt = create_prompt(doc_text, mall_text, style_text)
+
+        return {
+            "prompt": prompt,
+            "type": DOC_TYPE_SUMMARY,
+            "mall_files_used": ["mall_sammanfattning.docx", "Sammanfattning-claes.docx"]
+        }
+        
+    elif doc_type == DOC_TYPE_KP:
+        kpmall_text = read_docx_text("data/reference/kp_mall.docx")
+        kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
+
+        #Create the LLM "kandidatpresentation" creation prompt
+        prompt = create_kp_prompt(doc_text, kpmall_text, kpstyle_text)
+
+        return {
+            "prompt": prompt,
+            "type": DOC_TYPE_KP,
+            "mall_files_used": ["rkp_mall.docx", "kp_ic.docx"]
+        }
+
+    elif doc_type == DOC_TYPE_REFERENCE:
+        refmall_text = read_docx_text("data/reference/refsum_mall.docx")
+        refstyle_text = read_docx_text("data/reference/refsum_mall.docx.docx")
+
+        #Create the LLM reference creation prompt
+        prompt = create_refsum_prompt(doc_text, refmall_text, refstyle_text)
+
+        return {
+            "prompt": prompt,
+            "type": DOC_TYPE_REFERENCE,
+            "mall_files_used": ["refsum_mall.docx", "refsum_mall.docx"]
+        }
+
+    #elif doc_type == DOC_TYPE_JOB_AD 
+
+    else:
+         return {"error": "Invalid document type"}
 
 
 def create_prompt(doc_text, mall_text, style_text, transcript_text=None):
