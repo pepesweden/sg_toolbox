@@ -22,7 +22,10 @@ from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-
+UPLOAD_FOLDER = "data/input"
+DOWNLOAD_FOLDER = "data/output"   
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["DOWNLOAD_FOLDER"] = DOWNLOAD_FOLDER    
 
 
 #  5. Kör hela flödet
@@ -40,7 +43,7 @@ if __name__ == "__main__":
     #  Låt användaren skriva in filnamn
     
     filnamn = input("📥 Ange filnamn i mappen 'input/' (inklusive .docx): ")
-    intervju_path = f"input/{filnamn}"
+    intervju_path = f"data/input/{filnamn}"
 
     #  Låt användaren ange kandidatens namn
     candidate_name = input("👤 Ange kandidatens namn (för filnamn och rubrik): ")
@@ -77,10 +80,12 @@ if __name__ == "__main__":
     #print("\n GPT-Output:\n" + "="*40)
     #print(summary)
     #print("="*40 + "\n")
-
+    
     # Spara som Word-fil
     if summary:
-        save_summary_to_docx(summary, candidate_name=candidate_name)
+        filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
+        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
+        save_summary_to_docx(summary, candidate_name=candidate_name, filepath)
         print("✅ Sammanfattningenär klar.")
     else:
         print("❌ Sammanfattningen kunde inte genereras.")
