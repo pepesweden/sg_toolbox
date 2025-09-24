@@ -5,6 +5,9 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
+# Lägg till src-mappen i Python's import-sökväg så så Python hittar moduler både i /app och /app/src (fungerade inmports)
+ENV PYTHONPATH="/app:/app/src"
+
 # ---- Workdir ----
 WORKDIR /app
 
@@ -26,4 +29,4 @@ EXPOSE 8000
 
 # ---- Start command ----
 # wsgi:app pekar på din wsgi.py (från föregående steg)
-CMD ["gunicorn", "wsgi:app", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4", "--timeout", "60"]
+CMD ["gunicorn", "src.wsgi:app", "--bind", "0.0.0.0:8000", "--workers", "2", "--threads", "4", "--timeout", "60"]

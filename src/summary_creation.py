@@ -24,8 +24,7 @@ openai.api_key = os.getenv("OPENAI_API_KEY")
 
 UPLOAD_FOLDER = "data/input"
 DOWNLOAD_FOLDER = "data/output"   
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["DOWNLOAD_FOLDER"] = DOWNLOAD_FOLDER    
+
 
 
 #  5. Kör hela flödet
@@ -83,9 +82,9 @@ if __name__ == "__main__":
     
     # Spara som Word-fil
     if summary:
-        filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-        save_summary_to_docx(summary, candidate_name=candidate_name, filepath)
+        filename = f"sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
+        filepath = os.path.join(DOWNLOAD_FOLDER, filename)
+        save_summary_to_docx(summary, candidate_name, filepath)
         print("✅ Sammanfattningenär klar.")
     else:
         print("❌ Sammanfattningen kunde inte genereras.")
