@@ -2,14 +2,17 @@
 set -e
 
 # 1) Städa bort ev. gammal kodmapp
-rm -rf summary_automation
+rm -rf sg_toolbox
 
 # 2) Hämta senaste koden
-git clone --branch main git@github.com:pepesweden/summary_automation.git
+git clone --branch main git@github.com:pepesweden/sg_toolbox.git
 
 # 3) Kopiera in .env från din dev-kopia till app-repot
-cp ~/Documents/code_projects/summary_automation/.env ./summary_automation/
+cp -R ~/Documents/code_projects/sg_toolbox/ui/static/logo ./sg_toolbox/ui/static/logo/
+cp -R ~/Documents/code_projects/sg_toolbox/ui/static/backgrounds ./sg_toolbox/ui/static/backgrounds/
+#cp -R ~/Documents/code_projects/sg_toolbox/reference/*  ./sg_toolbox/reference/
+cp ~/Documents/code_projects/sg_toolbox/.env ./sg_toolbox/
 
 # 4) Kör Compose med .env inuti app-repot
-cd summary_automation
+cd sg_toolbox
 docker compose -f infrastructure/compose.yaml --env-file .env up -d --build
