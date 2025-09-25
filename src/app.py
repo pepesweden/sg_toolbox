@@ -63,26 +63,26 @@ def generate():
     transcript_file = request.files.get("transcript")
     kandidatnamn = request.form["namn"]
 
-    # ⚠️ Kontrollera att det är en .docx-fil
+    # Make sure it is a .docx file
     if not fil or not fil.filename.endswith(".docx"):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
-    # 💾 Spara intervju filen i input/
+    # Save the file to inout/
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
     fil.save(filepath)
 
-    # 💾 Spara transcript (om det finns)
+    # Save Transcript (if applicable)
     transcript_path = None
     if transcript_file and transcript_file.filename.endswith(".docx"):
         os.makedirs("transcript", exist_ok=True)
         transcript_path = os.path.join("transcript", transcript_file.filename)
         transcript_file.save(transcript_path)
 
-    #läs innehållet i filerna efter att de sparats
+    #parse fiel content after save
     doc_text = read_docx_text(filepath)
     transcript_text = read_docx_text(transcript_path) if transcript_path else None
 
-    # Bygg prompt baserat på val av dokumenttyp
+    # Generate prompt based on document type
     if doc_choice == "1":
         mall_text = read_docx_text("data/reference/mall_sammanfattning.docx")
         style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
@@ -101,11 +101,11 @@ def generate():
         print("❌ Sammanfattningen kunde inte genereras.")
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
 
-    # 💾 Spara och returnera .docx
-     # Skapa output-mapp om den inte finns
+    # Save and return .docx file
+    # Create output folder if it is missing
     os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
-    # Spara filen i output-mappen
-    
+
+    # Save the file to the output folder
     if doc_choice == "1":
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
@@ -126,7 +126,7 @@ def generate():
 
 @app.route("/generate_kp", methods=["POST"])
 def generate_kp():
-    # 📎 Hämta  filer och namn från formuläret
+    # Get infrormation (file and candidate name) from the web form
     fil = request.files["intervjufil"]
     transcript_file = request.files.get("transcript")
     kandidatnamn = request.form["namn"]
@@ -163,7 +163,7 @@ def generate_kp():
         print("❌ KP kunde inte genereras.")
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
 
-    # 💾 Spara och returnera .docx
+    # Spara och returnera .docx
      # Skapa output-mapp om den inte finns
     os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
     # Spara filen i output-mappen
@@ -178,18 +178,18 @@ def generate_kp():
     return send_file(os.path.abspath(filepath), as_attachment=True)
     #return send_file(filepath, as_attachment=True)
 
-# 🚀 Generera referenssammanfattning från uppladdade filer
+# Generera referenssammanfattning från uppladdade filer
 @app.route("/generate_reference", methods=["POST"])
 def generate_reference():
     # 📎 Hämta val, filer och namn från formuläret
     fil = request.files["intervjufil"]
     kandidatnamn = request.form["namn"]
 
-    # ⚠️ Kontrollera att det är en .docx-fil
+    # Kontrollera att det är en .docx-fil
     if not fil or not fil.filename.endswith(".docx"):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
-    # 💾 Spara intervju filen i input/
+    # Spara intervju filen i input/
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
     fil.save(filepath)
 
