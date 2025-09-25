@@ -43,7 +43,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
 
     elif doc_type == DOC_TYPE_REFERENCE:
         refmall_text = read_docx_text("data/reference/refsum_mall.docx")
-        refstyle_text = read_docx_text("data/reference/refsum_mall.docx.docx")
+        refstyle_text = read_docx_text("data/reference/refsum_referencev2.docx")
 
         #Create the LLM reference creation prompt
         prompt = create_refsum_prompt(doc_text, refmall_text, refstyle_text)

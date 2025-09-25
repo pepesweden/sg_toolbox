@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, send_file
 import os
 from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, create_refsum_prompt
 from adapter.save_to_docx import save_summary_to_docx
-from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt
+from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt, build_prompt_for_document_type, DOC_TYPE_SUMMARY, DOC_TYPE_KP, DOC_TYPE_REFERENCE
 from adapter.summary_generation import generate_summary
 from adapter.text_extractor import read_docx_text
 from flask import redirect
@@ -80,23 +80,22 @@ def generate():
 
     #parse fiel content after save
     doc_text = read_docx_text(filepath)
-    transcript_text = read_docx_text(transcript_path) if transcript_path else None
 
-    # Generate prompt based on document type
-    if doc_choice == "1":
-        mall_text = read_docx_text("data/reference/mall_sammanfattning.docx")
-        style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
-        prompt = create_prompt(doc_text, mall_text, style_text, transcript_text)
-    elif doc_choice == "2":
-        kpmall_text = read_docx_text("data/reference/kp_mall.docx")
-        kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
-        prompt = create_kp_prompt(doc_text, kpmall_text, kpstyle_text, transcript_text)
+    # Generate prompt for summary
+    doc_type = DOC_TYPE_SUMMARY
+    result = build_prompt_for_document_type(doc_type, doc_text)
+
+    if "error" in result:
+        # Error handling (kommer vi till)
+        print(f"❌ Prompt error: {result['error']}")
+        return render_template("generate_summary.html", error="Kunde inte skapa prompt")
     else:
-        return "❌ Ogiltigt val. Vänligen välj 1 eller 2."
-
+        # Extract prompt string from prompt-builder dict
+        prompt_text = result["prompt"]
+    
     # Skapa prompt och generera sammanfattning eller KP
-    #prompt = create_prompt(doc_text, mall_text, style_text, transcript_text)
-    summary = generate_summary(prompt)
+    summary = generate_summary(prompt_text)  # Skicka string, inte dict!
+
     if summary is None:
         print("❌ Sammanfattningen kunde inte genereras.")
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
@@ -106,19 +105,10 @@ def generate():
     os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
 
     # Save the file to the output folder
-    if doc_choice == "1":
-        filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-        save_summary_to_docx(summary, kandidatnamn, filepath)
-    elif doc_choice == "2":
-        filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
-        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-        save_summary_to_docx(summary, kandidatnamn, filepath)
-    else:
-        filename = f"DOWNLOAD_FOLDER_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
-
-   
-
+    filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
+    filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
+    save_summary_to_docx(summary, kandidatnamn, filepath)
+    
 
     print(f"✅ Fil sparad: {filepath}")
     return send_file(os.path.abspath(filepath), as_attachment=True)
@@ -148,17 +138,21 @@ def generate_kp():
 
     #läs innehållet i filerna efter att de sparats
     doc_text = read_docx_text(filepath)
-    transcript_text = read_docx_text(transcript_path) if transcript_path else None
+    doc_type = DOC_TYPE_KP
+    #transcript_text = read_docx_text(transcript_path) if transcript_path else None
 
     # Bygg prompt baserat på val av dokumenttyp
-    ###Borde kunna hämtas från Summary creation###
-    kpmall_text = read_docx_text("data/reference/kp_mall.docx")
-    kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
-    prompt = create_kp_prompt(doc_text, kpmall_text, kpstyle_text, transcript_text)
+    result = build_prompt_for_document_type(doc_type, doc_text)
+    if "error" in result:
+        # Error handling (kommer vi till)
+        print(f"❌ Prompt error: {result['error']}")
+        return render_template("generate_summary.html", error="Kunde inte skapa prompt")
+    else:
+        # Extract prompt string from prompt-builder dict
+        prompt_text = result["prompt"]
     
     # Skapa prompt och generera sammanfattning eller KP
-    #prompt = create_prompt(doc_text, mall_text, style_text, transcript_text)
-    summary = generate_summary(prompt)
+    summary = generate_summary(prompt_text)
     if summary is None:
         print("❌ KP kunde inte genereras.")
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
@@ -193,21 +187,24 @@ def generate_reference():
     filepath = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
     fil.save(filepath)
 
+    
     #läs innehållet i filerna efter att de sparats
     doc_text = read_docx_text(filepath)
+    doc_type = DOC_TYPE_REFERENCE
+    #transcript_text = read_docx_text(transcript_path) if transcript_path else None
 
     # Bygg prompt baserat på val av dokumenttyp
-    refmall_text = read_docx_text("data/reference/refsum_mall.docx")
-    refstyle_text = read_docx_text("data/reference/refsum_referencev2.docx")
-
-
-    # Skapa prompt och generera sammanfattning eller KP
-    #prompt = create_prompt(doc_text, mall_text, style_text, transcript_text)
-    prompt = create_refsum_prompt(doc_text, refmall_text, refstyle_text)
-    summary = generate_summary(prompt) 
-    if summary is None:
-        print("❌ Referensummeringe kunde inte genereras.")
-        return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
+    result = build_prompt_for_document_type(doc_type, doc_text)
+    if "error" in result:
+        # Error handling (kommer vi till)
+        print(f"❌ Prompt error: {result['error']}")
+        return render_template("generate_summary.html", error="Kunde inte skapa prompt")
+    else:
+        # Extract prompt string from prompt-builder dict
+        prompt_text = result["prompt"]
+    
+    # Generate summary
+    summary = generate_summary(prompt_text)
 
     #  Spara och returnera .docx
      # Skapa output-mapp om den inte finns
