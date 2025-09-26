@@ -1,7 +1,7 @@
 #This Module...
 #Loads the docx as input
 #Extraxts the text
-#Anonymises it to be ready for the promptpa
+
 
 #Laddar docx modulen
 from docx import Document
