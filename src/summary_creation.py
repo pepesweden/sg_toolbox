@@ -19,53 +19,44 @@ from adapter.text_extractor import read_docx_text, extract_texts_from_docx
 
 # Skapa en klient (plockar API-nyckel automatiskt från .env eller miljövariabel)
 ### Duplicerad kod???###
-from dotenv import load_dotenv
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+#from dotenv import load_dotenv
+#load_dotenv()
+#openai.api_key = os.getenv("OPENAI_API_KEY")
 
 
 UPLOAD_FOLDER = "data/input"
 DOWNLOAD_FOLDER = "data/output"   
 
+#Prompt trigger constants
+TRIGGER_SUMMARY = "summary_trigger"
+TRIGGER_KP = "kp_trigger"
+TRIGGER_REFERENCE = "reference_trigger"
 
 # Function to load data and prep prompt info for summary generation
-def trigger_summary_generation(file_path):
-    # Load style template and referens for "summary"
-    doc_type = DOC_TYPE_SUMMARY
-    doc_text = read_docx_text(file_path)
+def trigger_generation(trigger, file_path):
+    if trigger == TRIGGER_SUMMARY:
+        # Load style template and referens for "summary"
+        doc_type = DOC_TYPE_SUMMARY
+        doc_text = read_docx_text(file_path)
+    
+    elif trigger == TRIGGER_KP:
+        # Load style template and referens for "summary"
+        doc_type = DOC_TYPE_KP
+        doc_text = read_docx_text(file_path)
+    
+    elif trigger == TRIGGER_REFERENCE:
+        # Load style template and referens for "summary"
+        doc_type = DOC_TYPE_REFERENCE
+        doc_text = read_docx_text(file_path)    
 
     result = build_prompt_for_document_type(doc_type, doc_text)
     if "error" in result:
         raise ValueError(f"Prompt creation failed: {result['error']}")
-    
     return result["prompt"]
 
-def trigger_kp_generation(file_path):
-    # Load style template and referens for "summary"
-    doc_type = DOC_TYPE_KP
-    doc_text = read_docx_text(file_path)
-
-    result = build_prompt_for_document_type(doc_type, doc_text)
-    if "error" in result:
-        raise ValueError(f"Prompt creation failed: {result['error']}")
-    
-    return result["prompt"]
-
-def trigger_reference_generation(file_path):
-    # Load style template and referens for "summary"
-    doc_type = DOC_TYPE_REFERENCE
-    doc_text = read_docx_text(file_path)
-
-    result = build_prompt_for_document_type(doc_type, doc_text)
-    if "error" in result:
-        raise ValueError(f"Prompt creation failed: {result['error']}")
-    
-    return result["prompt"]
-
-
-# Kör hela flödet
+# Run the pipeline/flow
 if __name__ == "__main__":
-    # Låt användaren välja KP/Sammanfattning
+    # Let user choose document type to generate
     print("❓ Välj 1.Sammanfattning, 2.KP eller 3. Referenssammanfattning:")
     while True:
         doc_choice = input()
@@ -75,18 +66,20 @@ if __name__ == "__main__":
         else:
             print("Ogiltigt val. Vänligen välj 1-3.")
 
-    #  Låt användaren skriva in filnamn & skapa path till filen
+    # Let user enter filename for notes
     filnamn = input("📥 Ange filnamn i mappen 'input/' (inklusive .docx): ")
+    # Create path to file
     intervju_path = f"data/input/{filnamn}"
 
-    #  Låt användaren ange kandidatens namn
+    # Let user enter "Candidate Name"
     candidate_name = input("👤 Ange kandidatens namn (för filnamn och rubrik): ")
       
     # Skapa prompt och generera sammanfattning eller KP
     if doc_choice == 1: #skapaa sammanfattning
         #prompt_text = trigger_summary_generation()
         try:
-            prompt = trigger_summary_generation(intervju_path)
+            trigger = TRIGGER_SUMMARY
+            prompt = trigger_generation(trigger, intervju_path)
             summary = generate_summary(prompt)
         except ValueError as e:
             print(f"Fel: {e}")
@@ -94,14 +87,16 @@ if __name__ == "__main__":
     elif doc_choice == 2: # skapa KP
         #prompt_text = trigger_kp_generation()
         try:
-            prompt = trigger_kp_generation(intervju_path)
+            trigger = TRIGGER_KP
+            prompt = trigger_generation(trigger, intervju_path)
             summary = generate_summary(prompt)
         except ValueError as e:
             print(f"Fel: {e}")
             exit(1)
     elif doc_choice == 3: # skapa Referenssammanfattning
         try:
-            prompt = trigger_reference_generation(intervju_path)
+            trigger = TRIGGER_REFERENCE
+            prompt = trigger_generation(trigger, intervju_path)
             summary = generate_summary(prompt)
         except ValueError as e:
             print(f"Fel: {e}")
@@ -114,7 +109,7 @@ if __name__ == "__main__":
     #print(summary)
     #print("="*40 + "\n")
     
-    # Spara som Word-fil
+    # Save as word file
     if summary:
         filename = f"sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
         filepath = os.path.join(DOWNLOAD_FOLDER, filename)

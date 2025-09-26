@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, send_file, redirect
 import os
-from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, create_refsum_prompt, trigger_summary_generation, trigger_kp_generation, trigger_reference_generation
+from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, create_refsum_prompt, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE
 from adapter.save_to_docx import save_summary_to_docx
 from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt, build_prompt_for_document_type, DOC_TYPE_SUMMARY, DOC_TYPE_KP, DOC_TYPE_REFERENCE
 from adapter.summary_generation import generate_summary
@@ -44,7 +44,6 @@ def login():
 def welcome_page():
     return render_template("welcome_page.html")
 
-
 @app.route("/generate-seo")
 def generate_seo_page():
     return render_template("generate_seo.html")
@@ -64,7 +63,7 @@ def generate():
     if not fil or not fil.filename.endswith(".docx"):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
-    # Save the file to inout/
+    # Save the file to input/
     intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
     fil.save(intervju_path)
 
@@ -77,17 +76,16 @@ def generate():
 
     # Skapa prompt och generera sammanfattning
     try:
-        prompt = trigger_summary_generation(intervju_path)
+        trigger = TRIGGER_SUMMARY
+        prompt = trigger_generation(trigger, intervju_path)
         summary = generate_summary(prompt)
     except ValueError as e:
         return render_template("error.html", error=str(e))
-
 
     if summary is None:
         print("❌ Sammanfattningen kunde inte genereras.")
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
     
-
     ### Save and return .docx file ###
     # 1. Create output folder if it is missing
     os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
@@ -128,7 +126,8 @@ def generate_kp():
 
      # Skapa prompt och generera sammanfattning
     try:
-        prompt = trigger_kp_generation(intervju_path)
+        trigger = TRIGGER_KP
+        prompt = trigger_generation(trigger, intervju_path)
         summary = generate_summary(prompt)
     except ValueError as e:
         return render_template("error.html", error=str(e))
@@ -169,8 +168,9 @@ def generate_reference():
     
     # Generate summary
     try:
-        prompt = trigger_reference_generation(intervju_path)
-        summary = generate_summary(prompt)
+            trigger = TRIGGER_REFERENCE
+            prompt = trigger_generation(trigger, intervju_path)
+            summary = generate_summary(prompt)
     except ValueError as e:
         return render_template("error.html", error=str(e))
 
