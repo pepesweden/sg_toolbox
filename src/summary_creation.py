@@ -11,23 +11,59 @@ from docx.oxml import OxmlElement
 import os
 
 
-from domain.prompt_builder import create_kp_prompt, create_refsum_prompt, create_prompt
+from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt, build_prompt_for_document_type, DOC_TYPE_SUMMARY, DOC_TYPE_KP, DOC_TYPE_REFERENCE
 from adapter.summary_generation import generate_summary
 from adapter.save_to_docx import save_summary_to_docx
 from adapter.text_extractor import read_docx_text, extract_texts_from_docx
 
 
 # Skapa en klient (plockar API-nyckel automatiskt från .env eller miljövariabel)
+### Duplicerad kod???###
 from dotenv import load_dotenv
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 UPLOAD_FOLDER = "data/input"
 DOWNLOAD_FOLDER = "data/output"   
 
 
+# Function to load data and prep prompt info for summary generation
+def trigger_summary_generation(file_path):
+    # Load style template and referens for "summary"
+    doc_type = DOC_TYPE_SUMMARY
+    doc_text = read_docx_text(file_path)
 
-#  5. Kör hela flödet
+    result = build_prompt_for_document_type(doc_type, doc_text)
+    if "error" in result:
+        raise ValueError(f"Prompt creation failed: {result['error']}")
+    
+    return result["prompt"]
+
+def trigger_kp_generation(file_path):
+    # Load style template and referens for "summary"
+    doc_type = DOC_TYPE_KP
+    doc_text = read_docx_text(file_path)
+
+    result = build_prompt_for_document_type(doc_type, doc_text)
+    if "error" in result:
+        raise ValueError(f"Prompt creation failed: {result['error']}")
+    
+    return result["prompt"]
+
+def trigger_reference_generation(file_path):
+    # Load style template and referens for "summary"
+    doc_type = DOC_TYPE_REFERENCE
+    doc_text = read_docx_text(file_path)
+
+    result = build_prompt_for_document_type(doc_type, doc_text)
+    if "error" in result:
+        raise ValueError(f"Prompt creation failed: {result['error']}")
+    
+    return result["prompt"]
+
+
+# Kör hela flödet
 if __name__ == "__main__":
     # Låt användaren välja KP/Sammanfattning
     print("❓ Välj 1.Sammanfattning, 2.KP eller 3. Referenssammanfattning:")
@@ -39,41 +75,39 @@ if __name__ == "__main__":
         else:
             print("Ogiltigt val. Vänligen välj 1-3.")
 
-    #  Låt användaren skriva in filnamn
-    
+    #  Låt användaren skriva in filnamn & skapa path till filen
     filnamn = input("📥 Ange filnamn i mappen 'input/' (inklusive .docx): ")
     intervju_path = f"data/input/{filnamn}"
 
     #  Låt användaren ange kandidatens namn
     candidate_name = input("👤 Ange kandidatens namn (för filnamn och rubrik): ")
-
-
-    # Sammanfattning Ladda mall och stilreferens
-    mall_text = read_docx_text("data/reference/mall_sammanfattning.docx")
-    style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
-    doc_text = read_docx_text(intervju_path)
-
-     # KP Ladda mall och stilreferens
-    kpmall_text = read_docx_text("data/reference/kp_mall.docx")
-    kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
-
-    # Referenss Ladda mall och stilreferens
-    refmall_text = read_docx_text("data/reference/refsum_mall.docx")
-    refstyle_text = read_docx_text("data/reference/refsum_referencev2.docx")
-    
-    
+      
     # Skapa prompt och generera sammanfattning eller KP
     if doc_choice == 1: #skapaa sammanfattning
-        prompt = create_prompt(doc_text, mall_text, style_text)
-        summary = generate_summary(prompt)
+        #prompt_text = trigger_summary_generation()
+        try:
+            prompt = trigger_summary_generation(intervju_path)
+            summary = generate_summary(prompt)
+        except ValueError as e:
+            print(f"Fel: {e}")
+            exit(1)
     elif doc_choice == 2: # skapa KP
-        prompt = create_kp_prompt(doc_text, kpmall_text, style_text)
-        summary = generate_summary(prompt)
+        #prompt_text = trigger_kp_generation()
+        try:
+            prompt = trigger_kp_generation(intervju_path)
+            summary = generate_summary(prompt)
+        except ValueError as e:
+            print(f"Fel: {e}")
+            exit(1)
     elif doc_choice == 3: # skapa Referenssammanfattning
-        prompt = create_refsum_prompt(doc_text, refmall_text, refstyle_text)
-        summary = generate_summary(prompt)    
+        try:
+            prompt = trigger_reference_generation(intervju_path)
+            summary = generate_summary(prompt)
+        except ValueError as e:
+            print(f"Fel: {e}")
+            exit(1)   
     else: 
-        print("❌ Fel i KP generering.")
+        print("❌ Fel i dokument generering.")
 
     #  Visa exakt GPT-output
     #print("\n GPT-Output:\n" + "="*40)
