@@ -1,11 +1,10 @@
-from flask import Flask, render_template, request, send_file
+from flask import Flask, render_template, request, send_file, redirect
 import os
-from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, create_refsum_prompt
+from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, create_refsum_prompt, trigger_summary_generation, trigger_kp_generation, trigger_reference_generation
 from adapter.save_to_docx import save_summary_to_docx
 from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt, build_prompt_for_document_type, DOC_TYPE_SUMMARY, DOC_TYPE_KP, DOC_TYPE_REFERENCE
 from adapter.summary_generation import generate_summary
 from adapter.text_extractor import read_docx_text
-from flask import redirect
 
 # Initiate Flask-app
 app = Flask(__name__,
@@ -57,57 +56,46 @@ def generate_offer_page():
 # Create Summary from uploaded files
 @app.route("/generate", methods=["POST"])
 def generate():
-    # 📎 Hämta val, filer och namn från formuläret
-    doc_choice = request.form.get("doc_choice")
     fil = request.files["intervjufil"]
-    transcript_file = request.files.get("transcript")
-    kandidatnamn = request.form["namn"]
+    #transcript_file = request.files.get("transcript")
+    candidate_name = request.form["namn"]
 
     # Make sure it is a .docx file
     if not fil or not fil.filename.endswith(".docx"):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
     # Save the file to inout/
-    filepath = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
-    fil.save(filepath)
+    intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
+    fil.save(intervju_path)
 
     # Save Transcript (if applicable)
-    transcript_path = None
-    if transcript_file and transcript_file.filename.endswith(".docx"):
-        os.makedirs("transcript", exist_ok=True)
-        transcript_path = os.path.join("transcript", transcript_file.filename)
-        transcript_file.save(transcript_path)
+    #transcript_path = None
+    #if transcript_file and transcript_file.filename.endswith(".docx"):
+    #    os.makedirs("transcript", exist_ok=True)
+    #    transcript_path = os.path.join("transcript", transcript_file.filename)
+    #    transcript_file.save(transcript_path)
 
-    #parse fiel content after save
-    doc_text = read_docx_text(filepath)
+    # Skapa prompt och generera sammanfattning
+    try:
+        prompt = trigger_summary_generation(intervju_path)
+        summary = generate_summary(prompt)
+    except ValueError as e:
+        return render_template("error.html", error=str(e))
 
-    # Generate prompt for summary
-    doc_type = DOC_TYPE_SUMMARY
-    result = build_prompt_for_document_type(doc_type, doc_text)
-
-    if "error" in result:
-        # Error handling (kommer vi till)
-        print(f"❌ Prompt error: {result['error']}")
-        return render_template("generate_summary.html", error="Kunde inte skapa prompt")
-    else:
-        # Extract prompt string from prompt-builder dict
-        prompt_text = result["prompt"]
-    
-    # Skapa prompt och generera sammanfattning eller KP
-    summary = generate_summary(prompt_text)  # Skicka string, inte dict!
 
     if summary is None:
         print("❌ Sammanfattningen kunde inte genereras.")
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
+    
 
-    # Save and return .docx file
-    # Create output folder if it is missing
+    ### Save and return .docx file ###
+    # 1. Create output folder if it is missing
     os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
 
-    # Save the file to the output folder
-    filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
+    # 2. Save the file to the output folder
+    filename = f"sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
     filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-    save_summary_to_docx(summary, kandidatnamn, filepath)
+    save_summary_to_docx(summary, candidate_name, filepath)
     
 
     print(f"✅ Fil sparad: {filepath}")
@@ -118,7 +106,7 @@ def generate():
 def generate_kp():
     # Get infrormation (file and candidate name) from the web form
     fil = request.files["intervjufil"]
-    transcript_file = request.files.get("transcript")
+    #transcript_file = request.files.get("transcript")
     kandidatnamn = request.form["namn"]
 
     # Kontrollera att det är en .docx-fil
@@ -126,33 +114,25 @@ def generate_kp():
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
     #  Spara intervju filen i input/
-    filepath = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
-    fil.save(filepath)
+    intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
+    fil.save(intervju_path)
 
     # Spara transcript (om det finns)
-    transcript_path = None
-    if transcript_file and transcript_file.filename.endswith(".docx"):
-        os.makedirs("data/transcript", exist_ok=True)
-        transcript_path = os.path.join("data/transcript", transcript_file.filename)
-        transcript_file.save(transcript_path)
+    #transcript_path = None
+    #if transcript_file and transcript_file.filename.endswith(".docx"):
+    #    os.makedirs("data/transcript", exist_ok=True)
+    #    transcript_path = os.path.join("data/transcript", transcript_file.filename)
+    #    transcript_file.save(transcript_path)
 
-    #läs innehållet i filerna efter att de sparats
-    doc_text = read_docx_text(filepath)
-    doc_type = DOC_TYPE_KP
-    #transcript_text = read_docx_text(transcript_path) if transcript_path else None
+    #transcript_text = read_docx_text(transcript_path) if transcript_path else None    
 
-    # Bygg prompt baserat på val av dokumenttyp
-    result = build_prompt_for_document_type(doc_type, doc_text)
-    if "error" in result:
-        # Error handling (kommer vi till)
-        print(f"❌ Prompt error: {result['error']}")
-        return render_template("generate_summary.html", error="Kunde inte skapa prompt")
-    else:
-        # Extract prompt string from prompt-builder dict
-        prompt_text = result["prompt"]
-    
-    # Skapa prompt och generera sammanfattning eller KP
-    summary = generate_summary(prompt_text)
+     # Skapa prompt och generera sammanfattning
+    try:
+        prompt = trigger_kp_generation(intervju_path)
+        summary = generate_summary(prompt)
+    except ValueError as e:
+        return render_template("error.html", error=str(e))
+
     if summary is None:
         print("❌ KP kunde inte genereras.")
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
@@ -184,27 +164,15 @@ def generate_reference():
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
     # Spara intervju filen i input/
-    filepath = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
-    fil.save(filepath)
-
-    
-    #läs innehållet i filerna efter att de sparats
-    doc_text = read_docx_text(filepath)
-    doc_type = DOC_TYPE_REFERENCE
-    #transcript_text = read_docx_text(transcript_path) if transcript_path else None
-
-    # Bygg prompt baserat på val av dokumenttyp
-    result = build_prompt_for_document_type(doc_type, doc_text)
-    if "error" in result:
-        # Error handling (kommer vi till)
-        print(f"❌ Prompt error: {result['error']}")
-        return render_template("generate_summary.html", error="Kunde inte skapa prompt")
-    else:
-        # Extract prompt string from prompt-builder dict
-        prompt_text = result["prompt"]
+    intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
+    fil.save(intervju_path)
     
     # Generate summary
-    summary = generate_summary(prompt_text)
+    try:
+        prompt = trigger_reference_generation(intervju_path)
+        summary = generate_summary(prompt)
+    except ValueError as e:
+        return render_template("error.html", error=str(e))
 
     #  Spara och returnera .docx
      # Skapa output-mapp om den inte finns
