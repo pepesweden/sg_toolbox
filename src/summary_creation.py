@@ -40,12 +40,12 @@ def trigger_generation(trigger, file_path):
         doc_text = read_docx_text(file_path)
     
     elif trigger == TRIGGER_KP:
-        # Load style template and referens for "summary"
+        # Load style template and referens for "KP"
         doc_type = DOC_TYPE_KP
         doc_text = read_docx_text(file_path)
     
     elif trigger == TRIGGER_REFERENCE:
-        # Load style template and referens for "summary"
+        # Load style template and referens for "Reference"
         doc_type = DOC_TYPE_REFERENCE
         doc_text = read_docx_text(file_path)    
 

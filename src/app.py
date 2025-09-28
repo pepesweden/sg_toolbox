@@ -1,10 +1,8 @@
 from flask import Flask, render_template, request, send_file, redirect
 import os
-from summary_creation import read_docx_text, create_prompt, create_kp_prompt, generate_summary, save_summary_to_docx, create_refsum_prompt, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE
+from summary_creation import generate_summary, save_summary_to_docx, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE
 from adapter.save_to_docx import save_summary_to_docx
-from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt, build_prompt_for_document_type, DOC_TYPE_SUMMARY, DOC_TYPE_KP, DOC_TYPE_REFERENCE
 from adapter.summary_generation import generate_summary
-from adapter.text_extractor import read_docx_text
 
 # Initiate Flask-app
 app = Flask(__name__,
