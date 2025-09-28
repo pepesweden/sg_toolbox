@@ -20,7 +20,7 @@ def add_bullet_list(items, doc):
 
 
 
-# Sparar sammanfattning i en word fil
+# Formatterar och Sparar sammanfattning i en word fil
 def save_summary_to_docx(summary_text, candidate_name, filepath):
     doc = Document()
 
