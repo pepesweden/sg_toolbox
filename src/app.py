@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, send_file, redirect
 import os
+from adapter.file_manager import write_file_to_storage
 from summary_creation import generate_summary, save_summary_to_docx, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE
 from adapter.save_to_docx import save_summary_to_docx
 from adapter.summary_generation import generate_summary
@@ -62,15 +63,11 @@ def generate():
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
     # Save the file to input/
-    intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
-    fil.save(intervju_path)
+    #intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename) 
+    #fil.save(intervju_path)
 
-    # Save Transcript (if applicable)
-    #transcript_path = None
-    #if transcript_file and transcript_file.filename.endswith(".docx"):
-    #    os.makedirs("transcript", exist_ok=True)
-    #    transcript_path = os.path.join("transcript", transcript_file.filename)
-    #    transcript_file.save(transcript_path)
+    ###Importerad filhanteringslogik###
+    intervju_path = write_file_to_storage(fil.read(), fil.filename, UPLOAD_FOLDER)#REMEMBER Filestorage object from flask!!
 
     # Skapa prompt och generera sammanfattning
     try:
