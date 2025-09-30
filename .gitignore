@@ -39,3 +39,7 @@ venv/
 *.jpeg
 *.jpg
 *.png
+
+# PostgreSQL data (men behåll mappen)
+data/postgres/*
+!data/postgres/.gitkeep
