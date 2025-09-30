@@ -21,3 +21,27 @@ services:
     ports:
       - "${HOST_PORT:-8000}:8000"
     restart: unless-stopped
+
+
+  postgres:
+      image: postgres:16  # Klar image!
+      #image: postgreSQL:${TAG:-dev}
+      container_name: sg_postgres
+
+      environment:
+        POSTGRES_DB: sg_toolbox
+        POSTGRES_USER: sg_user
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+      # Låt Compose ladda variabler från .env i repo-roten
+      env_file:
+        - ../.env
+
+      # Mounta själva .env in i containern om din kod kör load_dotenv()
+      volumes:
+        - ../.env:/app/.env:ro
+        - ../data/postgres:/var/lib/postgresql/data
+        
+      ports:
+        - "${DB_PORT:-5432}:5432"
+      restart: unless-stopped
