@@ -1,0 +1,68 @@
+import psycopg2 
+import bcrypt
+
+class AuthManager:
+    # saves database URL to variable
+    def __init__(self, database_url):
+        self.database_url = database_url
+
+    # Takes dependency injection and inserts data into postgres
+    def create_user(self, username, password, email=None):
+        # 1. Hasha lösenord
+        hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # 2. Connecta till databas
+        conn = psycopg2.connect(self.database_url)
+        # 3. INSERT query
+        try:
+            cursor = conn.cursor()
+            cursor.execute(
+                "INSERT INTO users (username, password_hash, email) VALUES (%s, %s, %s)",
+                (username, hashed, email)
+            )
+            conn.commit()
+            return True  # Lyckades!
+        # 4. Hantera fel (username finns redan?)
+        except psycopg2.IntegrityError:
+            return False  # Username finns redan (PRIMARY KEY konflikt)
+        #Stäng anslutningen till DB oavsett fel,
+        finally:
+            conn.close() 
+
+    #Veridy login
+    def authenticate(self, username, password):
+        # 1. Connecta till databas
+        conn = psycopg2.connect(self.database_url)
+    
+        try:
+            # 2. Hämta password_hash från databas
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT password_hash FROM users WHERE username = %s",
+                (username,)
+            )
+            result = cursor.fetchone()
+        
+            # 3. Om användaren inte finns
+            if result is None:
+                return None
+        
+            password_hash = result[0]  # fetchone() returnerar tuple: (password_hash,)
+        
+            # 4. Verifiera lösenord
+            if bcrypt.checkpw(password.encode('utf-8'), password_hash):
+                # 5. Rätt lösenord → skapa User-objekt
+                from auth.models import User
+                return User(username)
+            else:
+                # 6. Fel lösenord
+                return None
+            
+        finally:
+            # 7. Stäng connection
+            conn.close()
+
+    
+    
+     
+
+
