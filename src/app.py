@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request, send_file, redirect
+from flask_login import LoginManager, login_user, login_required, logout_user, current_user
+from auth.auth_manager import AuthManager
+from auth.models import User
 import os
 from adapter.file_manager import write_file_to_storage
 from summary_creation import generate_summary, save_summary_to_docx, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE
@@ -16,6 +19,19 @@ DOWNLOAD_FOLDER = "data/output"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["DOWNLOAD_FOLDER"] = DOWNLOAD_FOLDER    
 
+# Auth setup
+DATABASE_URL = os.getenv('DATABASE_URL')
+auth_manager = AuthManager(DATABASE_URL)
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = '/'
+login_manager.login_message = 'Du måste logga in för att komma åt denna sida.'
+
+#create decorator to register get_user() with flask login
+@login_manager.user_loader
+def load_user(username):                    #create funktion to register in Login Manager
+    return auth_manager.get_user(username)  #Call get_user function
 
 # render start-page with login form
 @app.route("/")
@@ -30,29 +46,44 @@ def generate_summary_page():
 # render start-page with login form
 @app.route('/login', methods=['POST'])
 def login():
-    #username = request.form['username']
-    #password = request.form['password']
+    username = request.form['username']
+    password = request.form['password']
     
-    # For now - just redirect
-    return redirect('/welcome_page')
+    user = auth_manager.authenticate(username, password)
     
-    # Later - add proper authentication
-    #return render_template("welcome_page.html")
+    if user:
+        login_user(user)
+        flash(f'Välkommen {username}!')
+        return redirect('/welcome_page')
+    else:
+        flash('Fel användarnamn eller lösenord')
+        return redirect('/')
+    
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('Du har loggats ut')
+    return redirect('/')
 
 @app.route("/welcome_page")
+@login_required
 def welcome_page():
     return render_template("welcome_page.html")
 
 @app.route("/generate-seo")
+@login_required
 def generate_seo_page():
     return render_template("generate_seo.html")
 
 @app.route("/generate-offer")
+@login_required
 def generate_offer_page():
     return render_template("generate_offer.html")
 
 # Create Summary from uploaded files
 @app.route("/generate", methods=["POST"])
+@login_required
 def generate():
     fil = request.files["intervjufil"]
     #transcript_file = request.files.get("transcript")
@@ -96,6 +127,7 @@ def generate():
     #return send_file(filepath, as_attachment=True)
 
 @app.route("/generate_kp", methods=["POST"])
+@login_required
 def generate_kp():
     # Get infrormation (file and candidate name) from the web form
     fil = request.files["intervjufil"]
@@ -148,6 +180,7 @@ def generate_kp():
 
 # Generera referenssammanfattning från uppladdade filer
 @app.route("/generate_reference", methods=["POST"])
+@login_required
 def generate_reference():
     # 📎 Hämta val, filer och namn från formuläret
     fil = request.files["intervjufil"]
