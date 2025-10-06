@@ -12,7 +12,21 @@
         <div class="text-center mb-5">
             <img src="{{ url_for('static', filename='logo/white.png') }}" alt="Logotyp" height="80">
         </div>
-        
+        <!-- Flash meddelanden -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="row justify-content-center mb-4">
+                    <div class="col-md-4">
+                        {% for message in messages %}
+                            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endwith %}
         <div class="row justify-content-center">
             <div class="col-md-4">
                 <div class="module-blurb shadow-lg">

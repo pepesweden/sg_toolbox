@@ -5,7 +5,28 @@ class AuthManager:
     # saves database URL to variable
     def __init__(self, database_url):
         self.database_url = database_url
-        self.create_default_admin()
+        self.init_db()                    # create database at start
+        self.create_default_admin()       # Create admin user
+
+
+    # Method to create 
+    def init_db(self):
+        conn = psycopg2.connect(self.database_url)
+        try:
+            cursor = conn.cursor()
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS users (
+                    username VARCHAR(50) PRIMARY KEY,
+                    password_hash BYTEA NOT NULL,
+                    email VARCHAR(255) NOT NULL UNIQUE,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    last_login TIMESTAMP,
+                    is_active BOOLEAN DEFAULT TRUE
+                )
+            ''')
+            conn.commit()
+        finally:
+            conn.close()
 
     # Takes dependency injection and inserts data into postgres
     def create_user(self, username, password, email=None):
@@ -48,6 +69,10 @@ class AuthManager:
                 return None
         
             password_hash = result[0]  # fetchone() returnerar tuple: (password_hash,)
+
+            # Konvertera memoryview till bytes
+            if isinstance(password_hash, memoryview):
+                password_hash = bytes(password_hash)
         
             # 4. Verifiera lösenord
             if bcrypt.checkpw(password.encode('utf-8'), password_hash):
