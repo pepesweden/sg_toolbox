@@ -8,8 +8,15 @@
      <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <!-- Hem
+      knapp -->
     <div class="text-center mb-4">
         <img src="{{ url_for('static', filename='logo/white.png') }}" alt="Logotyp" height="80">
+    </div>
+    <!-- Logout knapp -->
+    <div class="text-end">
+        <span class="text-light me-3">Inloggad som: {{ current_user.username }}</span>
+        <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">Logga ut</a>
     </div>
     <div class="container py-5">
         <!--<h1 class="text-center text-light mb-5"> | Toolbox |</h1>-->

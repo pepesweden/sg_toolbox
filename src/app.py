@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, redirect
+from flask import Flask, render_template, request, send_file, redirect, flash
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from auth.auth_manager import AuthManager
 from auth.models import User
@@ -12,6 +12,8 @@ from adapter.summary_generation import generate_summary
 app = Flask(__name__,
             template_folder='../ui/templates',    # Redirects to a higher folder level, ui/templates
             static_folder='../ui/static',)         # Redirects to a higher folder level, ui/static
+
+app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 
 # Definer folders where files from UI should be saved
 UPLOAD_FOLDER = "data/input"
