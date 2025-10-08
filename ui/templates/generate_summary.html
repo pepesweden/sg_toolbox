@@ -69,6 +69,7 @@
               <!--<h1>Skapa kandidatsammanfattning</h1>-->
               <div id="summary-form" class="form-section" style="display: none;">
                 <form action="/generate" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                   <div class="mb-3">
                     <label for="intervjufil" class="form-label">Ladda upp intervjuanteckningar (.docx):</label>
                     <input class="form-control" type="file" id="intervjufil" name="intervjufil" accept=".docx" required>
@@ -94,6 +95,7 @@
                   <p>Här kommer du kunna generera en kandidatpresentation baserat på intervjuanteckningar.</p>
                 </div>
                 <form action="/generate_kp" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                   <div class="mb-3">
                     <label for="intervjufil" class="form-label">Ladda upp intervjuanteckningar (.docx):</label>
                     <input class="form-control" type="file" id="intervjufil" name="intervjufil" accept=".docx" required>
@@ -115,6 +117,7 @@
                 </div>
 
                   <form action="/generate_reference" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-3">
                       <label for="intervjufil" class="form-label">Ladda upp referensanteckningar (.docx):</label>
                       <input class="form-control" type="file" id="intervjufil" name="intervjufil" accept=".docx" required>
