@@ -10,6 +10,13 @@ services:
     env_file:
       - ../.env
 
+    depends_on:
+      - postgres
+    environment:
+      DATABASE_URL: postgresql://sg_user:${POSTGRES_PASSWORD}@postgres:5432/sg_toolbox
+      SECRET_KEY: ${SECRET_KEY}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
     # Mounta själva .env in i containern om din kod kör load_dotenv()
     volumes:
       - ../.env:/app/.env:ro
