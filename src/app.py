@@ -1,4 +1,6 @@
-from flask import Flask, render_template, request, send_file, redirect, flash
+from flask_seasurf import SeaSurf
+from flask_talisman import Talisman
+from flask import Flask, render_template, request, send_file, redirect, flash, session
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from auth.auth_manager import AuthManager
 from auth.models import User
@@ -14,6 +16,17 @@ app = Flask(__name__,
             static_folder='../ui/static',)         # Redirects to a higher folder level, ui/static
 
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+# Session security configuration
+from datetime import timedelta
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30) # Congiure user session timeout
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+is_production = os.getenv('FLASK_ENV') == 'production'  #checks environemnt config for 
+app.config['SESSION_COOKIE_SECURE'] = is_production     #Set coockie-secure basetd on bool-value
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'           #Allow samesite from secure sites but block xss and CSRF attempts
+if is_production:
+    Talisman(app, force_https=True)
+
+
 
 # Definer folders where files from UI should be saved
 UPLOAD_FOLDER = "data/input"
@@ -29,6 +42,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = '/'
 login_manager.login_message = 'Du måste logga in för att komma åt denna sida.'
+csrf = SeaSurf(app)
 
 #create decorator to register get_user() with flask login
 @login_manager.user_loader
@@ -55,6 +69,7 @@ def login():
     
     if user:
         login_user(user)
+        session.permanent = True  # ← Activate timeout config!
         flash(f'Välkommen {username}!')
         return redirect('/welcome_page')
     else:
