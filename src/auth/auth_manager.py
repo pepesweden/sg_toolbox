@@ -1,17 +1,36 @@
-import psycopg2 
+import logging
+import psycopg2
+from psycopg2 import pool 
 import bcrypt
+
+logger = logging.getLogger(__name__)
 
 class AuthManager:
     # saves database URL to variable
     def __init__(self, database_url):
         self.database_url = database_url
+
+        # Create database connection pool
+        self.connection_pool = pool.SimpleConnectionPool(
+            minconn=1,      # Min 1 connection always open
+            maxconn=10,     # Max 10 concurrent conns
+            dsn=database_url
+        )
+
         self.init_db()                    # create database at start
         self.create_default_admin()       # Create admin user
 
 
     # Method to create 
     def init_db(self):
-        conn = psycopg2.connect(self.database_url)
+        try:
+            # conn = psycopg2.connect(self.database_url) #<- Intividual connetion by user 
+            conn = self.connection_pool.getconn() #Use connection pooling
+
+        except Exception as e:
+            logger.error(f" ❌ Failed to get database connection: {e}")
+            return None  # Retur None = "login failed"
+
         try:
             cursor = conn.cursor()
             cursor.execute('''
@@ -25,35 +44,54 @@ class AuthManager:
                 )
             ''')
             conn.commit()
+
+        #Catch database error (corruption, syntax error etc.)
+        except Exception as e:
+            logger.error(f"⚠️ Database error during authentication: {e}")
+            return None
+
         finally:
-            conn.close()
+            #conn.close() #<- close individal user database connection
+            self.connection_pool.putconn(conn)  # ← Returns connectio to pool
 
     # Takes dependency injection and inserts data into postgres
     def create_user(self, username, password, email=None):
-        # 1. Hasha lösenord
+        # 1. Hash Password
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        # 2. Connecta till databas
-        conn = psycopg2.connect(self.database_url)
-        # 3. INSERT query
+        # 2. Connect to database
+        conn = None
         try:
-            cursor = conn.cursor()
-            cursor.execute(
-                "INSERT INTO users (username, password_hash, email) VALUES (%s, %s, %s)",
-                (username, hashed, email)
-            )
-            conn.commit()
-            return True  # Lyckades!
-        # 4. Hantera fel (username finns redan?)
-        except psycopg2.IntegrityError:
-            return False  # Username finns redan (PRIMARY KEY konflikt)
+            # conn = psycopg2.connect(self.database_url) #<- Intividual connetion by user 
+            conn = self.connection_pool.getconn() #Use connection pooling
+            # 3. INSERT query
+            try:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "INSERT INTO users (username, password_hash, email) VALUES (%s, %s, %s)",
+                    (username, hashed, email)
+                )
+                conn.commit()
+                return True  # Lyckades!
+            # 4. Error managemend (username aleady exists?)
+            except psycopg2.IntegrityError as e:
+                logger.error(f"⚠️ Data already exists - conflict?: {e}")
+                return False  # Username finns redan (PRIMARY KEY konflikt)
+        
+        except Exception as e:
+            logger.error(f" ❌ Failed to get database connection: {e}")
+            return None  # Retur None = "login failed"
+        
         #Stäng anslutningen till DB oavsett fel,
         finally:
-            conn.close() 
+            if conn is not None:  # ← Kolla att conn finns
+                #conn.close() #<- close individal user database connection
+                self.connection_pool.putconn(conn)  # ← Returns connectio to pool
 
     #Verify login, compare password hashes
     def authenticate(self, username, password):
-        # 1. Connecta till databas
-        conn = psycopg2.connect(self.database_url)
+        # 2. Connect to database
+        # conn = psycopg2.connect(self.database_url) #<- Intividual connetion by user 
+        conn = self.connection_pool.getconn() #Use connection pooling
     
         try:
             # 2. Hämta password_hash från databas
@@ -78,37 +116,56 @@ class AuthManager:
             if bcrypt.checkpw(password.encode('utf-8'), password_hash):
                 # 5. Rätt lösenord → skapa User-objekt
                 from auth.models import User
+                logger.debug("✅Password hash verified, use object created")
                 return User(username)
             else:
                 # 6. Fel lösenord
                 return None
             
         finally:
-            # 7. Stäng connection
-            conn.close()
+            # 7. Close/return database connection
+            #conn.close() #<- close individal user database connection
+            self.connection_pool.putconn(conn)  # ← Returns connectio to pool
 
     def get_user(self, username):
-        conn = psycopg2.connect(self.database_url)
+        # 1. Connect to database
+        conn = None
         try:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT username, email, created_at FROM users WHERE username = %s",
-                (username,)
-            )
-            result = cursor.fetchone()
-            
-            if result is None:
+            # conn = psycopg2.connect(self.database_url) #<- Intividual connetion by user 
+            conn = self.connection_pool.getconn() #Use connection pooling
+
+            # 3. Get user data and create user object
+            try:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT username, email, created_at FROM users WHERE username = %s",
+                    (username,)
+                )
+                result = cursor.fetchone()
+                
+                if result is None:
+                    return None
+                
+                # result är tuple: (username, email, created_at)
+                from auth.models import User
+                return User(
+                    username=result[0],
+                    email=result[1],
+                    created_at=result[2]
+                )
+            except Exception as e:
+                logger.error(f"Database error fetching user '{username}': {e}")
                 return None
-            
-            # result är tuple: (username, email, created_at)
-            from auth.models import User
-            return User(
-                username=result[0],
-                email=result[1],
-                created_at=result[2]
-            )
+    
+        except Exception as e:
+            logger.error(f"Failed to get database connection: {e}")
+            return None
+
         finally:
-            conn.close()   
+            # 3. Close/return database connection if it exists
+            if conn is not None:  # ← Kolla att conn finns
+                #conn.close() #<- close individal user database connection
+                self.connection_pool.putconn(conn)  # ← Returns connectio to pool   
 
     #Create admin user when auth manager initialises (see __Init__)    
     def create_default_admin(self):

@@ -1,3 +1,4 @@
+import logging
 from flask_seasurf import SeaSurf
 from flask_talisman import Talisman
 from flask import Flask, render_template, request, send_file, redirect, flash, session
@@ -9,6 +10,15 @@ from adapter.file_manager import write_file_to_storage
 from summary_creation import generate_summary, save_summary_to_docx, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE
 from adapter.save_to_docx import save_summary_to_docx
 from adapter.summary_generation import generate_summary
+
+
+# Configure logging
+log_level = os.getenv('LOG_LEVEL', 'INFO')
+logging.basicConfig(
+    level=getattr(logging, log_level),
+    datefmt='%Y-%m-%d %H:%M:%S',
+    format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+)
 
 # Initiate Flask-app
 app = Flask(__name__,
