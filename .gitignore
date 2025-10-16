@@ -43,3 +43,9 @@ venv/
 # PostgreSQL data (men behåll mappen)
 data/postgres/*
 !data/postgres/.gitkeep
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars  # Om de innehåller secrets senare

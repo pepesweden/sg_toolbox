@@ -1,0 +1,11 @@
+main.tf
+variables.tf
+outputs.tf
+backend.tf
+environments/dev.tfvars
+environments/prod.tfvars
+modules/container-apps/
+modules/postgresql/
+modules/key-vault/
+modules/container-registry/
+modules/monitoring/
