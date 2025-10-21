@@ -14,5 +14,5 @@ DATABASE_URL=postgresql://sg_user:your_secure_password_here@localhost:5432/sg_to
 OPENAI_API_KEY=your-existing-key
 
 # Admin user
-ADMIN_PASSWORD=admin123
+ADMIN_PASSWORD=not-the-password-you-are-looking-for
 EOF
