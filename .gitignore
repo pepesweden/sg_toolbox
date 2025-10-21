@@ -45,7 +45,7 @@ data/postgres/*
 !data/postgres/.gitkeep
 
 # Terraform
-.terraform/
+*.tfvars         # Matchar ALLA nivåer
 *.tfstate
 *.tfstate.backup
-*.tfvars  # Om de innehåller secrets senare
+.terraform/
