@@ -5,6 +5,5 @@ terraform {
     resource_group_name  = "rg-terraform-state"
     storage_account_name = "sgtoolboxtf"
     container_name       = "tfstate"
-    key                  = "toolbox.tfstate"
   }
 }

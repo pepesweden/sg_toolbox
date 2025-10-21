@@ -14,6 +14,99 @@ terraform {
 # Block 2: Azure Provider
 provider "azurerm" {
   features {}
+}
+
+
+# Resource Group
+resource "azurerm_resource_group" "toolbox" {
+  name     = "rg-toolbox-${var.environment}"
+  location = var.location
   
-  subscription_id = var.subscription_id
+  tags = {
+    Environment = var.environment
+    Project     = "Salesgroup Toolbox"
+    ManagedBy   = "Terraform"
+  }
+}
+
+
+# toolbox_containerRegistry
+resource "azurerm_container_registry" "acr" {
+  name                = "sgtoolboxacr${var.environment}"
+  resource_group_name = azurerm_resource_group.toolbox.name
+  location            = var.location
+  sku                 = "Basic"
+  admin_enabled       = false
+}
+
+# PostgreSQL Flexible Server
+resource "azurerm_postgresql_flexible_server" "db" {
+  name                = "psql-toolbox-${var.environment}"
+  resource_group_name = azurerm_resource_group.toolbox.name
+  location            = var.location
+  
+  administrator_login    = "toolboxadmin"
+  administrator_password = var.postgres_admin_password
+  
+  sku_name   = "B_Standard_B1ms"
+  storage_mb = 32768
+  version    = "16"
+  
+  backup_retention_days = 7
+
+  zone = "3"
+  
+  tags = {
+    Environment = var.environment
+    Project     = "Salesgroup Toolbox"
+    ManagedBy   = "Terraform"
+  }
+}
+
+# Firewall rule - Allow Azure Services
+resource "azurerm_postgresql_flexible_server_firewall_rule" "allow_azure" {
+  name             = "AllowAzureServices"
+  server_id        = azurerm_postgresql_flexible_server.db.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
+# Database
+resource "azurerm_postgresql_flexible_server_database" "toolbox" {
+  name      = "sg_toolbox"
+  server_id = azurerm_postgresql_flexible_server.db.id
+}
+
+
+# Key Vault
+resource "azurerm_key_vault" "toolbox" {
+  name                = "kv-toolbox-${var.environment}"
+  resource_group_name = azurerm_resource_group.toolbox.name
+  location            = var.location
+  tenant_id           = data.azurerm_client_config.current.tenant_id
+  
+  sku_name = "standard"
+  
+  soft_delete_retention_days = 90
+  purge_protection_enabled   = true
+  
+  tags = {
+    Environment = var.environment
+    Project     = "Salesgroup Toolbox"
+    ManagedBy   = "Terraform"
+  }
+}
+
+# Data source to get current Azure config
+data "azurerm_client_config" "current" {}
+
+# Give yourself access to Key Vault
+resource "azurerm_key_vault_access_policy" "admin" {
+  key_vault_id = azurerm_key_vault.toolbox.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = data.azurerm_client_config.current.object_id
+  
+  secret_permissions = [
+    "Get", "List", "Set", "Delete", "Purge"
+  ]
 }
