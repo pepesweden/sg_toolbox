@@ -36,7 +36,7 @@ resource "azurerm_container_registry" "acr" {
   resource_group_name = azurerm_resource_group.toolbox.name
   location            = var.location
   sku                 = "Basic"
-  admin_enabled       = false
+  admin_enabled       = true
 }
 
 # PostgreSQL Flexible Server
@@ -176,6 +176,94 @@ resource "azurerm_container_app_environment" "toolbox" {
   resource_group_name        = azurerm_resource_group.toolbox.name
   location                   = var.location
   log_analytics_workspace_id = azurerm_log_analytics_workspace.toolbox.id
+  
+  tags = {
+    Environment = var.environment
+    Project     = "Salesgroup Toolbox"
+    ManagedBy   = "Terraform"
+  }
+}
+
+
+# Container App - Flask Web
+resource "azurerm_container_app" "web" {
+  name                         = "ca-toolbox-web-${var.environment}"
+  resource_group_name          = azurerm_resource_group.toolbox.name
+  container_app_environment_id = azurerm_container_app_environment.toolbox.id
+  revision_mode                = "Single"
+  
+  template {
+    container {
+      name   = "toolbox-web"
+      image  = "${azurerm_container_registry.acr.login_server}/toolbox-web:latest"
+      cpu    = 0.5
+      memory = "1Gi"
+      
+      env {
+        name  = "DATABASE_URL"
+        secret_name = "database-url"
+      }
+      
+      env {
+        name  = "SECRET_KEY"
+        secret_name = "flask-secret-key"
+      }
+      
+      env {
+        name  = "OPENAI_API_KEY"
+        secret_name = "openai-api-key"
+      }
+      
+      env {
+        name  = "ADMIN_PASSWORD"
+        secret_name = "admin-password"
+      }
+    }
+    
+    min_replicas = 0
+    max_replicas = 3
+  }
+  
+  secret {
+    name  = "database-url"
+    value = azurerm_key_vault_secret.postgres_connection.value
+  }
+  
+  secret {
+    name  = "flask-secret-key"
+    value = azurerm_key_vault_secret.flask_secret.value
+  }
+  
+  secret {
+    name  = "openai-api-key"
+    value = azurerm_key_vault_secret.openai_key.value
+  }
+  
+  secret {
+    name  = "admin-password"
+    value = azurerm_key_vault_secret.admin_password.value
+  }
+  
+  ingress {
+    external_enabled = true
+    target_port      = 8000
+    
+    traffic_weight {
+      latest_revision = true
+      percentage      = 100
+    }
+  }
+  
+  registry {
+    server   = azurerm_container_registry.acr.login_server
+    username = azurerm_container_registry.acr.admin_username
+    password_secret_name = "acr-password"
+  }
+  
+  secret {
+    name  = "acr-password"
+    value = azurerm_container_registry.acr.admin_password
+  }
   
   tags = {
     Environment = var.environment
