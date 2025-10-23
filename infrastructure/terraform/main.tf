@@ -80,7 +80,7 @@ resource "azurerm_postgresql_flexible_server_database" "toolbox" {
 
 # Key Vault
 resource "azurerm_key_vault" "toolbox" {
-  name                = "kv-toolbox-${var.environment}"
+  name                = "kv-toolbox-${var.environment}-v2"
   resource_group_name = azurerm_resource_group.toolbox.name
   location            = var.location
   tenant_id           = data.azurerm_client_config.current.tenant_id
@@ -88,7 +88,7 @@ resource "azurerm_key_vault" "toolbox" {
   sku_name = "standard"
   
   soft_delete_retention_days = 90
-  purge_protection_enabled   = true
+  purge_protection_enabled   = false
   
   tags = {
     Environment = var.environment
@@ -109,6 +109,18 @@ resource "azurerm_key_vault_access_policy" "admin" {
   secret_permissions = [
     "Get", "List", "Set", "Delete", "Purge"
   ]
+}
+
+resource "azurerm_key_vault_access_policy" "container_app" {
+  key_vault_id = azurerm_key_vault.toolbox.id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = azurerm_container_app.web.identity[0].principal_id
+  
+  secret_permissions = [
+    "Get"
+  ]
+  
+  depends_on = [azurerm_container_app.web]
 }
 
 ### Secrets in Key Vault ###
@@ -191,6 +203,10 @@ resource "azurerm_container_app" "web" {
   resource_group_name          = azurerm_resource_group.toolbox.name
   container_app_environment_id = azurerm_container_app_environment.toolbox.id
   revision_mode                = "Single"
+
+  identity {
+    type = "SystemAssigned"
+  }
   
   template {
     container {
@@ -226,22 +242,26 @@ resource "azurerm_container_app" "web" {
   
   secret {
     name  = "database-url"
-    value = azurerm_key_vault_secret.postgres_connection.value
+    key_vault_secret_id = azurerm_key_vault_secret.postgres_connection.id
+    identity            = "System"
   }
   
   secret {
     name  = "flask-secret-key"
-    value = azurerm_key_vault_secret.flask_secret.value
+    key_vault_secret_id = azurerm_key_vault_secret.flask_secret.id
+    identity            = "System"
   }
   
   secret {
     name  = "openai-api-key"
-    value = azurerm_key_vault_secret.openai_key.value
+    key_vault_secret_id = azurerm_key_vault_secret.openai_key.id
+    identity            = "System"
   }
   
   secret {
     name  = "admin-password"
-    value = azurerm_key_vault_secret.admin_password.value
+    key_vault_secret_id = azurerm_key_vault_secret.admin_password.id
+    identity            = "System"
   }
   
   ingress {
