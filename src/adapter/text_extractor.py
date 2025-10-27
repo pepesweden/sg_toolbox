@@ -13,8 +13,7 @@ from typing import List, Union
 from pathlib import Path
 from werkzeug.datastructures import FileStorage
 
-####Gammal import av en(1) fil, funktionen används inte nu###
-# Läser in en Word-fil och extraherar texten
+# Läser in en(1) Word-fil och extraherar texten
 def read_docx_text(file_path):
     doc = Document(file_path)
     return "\n".join([p.text for p in doc.paragraphs])

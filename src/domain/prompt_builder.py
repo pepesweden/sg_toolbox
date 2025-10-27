@@ -1,15 +1,13 @@
 #Skapar prompten som används vid API anropet till OpenAI
 
 #Imports
-from adapter.text_extractor import read_docx_text  # Needed for build_prompt_for_document_type()
+from adapter.text_extractor import read_docx_text  # <-- Function to load and
 
 #Doctype constants
 DOC_TYPE_SUMMARY = "summary"
 DOC_TYPE_KP = "kp" 
 DOC_TYPE_REFERENCE = "reference"
 #DOC_TYPE_JOB_AD = "job-ad"
-
-#rad för att git skall plocka upp
 
 #Function to build prompt dependen on documen chosen to generate
 def build_prompt_for_document_type(doc_type, doc_text):
