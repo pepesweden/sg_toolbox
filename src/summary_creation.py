@@ -11,7 +11,7 @@ from docx.oxml import OxmlElement
 import os
 
 
-from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt, build_prompt_for_document_type, DOC_TYPE_SUMMARY, DOC_TYPE_KP, DOC_TYPE_REFERENCE
+from domain.prompt_builder import create_prompt, create_kp_prompt, create_refsum_prompt, build_prompt_for_document_type, DOC_TYPE_SUMMARY, DOC_TYPE_KP, DOC_TYPE_REFERENCE, DOC_TYPE_JOB_AD
 from adapter.summary_generation import generate_summary
 from adapter.save_to_docx import save_summary_to_docx
 from adapter.text_extractor import read_docx_text, extract_texts_from_docx
@@ -31,6 +31,7 @@ DOWNLOAD_FOLDER = "data/output"
 TRIGGER_SUMMARY = "summary_trigger"
 TRIGGER_KP = "kp_trigger"
 TRIGGER_REFERENCE = "reference_trigger"
+TRIGGER_JOB_AD = "job_ad_trigger"
 
 # Function to load data and prep prompt info for summary generation
 def trigger_generation(trigger, file_path):
@@ -47,6 +48,11 @@ def trigger_generation(trigger, file_path):
     elif trigger == TRIGGER_REFERENCE:
         # Load style template and referens for "Reference"
         doc_type = DOC_TYPE_REFERENCE
+        doc_text = read_docx_text(file_path) 
+
+    elif trigger == TRIGGER_JOB_AD:
+        # Load style template and referens for "Reference"
+        doc_type = DOC_TYPE_JOB_AD
         doc_text = read_docx_text(file_path)    
 
     result = build_prompt_for_document_type(doc_type, doc_text)
@@ -57,10 +63,10 @@ def trigger_generation(trigger, file_path):
 # Run the pipeline/flow
 if __name__ == "__main__":
     # Let user choose document type to generate
-    print("❓ Välj 1.Sammanfattning, 2.KP eller 3. Referenssammanfattning:")
+    print("❓ Välj 1.Sammanfattning, 2.KP, 3. Referenssammanfattning eller 4. Jobbanons:")
     while True:
         doc_choice = input()
-        if doc_choice in ["1", "2", "3"]: 
+        if doc_choice in ["1", "2", "3", "4"]: 
             doc_choice = int(doc_choice)
             break
         else:
@@ -100,7 +106,15 @@ if __name__ == "__main__":
             summary = generate_summary(prompt)
         except ValueError as e:
             print(f"Fel: {e}")
-            exit(1)   
+            exit(1)  
+    elif doc_choice == 4: # skapa Referenssammanfattning
+        try:
+            trigger = TRIGGER_JOB_AD
+            prompt = trigger_generation(trigger, intervju_path)
+            summary = generate_summary(prompt)
+        except ValueError as e:
+            print(f"Fel: {e}")
+            exit(1)  
     else: 
         print("❌ Fel i dokument generering.")
 
