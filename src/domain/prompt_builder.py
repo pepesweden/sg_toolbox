@@ -7,7 +7,7 @@ from adapter.text_extractor import read_docx_text  # <-- Function to load and
 DOC_TYPE_SUMMARY = "summary"
 DOC_TYPE_KP = "kp" 
 DOC_TYPE_REFERENCE = "reference"
-#DOC_TYPE_JOB_AD = "job-ad"
+DOC_TYPE_JOB_AD = "job_ad"
 
 #Function to build prompt dependen on documen chosen to generate
 def build_prompt_for_document_type(doc_type, doc_text):
@@ -51,8 +51,20 @@ def build_prompt_for_document_type(doc_type, doc_text):
             "type": DOC_TYPE_REFERENCE,
             "mall_files_used": ["refsum_mall.docx", "refsum_mall.docx"]
         }
+    
+    elif doc_type == DOC_TYPE_JOB_AD:
+        job_ad_mall_text = read_docx_text("data/reference/job_ad_template.docx")
+        job_ad_style_text = read_docx_text("data/reference/job_ad_example.docx")
 
-    #elif doc_type == DOC_TYPE_JOB_AD 
+        #Create the LLM job ad creation prompt
+        prompt = create_job_ad_prompt(doc_text, job_ad_mall_text, job_ad_style_text)
+
+        return {
+            "prompt": prompt,
+            "type": DOC_TYPE_JOB_AD,
+            "mall_files_used": ["job_ad_template.docx", "job_ad_example.docx"]
+        }
+
 
     else:
          return {"error": "Invalid document type"}
@@ -275,4 +287,90 @@ Och här är mallen som sammanfattningen ska följa: {refmall_text}
 
 Skriv en färdig referenssammanställning enligt mallen ovan. Håll en professionell och sammanhängande ton. Sammanfatta innehållet konkret och strukturera texten tydligt under varje rubrik. Inkludera en avslutande punkt med vilka gemensamma teman som återkommer i båda referenserna.
 Använda tonaliteten från tidigare sammanfattning i {refstyle_text}, Obs ingen information från denna text ska användas i sammanfattningen.
+"""
+
+def create_job_ad_prompt(doc_text, job_ad_mall_text, job_ad_style_text):
+        return f"""
+Du är en erfaren rekryterare som skriver professionella jobbannonser för ett svenskt rekryteringsbolag.
+
+📋 Din uppgift:
+Skriv en komplett jobbannons baserad på kravprofilen nedan.
+
+📄 Kravprofil att utgå från:
+{doc_text}
+
+🎯 Struktur att följa (från mall):
+{job_ad_mall_text}
+
+✍️ Tonalitet och stil (från tidigare annons):
+{job_ad_style_text}
+
+📌 Viktiga riktlinjer:
+
+1. **Företagsnamn:**
+   - Extrahera företagsnamnet från kravprofilens "Företagsinformation" → "Namn"
+   - Använd företagsnamnet konsekvent genom hela annonsen
+   - Ersätt [Företagsnamn] i mallen med det faktiska företagsnamnet
+
+2. **Struktur:**
+   - Följ exakt samma rubriker och ordning som i mallen
+   - Varje sektion ska ha tydligt innehåll från motsvarande del i kravprofilen
+
+3. **Mapping från kravprofil till annons:**
+   - "Fakta om företaget" → "Om [Företagsnamn]"
+   - "Befattningen → Arbetsuppgifter" → "Om rollen"
+   - "Kravspecifikation → Förkunskaper och färdigheter" → "Vi söker"
+   - Extra kompetenser från kravspec → "Det är meriterande med"
+   - "Kravspecifikation → Personlighet/profil" → "Personliga egenskaper"
+   - "Utveckling" + "Anställningsvillkor" → "Vi erbjuder"
+
+4. **Språk och ton:**
+   - Professionell men tillgänglig ton
+   - Konkret och saklig - undvik marknadsföringsspråk
+   - **UNDVIK** fraser som: "spännande möjlighet", "unik chans", "fantastisk roll"
+   - Skriv om vad rollen innebär, inte hur "spännande" den är
+   - Använd aktivt språk: "Du arbetar med..." istället för "Du kommer att få arbeta med..."
+
+5. **Om rollen:**
+   - Översiktlig beskrivning av arbetsuppgifterna
+   - Förklara kontexten (team, organisation, arbetsmodell)
+   - Håll det konkret och undvik vaga formuleringar
+
+6. **Vi söker:**
+   - Lista faktiska krav från kravspecifikationen
+   - Var specifik: "minst X års erfarenhet av Y"
+   - Prioritera tekniska kompetenser och erfarenheter
+   - Inkludera utbildnings- och språkkrav
+
+7. **Meriterande:**
+   - Lista saker som nämns i kravprofilen som önskvärda men ej kritiska
+   - Var konkret om vilka teknologier/verktyg/metoder
+
+8. **Personliga egenskaper:**
+   - Översätt personlighetsorden från kravprofilen till konkreta beteenden
+   - Istället för "ansvarstagande" → "Du tar ansvar för..."
+   - Istället för "lagspelare" → "Du samarbetar aktivt..."
+   - Koppla egenskaperna till faktiska arbetsmoment när möjligt
+
+9. **Vi erbjuder:**
+   - Beskriv arbetsmiljö baserat på "Utveckling" i kravprofilen
+   - Inkludera praktisk information (plats, arbetsmodell, omfattning)
+   - Undvik att sälja - presentera fakta om arbetsplatsen
+
+10. **Ansökan:**
+    - Använd EXAKT denna text:
+    
+    "I denna rekryteringsprocess samarbetar [Företagsnamn] med Salesgroup.
+    
+    Salesgroup tillämpar en fördomsfri och inkluderande rekryteringsprocess och arbetar i enlighet med diskrimineringslagen för att motverka diskriminering och verka för lika rättigheter. Har du några frågor, eller behöver tekniskt stöd med att söka tjänsten är du alltid välkommen att höra av dig till oss på 08-26 20 00. Tillträde enligt överenskommelse. Vi tillämpar löpande urval i denna rekryteringsprocess och välkomnar därför din ansökan snarast."
+
+🚫 Begränsningar:
+- Du får INTE gissa eller lägga till information som inte finns i kravprofilen
+- Du får INTE använda marknadsföringsspråk eller överdrivna formuleringar
+- Du får INTE hoppa över någon sektion från mallen
+- All information måste komma från kravprofilen
+
+✅ Output:
+Returnera endast den färdiga jobbannonsen - ingen förklaring eller kommentarer.
+Använd **rubriknamn** för alla rubriker (ex: **Om rollen:**)
 """
