@@ -1,7 +1,7 @@
 #Skapar prompten som används vid API anropet till OpenAI
 
 #Imports
-from adapter.text_extractor import read_docx_text  # <-- Function to load and
+from adapter.text_extractor import read_docx_text, read_md_text  # <-- Function to load and
 
 #Doctype constants
 DOC_TYPE_SUMMARY = "summary"
@@ -53,7 +53,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
         }
     
     elif doc_type == DOC_TYPE_JOB_AD:
-        job_ad_mall_text = read_docx_text("data/reference/job_ad_template.docx")
+        job_ad_mall_text = read_md_text("data/reference/job_ad_template.md")
         job_ad_style_text = read_docx_text("data/reference/job_ad_example.docx")
 
         #Create the LLM job ad creation prompt
@@ -264,17 +264,7 @@ Skriv en **komplett och strukturerad kandidatpresentation** baserad på innehål
 
 
 def create_refsum_prompt(doc_text, refmall_text, refstyle_text, transcript_text=None):
-        if transcript_text:
-            transcript_section = f"""
-📚 This is a complementary transcript from the interview.  
-🟡 Use it *only* to support or expand upon the information in the interview notes.  
-🟡 If there are discrepancies – prioritize the interview notes.  
-🟡 You do not need to summarize the entire transcript – only extract relevant details:
-{transcript_text}
-"""
-        else:
-            transcript_section = ""
-        return f"""
+      return f"""
 Här är referensanteckningar från kollegor till en kandidat:
 
 Referens 1:
