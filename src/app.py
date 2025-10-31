@@ -7,7 +7,7 @@ from auth.auth_manager import AuthManager
 from auth.models import User
 import os
 from adapter.file_manager import write_file_to_storage
-from summary_creation import generate_summary, save_summary_to_docx, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE
+from summary_creation import generate_summary, save_summary_to_docx, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE, TRIGGER_JOB_AD
 from adapter.save_to_docx import save_summary_to_docx
 from adapter.summary_generation import generate_summary
 
@@ -108,6 +108,46 @@ def generate_seo_page():
 def generate_offer_page():
     return render_template("generate_offer.html")
 
+@app.route("/generate_jobad", methods=["POST"])
+@login_required
+def generate_job_ad():
+    # 📎 Hämta val, filer och namn från formuläret
+    fil = request.files["intervjufil"]
+    bolagsnamn = request.form["namn"]
+
+    # Kontrollera att det är en .docx-fil
+    if not fil or not fil.filename.endswith(".docx"):
+        return "❌ Felaktig filtyp. Endast .docx tillåtet."
+
+    # Spara intervju filen i input/
+    intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
+    fil.save(intervju_path)
+    
+    # Generate summary
+    try:
+            trigger = TRIGGER_JOB_AD
+            prompt = trigger_generation(trigger, intervju_path)
+            summary = generate_summary(prompt)
+    except ValueError as e:
+        return render_template("error.html", error=str(e))
+
+    #  Spara och returnera .docx
+     # Skapa output-mapp om den inte finns
+    os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
+    # Spara filen i output-mappen
+    if summary:
+        # Skapa filnamn och spara sammanfattningen
+        filename = f"sammanfattning_{bolagsnamn.lower().replace(' ', '_')}.docx"
+        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
+        save_summary_to_docx(summary, bolagsnamn, filepath)
+    else:
+        filename = f"sammanfattning_{bolagsnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
+        filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
+
+    print(f"✅ Fil sparad: {filepath}")
+    return send_file(os.path.abspath(filepath), as_attachment=True)
+    #return send_file(filepath, as_attachment=True)
+
 # Create Summary from uploaded files
 @app.route("/generate", methods=["POST"])
 @login_required
@@ -153,6 +193,7 @@ def generate():
     return send_file(os.path.abspath(filepath), as_attachment=True)
     #return send_file(filepath, as_attachment=True)
 
+# Create KP from uploaded files
 @app.route("/generate_kp", methods=["POST"])
 @login_required
 def generate_kp():
@@ -167,18 +208,9 @@ def generate_kp():
 
     #  Spara intervju filen i input/
     intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
-    fil.save(intervju_path)
+    fil.save(intervju_path)   
 
-    # Spara transcript (om det finns)
-    #transcript_path = None
-    #if transcript_file and transcript_file.filename.endswith(".docx"):
-    #    os.makedirs("data/transcript", exist_ok=True)
-    #    transcript_path = os.path.join("data/transcript", transcript_file.filename)
-    #    transcript_file.save(transcript_path)
-
-    #transcript_text = read_docx_text(transcript_path) if transcript_path else None    
-
-     # Skapa prompt och generera sammanfattning
+    # Skapa prompt och generera sammanfattning
     try:
         trigger = TRIGGER_KP
         prompt = trigger_generation(trigger, intervju_path)
@@ -191,7 +223,7 @@ def generate_kp():
         return render_template("generate_summary.html", error="Sammanfattningen kunde inte genereras.")
 
     # Spara och returnera .docx
-     # Skapa output-mapp om den inte finns
+    # Skapa output-mapp om den inte finns
     os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
     # Spara filen i output-mappen
     if summary:

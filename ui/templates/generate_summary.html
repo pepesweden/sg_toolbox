@@ -24,6 +24,7 @@
         <div class="container mt-5">
           <div class="module-blurb">
             <div class="blurb-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
+
               <!-- Annons -->
               <div class="blurb" onclick="showForm('annons')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
                 <div class="blurb-icon-container">
@@ -60,9 +61,22 @@
               <!-- Skapa ANnons-->
               <div id="annons-form" class="form-section" style="display: none;">
                 <div class="card p-4 mb-4 bg-white shadow-sm">
-                  <h3>👥 Annonsgenerering</h3>
-                  <p>Skapa en annons från Kravprofil.</p>
+                  <h3>📄 Annons</h3>
+                  <p>Här kommer du kunna generera en annons baserat på kravprofil.</p>
                 </div>
+                <form action="/generate_jobad" method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                  <div class="mb-3">
+                    <label for="intervjufil" class="form-label">Ladda upp kravprofil (.docx):</label>
+                    <input class="form-control" type="file" id="intervjufil" name="intervjufil" accept=".docx" required>
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="namn" class="form-label">Bolagest namn:</label>
+                    <input class="form-control" type="text" id="namn" name="namn" placeholder="Bolagsnamns" required>
+                  </div>
+                  <button type="submit" class="btn btn-outline-light">Skapa Annons</button>
+                </form>
               </div>
 
 
@@ -91,7 +105,7 @@
               <!--<h1>Skapa Kandidatpresentation </h1>-->
               <div id="kp-form" class="form-section" style="display: none;">
                 <div class="card p-4 mb-4 bg-white shadow-sm">
-                  <h3>📄 Kandidatpresentation (Kommer snart)</h3>
+                  <h3>📄 Kandidatpresentation</h3>
                   <p>Här kommer du kunna generera en kandidatpresentation baserat på intervjuanteckningar.</p>
                 </div>
                 <form action="/generate_kp" method="post" enctype="multipart/form-data">
