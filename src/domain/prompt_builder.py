@@ -14,7 +14,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
     """Bygger prompt för given dokumenttyp"""
     
     if doc_type == DOC_TYPE_SUMMARY:
-        mall_text = read_docx_text("data/reference/mall_sammanfattning.docx")
+        mall_text = read_md_text("data/reference/summary_template.md")
         style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
         
         #Create the LLM summary creation prompt
@@ -23,11 +23,11 @@ def build_prompt_for_document_type(doc_type, doc_text):
         return {
             "prompt": prompt,
             "type": DOC_TYPE_SUMMARY,
-            "mall_files_used": ["mall_sammanfattning.docx", "Sammanfattning-claes.docx"]
+            "mall_files_used": ["summary_template.md", "Sammanfattning-claes.docx"]
         }
         
     elif doc_type == DOC_TYPE_KP:
-        kpmall_text = read_docx_text("data/reference/kp_mall.docx")
+        kpmall_text = read_md_text("data/reference/kp_template.md")
         kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
 
         #Create the LLM "kandidatpresentation" creation prompt
@@ -36,7 +36,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
         return {
             "prompt": prompt,
             "type": DOC_TYPE_KP,
-            "mall_files_used": ["rkp_mall.docx", "kp_ic.docx"]
+            "mall_files_used": ["kp_template.md", "kp_ic.docx"]
         }
 
     elif doc_type == DOC_TYPE_REFERENCE:
@@ -62,7 +62,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
         return {
             "prompt": prompt,
             "type": DOC_TYPE_JOB_AD,
-            "mall_files_used": ["job_ad_template.docx", "job_ad_example.docx"]
+            "mall_files_used": ["job_ad_template.md", "job_ad_example.docx"]
         }
 
 

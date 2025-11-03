@@ -20,7 +20,7 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
 )
 
-# Initiate Flask-app
+# Initiate Flask-app    
 app = Flask(__name__,
             template_folder='../ui/templates',    # Redirects to a higher folder level, ui/templates
             static_folder='../ui/static',)         # Redirects to a higher folder level, ui/static

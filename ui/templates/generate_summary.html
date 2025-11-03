@@ -60,10 +60,6 @@
           <div class="module-blurb">  
               <!-- Skapa ANnons-->
               <div id="annons-form" class="form-section" style="display: none;">
-                <div class="card p-4 mb-4 bg-white shadow-sm">
-                  <h3>📄 Annons</h3>
-                  <p>Här kommer du kunna generera en annons baserat på kravprofil.</p>
-                </div>
                 <form action="/generate_jobad" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                   <div class="mb-3">

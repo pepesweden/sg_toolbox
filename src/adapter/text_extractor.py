@@ -13,6 +13,11 @@ from typing import List, Union
 from pathlib import Path
 from werkzeug.datastructures import FileStorage
 
+#Laddar moduler för PDF läsning, OCR och textigenkänning
+from PyPDF2 import PdfReader
+import pytesseract
+from pdf2image import convert_from_path
+
 # Läser in en(1) Word-fil och extraherar texten
 def read_docx_text(file_path):
     doc = Document(file_path)
@@ -42,3 +47,29 @@ def extract_texts_from_docx(files: List[Union[str, Path, FileStorage]]) -> List[
             print(f"[FEL] Kunde inte läsa {filename}: {e}")
 
     return results
+
+
+def read_pdf_text(file_path):    # NY
+    """Läser .pdf (med OCR fallback)"""
+    # Försök extrahera text
+    reader = PdfReader(file_path)
+    page = reader.pages[0]
+  
+    #print(page.extract_text())
+    if len(page.extract_text()) < 50:
+        text = ""
+        pages_path = file_path
+        pages = convert_from_path(pages_path, 300)
+
+        for i, page_image in enumerate(pages, start=1):
+            print(f"🔍 OCR bearbetar sida {i}/{len(pages)}...", end='\r')
+            text += pytesseract.image_to_string(page_image, lang="eng")
+        print("📄 Extraherade text från bilder")
+        return text 
+    else:
+        text = ""
+        # Loop över ALLA sidor och samla text
+        for page in reader.pages:  # Loopa över alla sidor
+            text += page.extract_text()
+        print("📄 Extraherade ren text")
+        return text
