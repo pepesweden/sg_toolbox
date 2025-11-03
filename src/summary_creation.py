@@ -16,14 +16,6 @@ from adapter.summary_generation import generate_summary
 from adapter.save_to_docx import save_summary_to_docx
 from adapter.text_extractor import read_docx_text, extract_texts_from_docx
 
-
-# Skapa en klient (plockar API-nyckel automatiskt från .env eller miljövariabel)
-### Duplicerad kod???###
-#from dotenv import load_dotenv
-#load_dotenv()
-#openai.api_key = os.getenv("OPENAI_API_KEY")
-
-
 UPLOAD_FOLDER = "data/input"
 DOWNLOAD_FOLDER = "data/output"   
 
