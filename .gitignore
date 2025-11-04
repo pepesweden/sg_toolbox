@@ -34,6 +34,7 @@ venv/
 
 #wordfile e.g. content
 *.docx
+*.pdf
 
 #Bilder e.g. content
 *.jpeg
