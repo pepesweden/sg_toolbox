@@ -10,7 +10,7 @@ DOC_TYPE_REFERENCE = "reference"
 DOC_TYPE_JOB_AD = "job_ad"
 
 #Function to build prompt dependen on documen chosen to generate
-def build_prompt_for_document_type(doc_type, doc_text):
+def build_prompt_for_document_type(doc_type, doc_text, cv_text):
     """Bygger prompt för given dokumenttyp"""
     
     if doc_type == DOC_TYPE_SUMMARY:
@@ -18,7 +18,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
         style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
         
         #Create the LLM summary creation prompt
-        prompt = create_prompt(doc_text, mall_text, style_text)
+        prompt = create_prompt(doc_text, mall_text, style_text, cv_text)
 
         return {
             "prompt": prompt,
@@ -31,7 +31,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
         kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
 
         #Create the LLM "kandidatpresentation" creation prompt
-        prompt = create_kp_prompt(doc_text, kpmall_text, kpstyle_text)
+        prompt = create_kp_prompt(doc_text, kpmall_text, kpstyle_text, cv_text)
 
         return {
             "prompt": prompt,
@@ -40,7 +40,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
         }
 
     elif doc_type == DOC_TYPE_REFERENCE:
-        refmall_text = read_docx_text("data/reference/refsum_mall.docx")
+        refmall_text = read_docx_text("data/reference/reference_template.md")
         refstyle_text = read_docx_text("data/reference/refsum_referencev2.docx")
 
         #Create the LLM reference creation prompt
@@ -49,7 +49,7 @@ def build_prompt_for_document_type(doc_type, doc_text):
         return {
             "prompt": prompt,
             "type": DOC_TYPE_REFERENCE,
-            "mall_files_used": ["refsum_mall.docx", "refsum_mall.docx"]
+            "mall_files_used": ["reference_template.md", "refsum_mall.docx"]
         }
     
     elif doc_type == DOC_TYPE_JOB_AD:
@@ -70,23 +70,21 @@ def build_prompt_for_document_type(doc_type, doc_text):
          return {"error": "Invalid document type"}
 
 
-def create_prompt(doc_text, mall_text, style_text, transcript_text=None):
-        if transcript_text:
-            transcript_section = f"""
-📚 This is a complementary transcript from the interview.  
-🟡 Use it *only* to support or expand upon the information in the interview notes.  
-🟡 If there are discrepancies – prioritize the interview notes.  
-🟡 You do not need to summarize the entire transcript – only extract relevant details:
-{transcript_text}
-"""
+def create_prompt(doc_text, mall_text, style_text, cv_text=None):
+        if cv_text:
+            cv_section = f"""
+            <CV>
+            {cv_text}
+            </CV>
+            """
         else:
-            transcript_section = ""
+            cv_section = ""
         return f"""
 <INTERVJUANTECKNINGAR>
 {doc_text}
 </INTERVJUANTECKNINGAR>
 
-
+{cv_section}
 
 ===
 
@@ -204,62 +202,164 @@ OUTPUT FORMAT:
 - Svara på svenska
 """
 
-def create_kp_prompt(doc_text, kpmall_text, kpstyle_text, transcript_text=None):
-    if transcript_text:
-            transcript_section = f"""
-📚 This is a complementary transcript from the interview.  
-🟡 Use it *only* to support or expand upon the information in the interview notes.  
-🟡 If there are discrepancies – prioritize the interview notes.  
-🟡 You do not need to summarize the entire transcript – only extract relevant details:
-{transcript_text}
-"""
-    else:
-        transcript_section = ""
-    return f"""
-Du är en erfaren rekryterare som skriver professionella och detaljerade kandidatpresentationer för ett svenskt rekryteringsbolag.
-
- Din uppgift:
-Skriv en **komplett och strukturerad kandidatpresentation** baserad på innehållet i följande intervjutext och CV.
-
- Presentationen ska:
-
-1. **Följa strukturen i dokumentmallen {kpmall_text}**:
-   - Rubriker: ALLMÄNT, Drivkrafter, Kompetens, utbildning, NYCKELTAL, Rekryterarens kommentarer, privat
-   - Överst: Grunddata (namn, ålder, befattning, kontakt, uppsägningstid, publicerad, lönenivå, förmåner, nivå)
-   - Alla fält fylls i. Om ett fält saknas i materialet, skriv "Ej angivet"
-
-2. **Använda tonaliteten från tidigare presentationer i {kpstyle_text}**:
-   - Reflekterande, konkret och personlig
-   - Skriven i tredje person och med rekryterarens öga för nyanser
-   - Kombinera beskrivning av kompetens och ansvar med observationer kring arbetssätt, kommunikation och driv
-
-3. **För varje sektion, följ dessa riktlinjer**:
-
-   - **ALLMÄNT**: Kronologisk, löpande sammanfattning av karriären. Sätt erfarenheterna i kontext. Lyft fram yrkesroll, ansvar, miljö, förändringar och exempel.
-   - **Drivkrafter**: En kommaseparerad lista med ord (ex: nyfikenhet, ansvar, problemlösning)
-   - **Kompetens**: En kommaseparerad lista med ord om kandidatens yrkesmässiga kompetenser, metoder, verktyg eller områden – oavsett roll (t.ex. försäljning, utveckling, ledarskap, analys, marknad etc.)
-   - **Utbildning**: Punktlista med utbildningar, certifikat och eventuella kurser
-   - **NYCKELTAL**: Punktlista med siffror *om de finns i materialet* (ex: teamstorlek, budgetansvar, antal kunder, försäljningsmål, projektantal, etc.)
-   - **Rekryterarens kommentarer**: Reflekterande text om kandidatens arbetssätt, kommunikationsstil, personlighet och professionella nivå
-   - **Privat**: Endast om relevant information finns – håll det kort
-
-4. **Prioritera konkret yrkesmässig kontext och detaljer**:
-   - Beskriv miljö, ansvar, prestationer, förändringar och metoder
-   - Lyft exempel på problemlösning, driv, anpassning, och kommunikation
-   - Oavsett om kandidaten arbetar med teknik, sälj, analys, projektledning eller något annat – inkludera yrkesspecifika detaljer
-
- Begränsningar:
-- Du får **inte gissa, lägga till eller anta** något som inte framgår tydligt i materialet
-- Hela texten ska bygga på {doc_text} och {transcript_section}
-- Använd aldrig spekulationer, generaliseringar eller fluff – var tydlig, faktabaserad och detaljerad
-
-🛠️ Underlag:
----
+def create_kp_prompt(doc_text, mall_text, style_text, cv_text=None):
+        if cv_text:
+            cv_section = f"""
+            <CV>
+            {cv_text}
+            </CV>
+            """
+        else:
+            cv_section = ""
+        return f"""
+```
+<INTERVJUANTECKNINGAR>
 {doc_text}
-{transcript_section}
----
+</INTERVJUANTECKNINGAR>
 
-✍️ Returnera endast texten till kandidatpresentationen – utan några extrakommentarer, förklaringar eller rubriker utöver mallen.
+{cv_section}
+
+===
+
+Du är en erfaren rekryterare på ett svenskt rekryteringsbolag. Din uppgift är att skriva en kandidatsammanfattning baserad på intervjuanteckningar och CV.
+
+VIKTIGA REGLER FÖR KÄLLMATERIAL:
+- CV är den auktoritativa källan för: årtal, jobbtitlar, företagsnamn, utbildning
+- Intervjuanteckningar är den auktoritativa källan för: arbetsuppgifter, tekniska detaljer, personlighet, motivation
+- Om CV saknas: använd intervjun för allt, men var mer försiktig med årtal om de är otydliga
+- Intervjuanteckningar är ofta korthuggna och informella (t.ex. "Jobbat 5 år, sålde bra, fick avancera") - tolka dessa naturligt men hitta ALDRIG på detaljer
+
+GLOBALA SPRÅKREGLER (gäller för HELA texten):
+UNDVIK dessa typer av "LLM-floskler" och vaga formuleringar:
+    FÖRBJUDNA FRASTYPER:
+    ❌ Generiska adjektiv utan konkret stöd: "driven", "passionerad", "dynamisk", "målinriktad"
+    ❌ Vaga superlativer: "gedigen erfarenhet", "omfattande kunskap", "stark bakgrund", "bred kompetens"
+    ❌ Abstraka beskrivningar: "har en passion för", "brinner för", "trivs i dynamisk miljö"
+    ❌ Floskelaktiga kombinationer: "driven och målinriktad", "engagerad och strukturerad"
+    ❌ Överdrifter utan belägg: "exceptionell", "outstanding", "expert inom"
+
+    SPECIFIKA EXEMPEL PÅ FÖRBJUDNA FRASER:
+    ❌ "driven och målinriktad"
+    ❌ "passion för"
+    ❌ "gedigen erfarenhet" 
+    ❌ "omfattande kunskap"
+    ❌ "dynamisk miljö"
+    ❌ "stark bakgrund"
+    ❌ "tar initiativ"
+    ❌ "bred kompetens inom"
+
+ANVÄND istället konkreta detaljer:
+✅ "ökade försäljningen med 40%"
+✅ "ansvarade för 1300 användare"
+✅ "övergick från on-prem till hybrid-lösning"
+✅ "byggde PowerShell-skript som automatiserade..."
+✅ Beskriv VAD personen gjorde, inte HUR bra de var
+
+SKRIV I DENNA ORDNING - STEG FÖR STEG:
+
+STEG 1 - Extrahera fakta innan du skriver:
+a) Från CV (om det finns): lista alla jobb med årtal, titlar, företag (kronologiskt, äldst först)
+   Om CV saknas: extrahera denna info från intervjuanteckningar om möjligt
+b) Från intervju: lista alla tekniska verktyg, system, programvaror (var specifik: "Intune", "PowerShell", "Cisco CLI" etc)
+c) Från intervju: notera personlighetsdrag som har konkreta exempel
+
+
+STEG 2 - Skriv sammanfattningen enligt denna struktur:
+
+<STRUKTURMALL>
+{mall_text}
+</STRUKTURMALL>
+
+VIKTIGT FÖR FÖRSTA DELEN (Sammanfattning – Namn):
+- Använd INTE bold labels (**Typ av profil:**) 
+- Skriv bara värdet på varje rad, precis som i stilreferensen
+- Format:
+  Sammanfattning – [Namn]
+  [Profiltyp]
+  [Vad personen vill]
+  [Styrka]
+  [Lön]
+  [Uppsägningstid]
+
+STEG 3 - Följ denna EXAKTA stil och ton:
+
+<STILREFERENS - KOPIERA DENNA STIL>
+{style_text}
+</STILREFERENS>
+
+DETALJERADE INSTRUKTIONER FÖR VARJE SEKTION:
+
+**ALLMÄNT (Kronologisk karriärberättelse):**
+1. Inled med EN av dessa fraser (välj baserat på innehåll):
+   - "[Namn] började sin karriär [år] hos [företag] som [titel]..."
+   - "[Namn] har byggt sin karriär inom [område] och arbetar idag som..."
+   - "Efter studier inom [område] började [Namn] [år] hos [företag]..."
+
+2. Skriv sedan STRIKT KRONOLOGISKT (äldst först → nyast sist):
+   - För varje jobb: nämn företag, tidsperiod, jobbtitel, huvudansvar i avslappning stil
+   - Nämn tekniska OMRÅDEN/KATEGORIER här (t.ex. "molninfrastruktur", "M365-miljö", "automatisering")
+   - Använd tidsmarkörer: "Efter X år...", "Under perioden...", "Sedan [år]...", se till att variera markörer
+   - Spara specifika verktygsnamn till nästa sektion
+   - Beskriv exempel på erfarenhet från karriären så tydligt sm det går från <INTEVJUANTECKNIGAR>
+
+
+**TEKNISK KUNSKAP OCH FÄRDIGHETER (Detaljerad genomgång):**
+1. KRITISKT: Nämn ALLA specifika verktyg, system, programvaror från STEG 1b
+2. Skriv i löpande text (inga punktlistor)
+3. För varje teknologi: ge konkret exempel på VAD personen gjort
+   - Exempel: "Han har använt PowerShell för att bygga skript som automatiskt byter standardskrivare vid omstart för 1300 användare"
+   - INTE: "Han har erfarenhet av PowerShell och automatisering"
+
+4. Gruppera logiskt (men täck ALLT):
+   - Microsoft-miljö (M365, Azure, Intune, Exchange, etc)
+   - Infrastruktur (nätverk, servrar, virtualisering)
+   - Automatisering (PowerShell, scripting, etc)
+   - Övriga verktyg/system
+
+5. Prioritera DJUP och DETALJER över generella beskrivningar
+6. Om intervjun nämner något tekniskt bara i förbigående - inkludera det ändå!
+
+**PERSONLIGHET/PRAKTISKT:**
+1. Basera ENDAST på konkreta exempel från intervjun
+2. Beskriv VAD personen gör, inte HUR bra de är
+3. Om intervjun nämner drivkrafter eller arbetssätt: använd personens egna ord
+4. Inkludera: arbetssätt, preferenser för arbetskultur, vad som motiverar personen
+
+**KOMMENTAR:**
+1. Inled med: "[Namn] ger ett [välj konkret adjektiv: strukturerat/entusiastiskt/analytiskt/metodiskt] intryck"
+
+2. Skriv ENDAST om:
+   - Observationer rekryteraren faktiskt gjorde under intervjun (om dokumenterat)
+   - Kandidatens styrkor som framgår tydligt från intervjun
+
+3. VIKTIGT: Om rekryteraren INTE dokumenterade egna observationer i intervjun:
+   - Basera detta på kandidatens beskrivningar av sitt arbetssätt
+   - Var försiktig med att "hitta på" intryck som inte finns dokumenterade
+
+4. FÖRBJUDNA AVSLUTNINGSFRASER:
+   ❌ "Jag rekommenderar starkt att ni överväger..."
+   ❌ "Jag rekommenderar att ni träffar..."
+   ❌ "[Namn] skulle vara en utmärkt kandidat för..."
+   ❌ "Vi bör definitivt gå vidare med..."
+   ❌ Alla andra explicit rekommenderande meningar
+
+5. SLUTA när du beskrivit intryck och styrkor. Ingen "avslutande" rekommendation.
+
+KRITISKA BEGRÄNSNINGAR:
+🚫 Gissa ALDRIG årtal om de inte finns i CV
+🚫 Hitta ALDRIG på tekniska detaljer som inte nämns
+🚫 Använd ALDRIG spekulativa fraser ("troligtvis", "förmodligen", "det verkar som")
+🚫 Kopiera INTE exakta citat från stilreferensen (kopiera stil, inte innehåll)
+🚫 Lägg INTE till information som inte finns i källmaterialet
+🚫 Skriv ALDRIG rekommendationer ("Jag rekommenderar...", "Bör träffa...", "Utmärkt för...") om inte rekryteraren explicit skrev detta i intervjun
+🚫 Avsluta INTE kommentaren med avslutningsfraser - sluta när du sagt det som finns att säga
+
+OUTPUT FORMAT:
+- Skriv endast sammanfattningen enligt strukturen ovan
+- Använd **dubbla asterisker** runt rubriker för att markera dem
+- Lämna en tom rad före varje rubrik
+- Inga extra kommentarer, förklaringar eller rubriker utöver mallen
+- Svara på svenska
 """
 
 

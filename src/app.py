@@ -155,6 +155,7 @@ def generate():
     fil = request.files["intervjufil"]
     #transcript_file = request.files.get("transcript")
     candidate_name = request.form["namn"]
+    cv_file = request.files["cv"]
 
     # Make sure it is a .docx file
     if not fil or not fil.filename.endswith(".docx"):
@@ -165,12 +166,13 @@ def generate():
     #fil.save(intervju_path)
 
     ###Importerad filhanteringslogik###
-    intervju_path = write_file_to_storage(fil.read(), fil.filename, UPLOAD_FOLDER)#REMEMBER Filestorage object from flask!!
+    intervju_path = write_file_to_storage(fil.read(), fil.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
+    cv_path = write_file_to_storage(cv_file.read(), cv_file.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
 
     # Skapa prompt och generera sammanfattning
     try:
         trigger = TRIGGER_SUMMARY
-        prompt = trigger_generation(trigger, intervju_path)
+        prompt = trigger_generation(trigger, intervju_path, cv_path)
         summary = generate_summary(prompt)
     except ValueError as e:
         return render_template("error.html", error=str(e))
