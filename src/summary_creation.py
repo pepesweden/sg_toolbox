@@ -26,30 +26,36 @@ TRIGGER_REFERENCE = "reference_trigger"
 TRIGGER_JOB_AD = "job_ad_trigger"
 
 # Function to load data and prep prompt info for summary generation
-def trigger_generation(trigger, file_path, cv_text=None): # <---- Ändra till cv_path
-                                                # <---- LÄGG TILL ALL FIL-LÄSNING HÄR ISTÄLLET
+def trigger_generation(trigger, file_path, cv_path=None): 
+    
+    #Call functions to extract text from uploaded Docs
+    doc_text = read_docx_text(file_path)
+    if cv_path.endswith(".docx"):
+        cv_text = read_docx_text(cv_path)
+    else:
+        cv_text = read_pdf_text(cv_path)                                            # <---- LÄGG TILL ALL FIL-LÄSNING HÄR ISTÄLLET
                                                 # <---- LÄGG TILL ALL FIL-LÄSNING HÄR ISTÄLLET
     if trigger == TRIGGER_SUMMARY:
         # Load style template and referens for "summary"
         doc_type = DOC_TYPE_SUMMARY
-        doc_text = read_docx_text(file_path)
+        
                                                 # <---- LÄGG TILL PDF LÄSNING HÄR ISTÄLLET
     
     elif trigger == TRIGGER_KP:
         # Load style template and referens for "KP"
         doc_type = DOC_TYPE_KP
-        doc_text = read_docx_text(file_path)
+        #doc_text = read_docx_text(file_path)
                                                  # <---- LÄGG TILL PDF LÄSNING HÄR ISTÄLLET
     
     elif trigger == TRIGGER_REFERENCE:
         # Load style template and referens for "Reference"
         doc_type = DOC_TYPE_REFERENCE
-        doc_text = read_docx_text(file_path) 
+        #doc_text = read_docx_text(file_path) 
 
     elif trigger == TRIGGER_JOB_AD:
         # Load style template and referens for "Reference"
         doc_type = DOC_TYPE_JOB_AD
-        doc_text = read_docx_text(file_path)    
+        #doc_text = read_docx_text(file_path)    
 
     result = build_prompt_for_document_type(doc_type, doc_text, cv_text)
     if "error" in result:
@@ -79,21 +85,15 @@ if __name__ == "__main__":
     #  Låt användaren lägga in CV av intervjun   
     cv_doc = input("📥 Ange filnamn på CV i mappen 'input/' (inklusive .docx eller .pdf): ")
     cv_text = None
-    cv_doc_path = None
-    ####FLTYTA DETTA TILL trigger_generation() för att läsa filerna på ett ställe #####
+    cv_path = None
     if cv_doc:
-        cv_doc_path = f"data/input/{cv_doc}"
-        if cv_doc.endswith(".docx"):
-            cv_text = read_docx_text(cv_doc_path)
-        else:
-            cv_text = read_pdf_text(cv_doc_path)
-      
+        cv_path = f"data/input/{cv_doc}"
+
     # Skapa prompt och generera sammanfattning eller KP
     if doc_choice == 1: #skapaa sammanfattning
-        #prompt_text = trigger_summary_generation()
         try:
             trigger = TRIGGER_SUMMARY
-            prompt = trigger_generation(trigger, intervju_path, cv_text) # <---- ÄNDRA TILL CV_PATH!
+            prompt = trigger_generation(trigger, intervju_path, cv_path) 
             summary = generate_summary(prompt)
         except ValueError as e:
             print(f"Fel: {e}")
@@ -102,7 +102,7 @@ if __name__ == "__main__":
         #prompt_text = trigger_kp_generation()
         try:
             trigger = TRIGGER_KP
-            prompt = trigger_generation(trigger, intervju_path, cv_text)
+            prompt = trigger_generation(trigger, intervju_path, cv_path)
             summary = generate_summary(prompt)
         except ValueError as e:
             print(f"Fel: {e}")
