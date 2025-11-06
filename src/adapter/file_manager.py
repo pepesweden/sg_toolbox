@@ -28,17 +28,12 @@ def write_file_to_storage(file_data, filename, destination_folder):
     return file_path
    
     
-    
-
-
-"""
-def save_multiple_files(file_list, upload_folder, destination_fold):
+def save_multiple_files(file_list, upload_folder, destination_folder):
     saved_paths = []
     for file_data, filename in file_list:
         path = save_single_file(file_data, filename, upload_folder, ...) 
         saved_paths.append(path)
-    return saved_paths
-""" 
+    return saved_paths 
 
 ## File saving ##
 def create_output_path(download_folder, candidate_name, doc_type="sammanfattning"):
