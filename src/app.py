@@ -1,3 +1,4 @@
+# Import required modules from installt Python libraries
 import logging
 from flask_seasurf import SeaSurf
 from flask_talisman import Talisman
@@ -6,6 +7,8 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from auth.auth_manager import AuthManager
 from auth.models import User
 import os
+
+# Import toolbox specific modules
 from adapter.file_manager import write_file_to_storage
 from summary_creation import generate_summary, save_summary_to_docx, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE, TRIGGER_JOB_AD
 from adapter.save_to_docx import save_summary_to_docx
@@ -161,9 +164,6 @@ def generate():
     if not fil or not fil.filename.endswith(".docx"):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
-    # Save the file to input/
-    #intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename) 
-    #fil.save(intervju_path)
 
     ###Importerad filhanteringslogik###
     intervju_path = write_file_to_storage(fil.read(), fil.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
@@ -199,23 +199,23 @@ def generate():
 @app.route("/generate_kp", methods=["POST"])
 @login_required
 def generate_kp():
-    # Get infrormation (file and candidate name) from the web form
+    # Get infrormation (files and candidate name) from the web form
     fil = request.files["intervjufil"]
-    #transcript_file = request.files.get("transcript")
     kandidatnamn = request.form["namn"]
+    cv_file = request.files["cv"]
 
     # Kontrollera att det är en .docx-fil
     if not fil or not fil.filename.endswith(".docx"):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
 
-    #  Spara intervju filen i input/
-    intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
-    fil.save(intervju_path)   
+    # Imported file management logic
+    intervju_path = write_file_to_storage(fil.read(), fil.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
+    cv_path = write_file_to_storage(cv_file.read(), cv_file.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
 
     # Skapa prompt och generera sammanfattning
     try:
         trigger = TRIGGER_KP
-        prompt = trigger_generation(trigger, intervju_path)
+        prompt = trigger_generation(trigger, intervju_path, cv_path)
         summary = generate_summary(prompt)
     except ValueError as e:
         return render_template("error.html", error=str(e))

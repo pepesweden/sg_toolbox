@@ -33,29 +33,23 @@ def trigger_generation(trigger, file_path, cv_path=None):
     if cv_path.endswith(".docx"):
         cv_text = read_docx_text(cv_path)
     else:
-        cv_text = read_pdf_text(cv_path)                                            # <---- LÄGG TILL ALL FIL-LÄSNING HÄR ISTÄLLET
-                                                # <---- LÄGG TILL ALL FIL-LÄSNING HÄR ISTÄLLET
+        cv_text = read_pdf_text(cv_path)
+                                                
     if trigger == TRIGGER_SUMMARY:
         # Load style template and referens for "summary"
         doc_type = DOC_TYPE_SUMMARY
-        
-                                                # <---- LÄGG TILL PDF LÄSNING HÄR ISTÄLLET
     
     elif trigger == TRIGGER_KP:
         # Load style template and referens for "KP"
         doc_type = DOC_TYPE_KP
-        #doc_text = read_docx_text(file_path)
-                                                 # <---- LÄGG TILL PDF LÄSNING HÄR ISTÄLLET
     
     elif trigger == TRIGGER_REFERENCE:
         # Load style template and referens for "Reference"
         doc_type = DOC_TYPE_REFERENCE
-        #doc_text = read_docx_text(file_path) 
 
     elif trigger == TRIGGER_JOB_AD:
         # Load style template and referens for "Reference"
         doc_type = DOC_TYPE_JOB_AD
-        #doc_text = read_docx_text(file_path)    
 
     result = build_prompt_for_document_type(doc_type, doc_text, cv_text)
     if "error" in result:
