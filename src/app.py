@@ -212,7 +212,7 @@ def generate_kp():
     intervju_path = write_file_to_storage(fil.read(), fil.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
     cv_path = write_file_to_storage(cv_file.read(), cv_file.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
 
-    # Skapa prompt och generera sammanfattning
+    # Create prompt and generate summary
     try:
         trigger = TRIGGER_KP
         prompt = trigger_generation(trigger, intervju_path, cv_path)
@@ -244,28 +244,36 @@ def generate_kp():
 @login_required
 def generate_reference():
     # 📎 Hämta val, filer och namn från formuläret
-    fil = request.files["intervjufil"]
+    #fil = request.files["intervjufil"]
+    filer = request.files.getlist("intervjufil")
     kandidatnamn = request.form["namn"]
 
-    # Kontrollera att det är en .docx-fil
-    if not fil or not fil.filename.endswith(".docx"):
-        return "❌ Felaktig filtyp. Endast .docx tillåtet."
+    # Skapa en tom lista för att spara alla paths
+    sparade_paths = []
 
-    # Spara intervju filen i input/
-    intervju_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
-    fil.save(intervju_path)
-    
+    # Loopa över varje fil
+    for fil in filer:
+        # Kontrollera att det är en .docx-fil
+        if not fil or not fil.filename.endswith(".docx"):
+            return "❌ Felaktig filtyp. Endast .docx tillåtet."
+        ref_path = os.path.join(app.config["UPLOAD_FOLDER"], fil.filename)
+        fil.save(ref_path)
+        sparade_paths.append(ref_path)  # Spara path:en till listan
+
+    # Nu har du: sparade_paths = ["data/input/ref1.docx", "data/input/ref2.docx"]
+
     # Generate summary
     try:
             trigger = TRIGGER_REFERENCE
-            prompt = trigger_generation(trigger, intervju_path)
+            prompt = trigger_generation(trigger, sparade_paths)
             summary = generate_summary(prompt)
     except ValueError as e:
         return render_template("error.html", error=str(e))
 
-    #  Spara och returnera .docx
-     # Skapa output-mapp om den inte finns
+    ###  Spara och returnera .docx ####
+    # Skapa output-mapp om den inte finns
     os.makedirs(app.config["DOWNLOAD_FOLDER"], exist_ok=True)
+    
     # Spara filen i output-mappen
     if summary:
         # Skapa filnamn och spara sammanfattningen
@@ -278,8 +286,6 @@ def generate_reference():
 
     print(f"✅ Fil sparad: {filepath}")
     return send_file(os.path.abspath(filepath), as_attachment=True)
-    #return send_file(filepath, as_attachment=True)
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)

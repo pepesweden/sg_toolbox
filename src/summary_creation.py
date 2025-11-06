@@ -29,8 +29,21 @@ TRIGGER_JOB_AD = "job_ad_trigger"
 def trigger_generation(trigger, file_path, cv_path=None): 
     
     #Call functions to extract text from uploaded Docs
-    doc_text = read_docx_text(file_path)
-    if cv_path.endswith(".docx"):
+    # Kolla om det är en lista, if lista == referens.
+    if isinstance(file_path, list):
+        doc_text = ""
+        # Det är en lista - loopa över den
+        for i, path in enumerate(file_path, start=1):
+            list_object_text = read_docx_text(path)
+            doc_text += f"\n\n=== REFERENS {i} ===\n\n{list_object_text}"
+    else:
+    # Det är en enskild path (sträng) - läs bara den
+        doc_text = read_docx_text(file_path)
+    
+    # Identify and read docx or pdf CV data
+    if cv_path is None:
+        cv_text = None  # Ingen CV uppladdad
+    elif cv_path.endswith(".docx"):
         cv_text = read_docx_text(cv_path)
     else:
         cv_text = read_pdf_text(cv_path)
