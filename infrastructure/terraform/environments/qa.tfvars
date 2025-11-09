@@ -1,0 +1,2 @@
+location    = "swedencentral"
+environment = "qa"
