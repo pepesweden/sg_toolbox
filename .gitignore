@@ -32,14 +32,22 @@ node_modules/
 # venv filer och binärer
 venv/
 
-#wordfile e.g. content
+# Images (general block)
+*.png
+*.jpg
+*.jpeg
+
+# Except specific folders
+!ui/static/logo/*.png
+!ui/static/backgrounds/*.jpg
+
+# Documents (general block)  
 *.docx
 *.pdf
 
-#Bilder e.g. content
-*.jpeg
-*.jpg
-*.png
+# Except reference templates
+!data/reference/*.docx
+!data/reference/*.md
 
 # PostgreSQL data (men behåll mappen)
 data/postgres/*
