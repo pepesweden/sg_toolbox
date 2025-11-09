@@ -123,49 +123,7 @@ resource "azurerm_key_vault_access_policy" "container_app" {
   depends_on = [azurerm_container_app.web]
 }
 
-### Secrets in Key Vault ###
-#Key for OpenAI API call
-resource "azurerm_key_vault_secret" "openai_key" {
-  name         = "openai-api-key"
-  value        = var.openai_api_key
-  key_vault_id = azurerm_key_vault.toolbox.id
-  
-  depends_on = [azurerm_key_vault_access_policy.admin]
-}
-
-# pPostgres admin password
-resource "azurerm_key_vault_secret" "postgres_password" {
-  name         = "postgres-admin-password"
-  value        = var.postgres_admin_password
-  key_vault_id = azurerm_key_vault.toolbox.id
-  
-  depends_on = [azurerm_key_vault_access_policy.admin]
-}
-
-# Flask secret key (för sessions)
-resource "azurerm_key_vault_secret" "flask_secret" {
-  name         = "flask-secret-key"
-  value        = var.flask_secret_key
-  key_vault_id = azurerm_key_vault.toolbox.id
-  depends_on   = [azurerm_key_vault_access_policy.admin]
-}
-
-# Admin password (för toolbox login)
-resource "azurerm_key_vault_secret" "admin_password" {
-  name         = "admin-password"
-  value        = var.admin_password
-  key_vault_id = azurerm_key_vault.toolbox.id
-  depends_on   = [azurerm_key_vault_access_policy.admin]
-}
-
-# PostgreSQL connection string (för Container Apps)
-resource "azurerm_key_vault_secret" "postgres_connection" {
-  name  = "postgres-connection-string"
-  value = "postgresql://${azurerm_postgresql_flexible_server.db.administrator_login}:${var.postgres_admin_password}@${azurerm_postgresql_flexible_server.db.fqdn}:5432/${azurerm_postgresql_flexible_server_database.toolbox.name}?sslmode=require"
-  key_vault_id = azurerm_key_vault.toolbox.id
-  depends_on   = [azurerm_key_vault_access_policy.admin]
-}
-
+###Här ska secrets in som är borttagna
 
 # Log Analytics Workspace (för Container Apps logs)
 resource "azurerm_log_analytics_workspace" "toolbox" {
