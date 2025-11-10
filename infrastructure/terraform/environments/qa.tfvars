@@ -1,2 +1,0 @@
-location    = "swedencentral"
-environment = "qa"
