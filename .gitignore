@@ -55,6 +55,7 @@ data/postgres/*
 
 # Terraform
 *.tfvars
+!infrastructure/terraform/environments/qa.tfvars
 *.tfstate
 *.tfstate.backup
 .terraform/
