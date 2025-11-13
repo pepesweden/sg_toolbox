@@ -188,9 +188,15 @@ data "azurerm_key_vault_secret" "admin_password" {
 }
 
 # PostgreSQL connection string (för Container Apps)
-resource "azurerm_key_vault_secret" "postgres_connection" {
-  name  = "postgres-connection-string"
-  value = "postgresql://${azurerm_postgresql_flexible_server.db.administrator_login}:${data.azurerm_key_vault_secret.postgres_password.value}@${azurerm_postgresql_flexible_server.db.fqdn}:5432/${azurerm_postgresql_flexible_server_database.toolbox.name}?sslmode=require"
+#resource "azurerm_key_vault_secret" "postgres_connection" {
+#  name  = "postgres-connection-string"
+#  value = "postgresql://${azurerm_postgresql_flexible_server.db.administrator_login}:${data.azurerm_key_vault_secret.postgres_password.value}@${azurerm_postgresql_flexible_server.db.fqdn}:5432/${azurerm_postgresql_flexible_server_database.toolbox.name}?sslmode=require"
+#  key_vault_id = azurerm_key_vault.toolbox.id
+#}
+
+###Uppdaterad data source - postgres_connection_string####
+data "azurerm_key_vault_secret" "postgres_connection" {
+  name         = "postgres-connection-string"
   key_vault_id = azurerm_key_vault.toolbox.id
 }
 
@@ -270,7 +276,7 @@ resource "azurerm_container_app" "web" {
   
   secret {
     name  = "database-url"
-    key_vault_secret_id = azurerm_key_vault_secret.postgres_connection.id
+    key_vault_secret_id = data.azurerm_key_vault_secret.postgres_connection.id
     identity            = "System"
   }
   
