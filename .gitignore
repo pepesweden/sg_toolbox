@@ -23,8 +23,6 @@ instance/
 
 # Paket och distributionsfiler
 dist/
-build/
-*.egg-info/
 
 # Node (om frontend finns)
 node_modules/
@@ -59,3 +57,4 @@ data/postgres/*
 *.tfstate
 *.tfstate.backup
 .terraform/
+infrastructure/terraform/tfplan

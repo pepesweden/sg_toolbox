@@ -15,28 +15,28 @@ variable "environment" {
 }
 
 
-variable "postgres_admin_password" {
-  description = "PostgreSQL administrator password"
-  type        = string
-  sensitive   = true
-}
+#variable "postgres_admin_password" {
+#  description = "PostgreSQL administrator password"
+#  type        = string
+#  sensitive   = true
+#}
+
+#
+#variable "openai_api_key" {
+#  description = "OpenAI API key"
+#  type        = string
+#  sensitive   = true
+#}
 
 
-variable "openai_api_key" {
-  description = "OpenAI API key"
-  type        = string
-  sensitive   = true
-}
+#variable "flask_secret_key" {
+#  description = "Flask secret key for sessions"
+#  type        = string
+#  sensitive   = true
+#}
 
-
-variable "flask_secret_key" {
-  description = "Flask secret key for sessions"
-  type        = string
-  sensitive   = true
-}
-
-variable "admin_password" {
-  description = "Admin user password"
-  type        = string
-  sensitive   = true
-}
+#variable "admin_password" {
+#  description = "Admin user password"
+#  type        = string
+#  sensitive   = true
+#}
