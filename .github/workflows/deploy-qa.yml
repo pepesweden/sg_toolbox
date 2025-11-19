@@ -55,11 +55,12 @@ jobs:
         run: |
           terraform plan \
             -var-file=environments/qa.tfvars \
-            -var="postgres_admin_password=${{ secrets.POSTGRES_ADMIN_PASSWORD }}" \
-            -var="openai_api_key=${{ secrets.OPENAI_API_KEY }}" \
-            -var="flask_secret_key=${{ secrets.FLASK_SECRET_KEY }}" \
-            -var="admin_password=${{ secrets.ADMIN_PASSWORD }}" \
             -out=tfplan
+      #      -var="postgres_admin_password=${{ secrets.POSTGRES_ADMIN_PASSWORD }}" \
+      #      -var="openai_api_key=${{ secrets.OPENAI_API_KEY }}" \
+      #      -var="flask_secret_key=${{ secrets.FLASK_SECRET_KEY }}" \
+      #      -var="admin_password=${{ secrets.ADMIN_PASSWORD }}" \
+            
 
       - name: Terraform Apply
         working-directory: infrastructure/terraform
