@@ -31,10 +31,10 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
 
-      - name: Bootstrap Key Vault Access
-        run: |
-          chmod +x scripts/bootstrap-keyvault.sh
-          ./scripts/bootstrap-keyvault.sh qa
+      #- name: Bootstrap Key Vault Access
+      #  run: |
+      #    chmod +x scripts/bootstrap-keyvault.sh
+      #    ./scripts/bootstrap-keyvault.sh qa
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
