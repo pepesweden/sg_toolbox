@@ -90,6 +90,13 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Verify Azure Login
+        run: |
+          echo "Testing Azure CLI..."
+          az account show
+          echo "Listing ACR..."
+          az acr list -o table
+
       - name: Login to Azure Container Registry
         run: |
             az acr login --name sgtoolboxacrqa
