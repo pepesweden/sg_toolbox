@@ -85,9 +85,10 @@ jobs:
 
       - name: Login to Azure Container Registry
         run: |
-          echo ${{ secrets.AZURE_CLIENT_SECRET }} | docker login ${{ env.ACR_LOGIN_SERVER }} \
-            --username ${{ secrets.AZURE_CLIENT_ID }} \
-            --password-stdin
+            az acr login --name sgtoolboxacrqa
+          #  echo ${{ secrets.AZURE_CLIENT_SECRET }} | docker login ${{ env.ACR_LOGIN_SERVER }} \
+          #  --username ${{ secrets.AZURE_CLIENT_ID }} \
+          #  --password-stdin
 
       - name: Build Docker image
         run: |
