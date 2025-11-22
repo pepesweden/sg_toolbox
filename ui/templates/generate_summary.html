@@ -60,6 +60,10 @@
           <div class="module-blurb">  
               <!-- Skapa ANnons-->
               <div id="annons-form" class="form-section" style="display: none;">
+                <div class="card p-4 mb-4 bg-white shadow-sm">
+                  <h3>📰 Skapa annons</h3>
+                  <p>Skapa en annons för ett rekryteringsuppdrag.</p>
+                </div>
                 <form action="/generate_jobad" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                   <div class="mb-3">
@@ -80,7 +84,7 @@
               <div id="summary-form" class="form-section" style="display: none;">
                 <div class="card p-4 mb-4 bg-white shadow-sm">
                   <h3>📄 kandidatsammanfattning</h3>
-                  <p>Här kommer du kunna generera en kandidatpresentation baserat på intervjuanteckningar.</p>
+                  <p>Generera en sammanfattning baserat på intervjuanteckningar.</p>
                 </div>
                 <form action="/generate" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
@@ -104,7 +108,7 @@
               <div id="kp-form" class="form-section" style="display: none;">
                 <div class="card p-4 mb-4 bg-white shadow-sm">
                   <h3>📄 Kandidatpresentation</h3>
-                  <p>Här kommer du kunna generera en kandidatpresentation baserat på intervjuanteckningar.</p>
+                  <p>Generera en kandidatpresentation baserat på intervjuanteckningar.</p>
                 </div>
                 <form action="/generate_kp" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
