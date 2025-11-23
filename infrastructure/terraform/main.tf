@@ -113,17 +113,17 @@ data "azurerm_client_config" "current" {}
 #  ]
 #}
 
-resource "azurerm_key_vault_access_policy" "container_app" {
-  key_vault_id = azurerm_key_vault.toolbox.id
-  tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_container_app.web.identity[0].principal_id
-  
-  secret_permissions = [
-    "Get"
-  ]
-  
-  depends_on = [azurerm_container_app.web]
-}
+#resource "azurerm_key_vault_access_policy" "container_app" {
+#  key_vault_id = azurerm_key_vault.toolbox.id
+#  tenant_id    = data.azurerm_client_config.current.tenant_id
+#  object_id    = azurerm_container_app.web.identity[0].principal_id
+#  
+#  secret_permissions = [
+#    "Get"
+#  ]
+#  
+#  depends_on = [azurerm_container_app.web]
+#}
 
 ### Secrets in Key Vault ###
 ### Dessa skall bort/ bli data source ###
