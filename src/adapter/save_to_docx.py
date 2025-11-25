@@ -60,8 +60,8 @@ def save_summary_to_docx(summary_text, candidate_name, filepath):
         paragraph = doc.add_paragraph()
         
         # Rubrik 2 (mindre rubriker)
-        if para.strip().startswith("**") and para.strip().endswith("**"):
-            clean_text = para.strip().replace("**", "")
+        if para.strip().startswith("##"): #and para.strip().endswith("**"):
+            clean_text = para.strip().replace("##", "")
             run = paragraph.add_run(clean_text)
             run.font.size = Pt(12)
             run.font.bold = True
