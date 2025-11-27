@@ -217,15 +217,17 @@ def create_kp_prompt(doc_text, mall_text, style_text, cv_text=None):
 {doc_text}
 </INTERVJUANTECKNINGAR>
 
-{cv_section}
+<CV>
+{cv_text}
+</CV>
 
 ===
 
-Du är en erfaren rekryterare på ett svenskt rekryteringsbolag. Din uppgift är att skriva en kandidatsammanfattning baserad på intervjuanteckningar och CV.
+Du är en erfaren rekryterare på ett svenskt rekryteringsbolag. Din uppgift är att skriva en kandidatpresentation baserad på intervjuanteckningar och CV.
 
 VIKTIGA REGLER FÖR KÄLLMATERIAL:
 - CV är den auktoritativa källan för: årtal, jobbtitlar, företagsnamn, utbildning
-- Intervjuanteckningar är den auktoritativa källan för: arbetsuppgifter, tekniska detaljer, personlighet, motivation
+- Intervjuanteckningar är den auktoritativa källan för: arbetsuppgifter, tekniska detaljer, personlighet, motivation, lön
 - Om CV saknas: använd intervjun för allt, men var mer försiktig med årtal om de är otydliga
 - Intervjuanteckningar är ofta korthuggna och informella (t.ex. "Jobbat 5 år, sålde bra, fick avancera") - tolka dessa naturligt men hitta ALDRIG på detaljer
 
@@ -248,38 +250,21 @@ UNDVIK dessa typer av "LLM-floskler" och vaga formuleringar:
     ❌ "tar initiativ"
     ❌ "bred kompetens inom"
 
-ANVÄND istället konkreta detaljer:
-✅ "ökade försäljningen med 40%"
-✅ "ansvarade för 1300 användare"
-✅ "övergick från on-prem till hybrid-lösning"
-✅ "byggde PowerShell-skript som automatiserade..."
-✅ Beskriv VAD personen gjorde, inte HUR bra de var
+ANVÄND istället konkreta detaljer, faktiska händelser och specifika exempel från intervjun.
 
 SKRIV I DENNA ORDNING - STEG FÖR STEG:
 
 STEG 1 - Extrahera fakta innan du skriver:
 a) Från CV (om det finns): lista alla jobb med årtal, titlar, företag (kronologiskt, äldst först)
    Om CV saknas: extrahera denna info från intervjuanteckningar om möjligt
-b) Från intervju: lista alla tekniska verktyg, system, programvaror (var specifik: "Intune", "PowerShell", "Cisco CLI" etc)
-c) Från intervju: notera personlighetsdrag som har konkreta exempel
+b) Från intervju: lista alla tekniska verktyg, system, kompetensområden (var specifik)
+c) Från intervju: notera konkreta drivkrafter, personlighetsdrag, arbetssätt med exempel
 
-
-STEG 2 - Skriv sammanfattningen enligt denna struktur:
+STEG 2 - Skriv kandidatpresentationen enligt denna struktur:
 
 <STRUKTURMALL>
 {mall_text}
 </STRUKTURMALL>
-
-VIKTIGT FÖR FÖRSTA DELEN (Sammanfattning – Namn):
-- Använd INTE bold labels (**Typ av profil:**) 
-- Skriv bara värdet på varje rad, precis som i stilreferensen
-- Format:
-  Sammanfattning – [Namn]
-  [Profiltyp]
-  [Vad personen vill]
-  [Styrka]
-  [Lön]
-  [Uppsägningstid]
 
 STEG 3 - Följ denna EXAKTA stil och ton:
 
@@ -289,52 +274,95 @@ STEG 3 - Följ denna EXAKTA stil och ton:
 
 DETALJERADE INSTRUKTIONER FÖR VARJE SEKTION:
 
-**ALLMÄNT (Kronologisk karriärberättelse):**
-1. Inled med EN av dessa fraser (välj baserat på innehåll):
-   - "[Namn] började sin karriär [år] hos [företag] som [titel]..."
-   - "[Namn] har byggt sin karriär inom [område] och arbetar idag som..."
-   - "Efter studier inom [område] började [Namn] [år] hos [företag]..."
+**GRUNDDATA (Tabellformat):**
+Skapa en tabell med följande struktur:
+
+| NAMN | [Namn från intervju] | ÅLDER | [Ålder om känd, annars "Ej angivet"] |
+| BEFATTNING | [Nuvarande titel] | KONTAKT | [Telefon/email om angivet, annars "Ej angivet"] |
+| UPPSÄGNINGSTID | [Period eller "Förhandlingsbart"] | PUBLICERAD | [Datum eller lämna tom] |
+| LÖNENIVÅ | [Exakt formulering från intervju om angiven, annars "Ej angivet"] |
+| FÖRMÅNER | [Lista förmåner om angivna, annars "Ej angivet"] |
+
+VIKTIGT FÖR GRUNDDATA:
+- Om information saknas: skriv "Ej angivet" istället för att gissa
+- För lön: använd kandidatens exakta formulering från intervjun (t.ex. "60´000 fast och fördelning 50/50 fast och rörlig")
+- Alla fält måste fyllas i (med "Ej angivet" om info saknas)
+
+**ALLMÄNT (Kronologisk karriärberättelse i löpande text):**
+1. Inled med kandidatens bakgrund - kan vara:
+   - Tidiga år/utbildning om relevant för karriären
+   - Första jobbet
+   - En särskild händelse som format karriären
 
 2. Skriv sedan STRIKT KRONOLOGISKT (äldst först → nyast sist):
-   - För varje jobb: nämn företag, tidsperiod, jobbtitel, huvudansvar i avslappning stil
-   - Nämn tekniska OMRÅDEN/KATEGORIER här (t.ex. "molninfrastruktur", "M365-miljö", "automatisering")
-   - Använd tidsmarkörer: "Efter X år...", "Under perioden...", "Sedan [år]...", se till att variera markörer
-   - Spara specifika verktygsnamn till nästa sektion
-   - Beskriv exempel på erfarenhet från karriären så tydligt sm det går från <INTEVJUANTECKNIGAR>
+   - För varje karriärsteg: beskriv sammanhang, val, utveckling, lärdomar
+   - Nämn företag, roller, tidsperioder, huvudansvar
+   - Inkludera VARFÖR personen bytte jobb eller gjorde karriärval
+   - Använd tidsmarkörer: "Efter X år...", "2017 blev han...", "Sedan dess..."
+   - Var narrativ och reflekterande - berätta en STORY om karriären
 
+3. Avsluta med nuläget och varför personen söker sig vidare
 
-**TEKNISK KUNSKAP OCH FÄRDIGHETER (Detaljerad genomgång):**
-1. KRITISKT: Nämn ALLA specifika verktyg, system, programvaror från STEG 1b
-2. Skriv i löpande text (inga punktlistor)
-3. För varje teknologi: ge konkret exempel på VAD personen gjort
-   - Exempel: "Han har använt PowerShell för att bygga skript som automatiskt byter standardskrivare vid omstart för 1300 användare"
-   - INTE: "Han har erfarenhet av PowerShell och automatisering"
+4. TON: 
+   - Tredje person ("Igor jobbade...", "Han utvecklade...")
+   - Reflekterande och konkret
+   - Inkludera kandidatens egna tankar och insikter från intervjun
+   - Beskriv inte bara VAD hen gjorde, utan VAD hen lärde sig och HUR det format dem
 
-4. Gruppera logiskt (men täck ALLT):
-   - Microsoft-miljö (M365, Azure, Intune, Exchange, etc)
-   - Infrastruktur (nätverk, servrar, virtualisering)
-   - Automatisering (PowerShell, scripting, etc)
-   - Övriga verktyg/system
+**Drivkrafter (Kommaseparerad lista MED förklarande mening först):**
+Format:
+En förklarande mening om vad som driver kandidaten baserat på intervjun.
 
-5. Prioritera DJUP och DETALJER över generella beskrivningar
-6. Om intervjun nämner något tekniskt bara i förbigående - inkludera det ändå!
+Om meningen inte räcker för att fånga komplexiteten, fortsätt med kommaseparerade nyckelord.
 
-**PERSONLIGHET/PRAKTISKT:**
-1. Basera ENDAST på konkreta exempel från intervjun
-2. Beskriv VAD personen gör, inte HUR bra de är
-3. Om intervjun nämner drivkrafter eller arbetssätt: använd personens egna ord
-4. Inkludera: arbetssätt, preferenser för arbetskultur, vad som motiverar personen
+Exempel från stilreferens:
+"Den stora drivkraften är att få känna en stolthet i hantverket för försäljning och affärsmannaskap."
 
-**KOMMENTAR:**
-1. Inled med: "[Namn] ger ett [välj konkret adjektiv: strukturerat/entusiastiskt/analytiskt/metodiskt] intryck"
+VIKTIGT: Basera ENDAST på vad kandidaten faktiskt sa i intervjun om motivation, drivkrafter, mål.
 
-2. Skriv ENDAST om:
-   - Observationer rekryteraren faktiskt gjorde under intervjun (om dokumenterat)
-   - Kandidatens styrkor som framgår tydligt från intervjun
+**Kompetens (Kommaseparerad lista med ord/fraser):**
+Format: word1, word2, word3, word4, etc.
 
-3. VIKTIGT: Om rekryteraren INTE dokumenterade egna observationer i intervjun:
-   - Basera detta på kandidatens beskrivningar av sitt arbetssätt
-   - Var försiktig med att "hitta på" intryck som inte finns dokumenterade
+- Lista kandidatens yrkesmässiga kompetenser, metoder, verktyg, områden
+- Både generella (t.ex. "Account Executive", "ledarskap") och specifika (t.ex. "SaaS", "complex sales")
+- Oavsett om kandidaten jobbar med försäljning, IT, analys, eller annat - anpassa till yrkesområdet
+- Inkludera 5-15 termer beroende på kandidatens bredd
+
+**Utbildning (Punktlista):**
+- Lista utbildningar, certifikat, kurser
+- Format: [Utbildning], [Institution], [År om känt]
+- Om ingen formell utbildning finns dokumenterad: skriv "Ej dokumenterad"
+
+**NYCKELTAL (Optional - punktlista):**
+Inkludera ENDAST om konkreta nyckeltal eller mätetal finns i intervjun:
+- Teamstorlek, budgetansvar, försäljningsmål, antal kunder, projektantal, prestationsmått
+- Format som punktlista
+- Om inga konkreta siffror finns: HOPPA ÖVER HELA SEKTIONEN
+
+**Rekryterarens kommentarer (Löpande text):**
+1. Inled med: "[Namn] ger ett [konkret adjektiv: strukturerat/entusiastiskt/analytiskt/metodiskt/etc] intryck"
+
+2. Skriv om:
+   - Observationer av arbetssätt och kommunikationsstil från intervjun
+   - Ta fram exempel från anteckningarna som kandidaten har genomfört som stärker komeptens, arbetssätt komunikationsstil. 
+   - Ge konkret exempel på VAD personen gjort
+      - Exempel: "Han har använt PowerShell för att bygga skript som automatiskt byter standardskrivare vid omstart för 1300 användare"
+      - INTE: "Han har erfarenhet av PowerShell och automatisering"
+   - Gruppera logiskt (men täck ALLT):
+      - Microsoft-miljö (M365, Azure, Intune, Exchange, etc)
+      - Infrastruktur (nätverk, servrar, virtualisering)
+      - Automatisering (PowerShell, scripting, etc)
+      - Övriga verktyg/system
+   
+   - Prioritera DJUP och DETALJER över generella beskrivningar
+   - Beskriv Styrkor som framgår tydligt
+   - VARFÖR kandidaten söker sig vidare (motivation för byte)
+   - Kandidatens professionella mognad och anpassningsförmåga
+
+3. VIKTIGT:
+   - Basera på kandidatens beskrivningar av sitt arbetssätt
+   - Var konkret - referera till exempel från intervjun
+   - Undvik generiska värderingar
 
 4. FÖRBJUDNA AVSLUTNINGSFRASER:
    ❌ "Jag rekommenderar starkt att ni överväger..."
@@ -343,22 +371,33 @@ DETALJERADE INSTRUKTIONER FÖR VARJE SEKTION:
    ❌ "Vi bör definitivt gå vidare med..."
    ❌ Alla andra explicit rekommenderande meningar
 
-5. SLUTA när du beskrivit intryck och styrkor. Ingen "avslutande" rekommendation.
+5. SLUTA när du beskrivit intryck, styrkor och motivation. Ingen "avslutande" rekommendation.
+
+**Privat (Optional - kort text):**
+Inkludera ENDAST om relevant information finns i intervjun:
+- Civilstånd, bostadsort, fritidsintressen
+- Håll det mycket kort (1-3 meningar max)
+- Om ingen sådan info finns: HOPPA ÖVER HELA SEKTIONEN
+
+**Övrigt (Optional - kort text):**
+- Inkludera sådant som inte passar in någonannanstans
 
 KRITISKA BEGRÄNSNINGAR:
-🚫 Gissa ALDRIG årtal om de inte finns i CV
-🚫 Hitta ALDRIG på tekniska detaljer som inte nämns
+🚫 Gissa ALDRIG årtal, lön, ålder om de inte finns i materialet
+🚫 Hitta ALDRIG på detaljer som inte nämns
 🚫 Använd ALDRIG spekulativa fraser ("troligtvis", "förmodligen", "det verkar som")
 🚫 Kopiera INTE exakta citat från stilreferensen (kopiera stil, inte innehåll)
 🚫 Lägg INTE till information som inte finns i källmaterialet
 🚫 Skriv ALDRIG rekommendationer ("Jag rekommenderar...", "Bör träffa...", "Utmärkt för...") om inte rekryteraren explicit skrev detta i intervjun
-🚫 Avsluta INTE kommentaren med avslutningsfraser - sluta när du sagt det som finns att säga
+🚫 Avsluta INTE Rekryterarens kommentarer med avslutningsfraser
+🚫 Inkludera INTE sektioner NYCKELTAL eller PRIVAT om relevant information saknas - hoppa över dem helt
 
 OUTPUT FORMAT:
-- Skriv endast sammanfattningen enligt strukturen ovan
-- Använd **dubbla asterisker** runt rubriker för att markera dem
-- Lämna en tom rad före varje rubrik
-- Inga extra kommentarer, förklaringar eller rubriker utöver mallen
+- Grunddata: Tabell enligt formatet ovan
+- Alla andra sektioner: Löpande text eller listor enligt instruktioner (INTE tabeller)
+- Använd **dubbla asterisker** eller VERSALER för rubriker
+- Lämna en tom rad före varje ny sektion
+- Inga extra kommentarer, förklaringar eller rubriker utöver strukturen
 - Svara på svenska
 """
 
