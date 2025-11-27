@@ -1,6 +1,21 @@
 
 
 
+
+# Secrets Management
+
+## Key Vault Access
+
+### Authentication
+- Method: RBAC (not Access Policies)
+- GitHub Actions uses Managed Identity via OIDC
+- Local CLI access via az login with Entra User - RBAC Owner
+- No secrets stored in GitHub (only public identifiers)
+
+### Permissions
+- Managed Identity: "Key Vault Secrets Officer"
+- Scope: Key Vault resource
+
 # Flask
 SECRET_KEY=change-this-to-something-very-secret-in-production
 HOST_PORT=8000
@@ -16,3 +31,6 @@ OPENAI_API_KEY=your-existing-key
 # Admin user
 ADMIN_PASSWORD=not-the-password-you-are-looking-for
 EOF
+
+
+

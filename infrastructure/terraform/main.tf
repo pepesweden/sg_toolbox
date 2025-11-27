@@ -101,56 +101,11 @@ resource "azurerm_key_vault" "toolbox" {
 # Data source to get current Azure config
 data "azurerm_client_config" "current" {}
 
-####This is the chicken and egg problem####
-# Give yourself access to Key Vault
-#resource "azurerm_key_vault_access_policy" "admin" {
-#  key_vault_id = azurerm_key_vault.toolbox.id
-#  tenant_id    = data.azurerm_client_config.current.tenant_id
-#  object_id    = data.azurerm_client_config.current.object_id
-#  
-#  secret_permissions = [
-#    "Get", "List", "Set", "Delete", "Purge"
-#  ]
-#}
-
-#resource "azurerm_key_vault_access_policy" "container_app" {
-#  key_vault_id = azurerm_key_vault.toolbox.id
-#  tenant_id    = data.azurerm_client_config.current.tenant_id
-#  object_id    = azurerm_container_app.web.identity[0].principal_id
-#  
-#  secret_permissions = [
-#    "Get"
-#  ]
-#  
-#  depends_on = [azurerm_container_app.web]
-#}
-
-### Secrets in Key Vault ###
-### Dessa skall bort/ bli data source ###
-#Key for OpenAI API call
-#resource "azurerm_key_vault_secret" "openai_key" {
-#  name         = "openai-api-key"
-#  value        = var.openai_api_key
-#  key_vault_id = azurerm_key_vault.toolbox.id
-#  
-#  depends_on = [azurerm_key_vault_access_policy.admin]
-#}
-
 ###Uppdaterad data source - openai_key####
 data "azurerm_key_vault_secret" "openai_key" {
   name         = "openai-api-key"
   key_vault_id = azurerm_key_vault.toolbox.id
 }
-
-
-# pPostgres admin password
-#resource "azurerm_key_vault_secret" "postgres_password" {
-#  name         = "postgres-admin-password"
-#  value        = var.postgres_admin_password
-#  key_vault_id = azurerm_key_vault.toolbox.id
-#  
-#  depends_on = [azurerm_key_vault_access_policy.admin]
-#}
 
 ###Uppdaterad data source - postgres_password####
 data "azurerm_key_vault_secret" "postgres_password" {
@@ -158,41 +113,17 @@ data "azurerm_key_vault_secret" "postgres_password" {
   key_vault_id = azurerm_key_vault.toolbox.id
 }
 
-# Flask secret key (för sessions)
-#resource "azurerm_key_vault_secret" "flask_secret" {
-#  name         = "flask-secret-key"
-#  value        = var.flask_secret_key
-#  key_vault_id = azurerm_key_vault.toolbox.id
-#  depends_on   = [azurerm_key_vault_access_policy.admin]
-#}
-
 ###Uppdaterad data source - flask_secret####
 data "azurerm_key_vault_secret" "flask_secret" {
   name         = "flask-secret-key"
   key_vault_id = azurerm_key_vault.toolbox.id
 }
 
-
-# Admin password (för toolbox login)
-#resource "azurerm_key_vault_secret" "admin_password" {
-#  name         = "admin-password"
-#  value        = var.admin_password
-#  key_vault_id = azurerm_key_vault.toolbox.id
-#  depends_on   = [azurerm_key_vault_access_policy.admin]
-#}
-
 ###Uppdaterad data source - admin_password####
 data "azurerm_key_vault_secret" "admin_password" {
   name         = "admin-password"
   key_vault_id = azurerm_key_vault.toolbox.id
 }
-
-# PostgreSQL connection string (för Container Apps)
-#resource "azurerm_key_vault_secret" "postgres_connection" {
-#  name  = "postgres-connection-string"
-#  value = "postgresql://${azurerm_postgresql_flexible_server.db.administrator_login}:${data.azurerm_key_vault_secret.postgres_password.value}@${azurerm_postgresql_flexible_server.db.fqdn}:5432/${azurerm_postgresql_flexible_server_database.toolbox.name}?sslmode=require"
-#  key_vault_id = azurerm_key_vault.toolbox.id
-#}
 
 ###Uppdaterad data source - postgres_connection_string####
 data "azurerm_key_vault_secret" "postgres_connection" {
