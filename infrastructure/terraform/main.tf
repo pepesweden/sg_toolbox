@@ -80,6 +80,16 @@ resource "azurerm_postgresql_flexible_server_database" "toolbox" {
 
 
 # Key Vault
+# NOTE: This Key Vault uses RBAC for access control.
+# Access Policies are NOT used.
+# 
+# GitHub Actions Managed Identity has "Key Vault Secrets Officer" role
+# assigned via Azure CLI during bootstrap (not managed by Terraform).
+#
+# To grant app access to specific secrets:
+# 1. Create Managed Identity for app (Terraform)
+# 2. Assign "Key Vault Secrets User" role (Terraform)
+
 resource "azurerm_key_vault" "toolbox" {
   name                = "kv-toolbox-${var.environment}-v2"
   resource_group_name = azurerm_resource_group.toolbox.name
@@ -87,6 +97,8 @@ resource "azurerm_key_vault" "toolbox" {
   tenant_id           = data.azurerm_client_config.current.tenant_id
   
   sku_name = "standard"
+
+  rbac_authorization_enabled = true
   
   soft_delete_retention_days = 90
   purge_protection_enabled   = false
@@ -96,6 +108,14 @@ resource "azurerm_key_vault" "toolbox" {
     Project     = "Salesgroup Toolbox"
     ManagedBy   = "Terraform"
   }
+}
+
+resource "azurerm_role_assignment" "container_app_key_vault" {
+  scope                = azurerm_key_vault.toolbox.id
+  role_definition_name = "Key Vault Secrets User"
+  principal_id         = azurerm_container_app.web.identity[0].principal_id
+  
+  depends_on = [azurerm_container_app.web]
 }
 
 # Data source to get current Azure config
