@@ -340,38 +340,70 @@ Inkludera ENDAST om konkreta nyckeltal eller mätetal finns i intervjun:
 - Om inga konkreta siffror finns: HOPPA ÖVER HELA SEKTIONEN
 
 **Rekryterarens kommentarer (Löpande text):**
-1. Inled med: "[Namn] ger ett [konkret adjektiv: strukturerat/entusiastiskt/analytiskt/metodiskt/etc] intryck"
 
-2. Skriv om:
-   - Observationer av arbetssätt och kommunikationsstil från intervjun
-   - Ta fram exempel från anteckningarna som kandidaten har genomfört som stärker komeptens, arbetssätt komunikationsstil. 
-   - Ge konkret exempel på VAD personen gjort
-      - Exempel: "Han har använt PowerShell för att bygga skript som automatiskt byter standardskrivare vid omstart för 1300 användare"
-      - INTE: "Han har erfarenhet av PowerShell och automatisering"
-   - Gruppera logiskt (men täck ALLT):
-      - Microsoft-miljö (M365, Azure, Intune, Exchange, etc)
-      - Infrastruktur (nätverk, servrar, virtualisering)
-      - Automatisering (PowerShell, scripting, etc)
-      - Övriga verktyg/system
-   
-   - Prioritera DJUP och DETALJER över generella beskrivningar
-   - Beskriv Styrkor som framgår tydligt
-   - VARFÖR kandidaten söker sig vidare (motivation för byte)
-   - Kandidatens professionella mognad och anpassningsförmåga
+1. Inled med:
+   "[Namn] ger ett [konkret adjektiv: strukturerat/entusiastiskt/analytiskt/metodiskt/etc] intryck"
+
+2. Skriv om följande tre områden, med tydliga och konkreta exempel hämtade från intervjun:
+
+   A) Arbetsstil  
+      – Beskriv hur kandidaten arbetar i praktiken.  
+      – Använd situationer kandidaten själv berättat om.  
+      – Skriv i formen: observation → exempel → vad det visar.  
+      – Fokus: hur kandidaten planerar, prioriterar, analyserar, driver arbete eller hanterar komplexitet.
+
+   B) Kommunikationsstil  
+      – Beskriv hur kandidaten resonerar, samarbetar och för dialog med andra.  
+      – Använd exempel från situationer kandidaten beskrivit (kundmöten, teamarbete, leveransdialog etc).  
+      – Lyft fram mönster i hur kandidaten lyssnar, ställer frågor, förklarar saker eller anpassar sitt språk.  
+      – Inga tekniska verktyg eller system här.
+
+   C) Kompetens (yrkesmässig förmåga — oavsett om kandidaten är säljare, chef, projektledare, tekniker etc)  
+      – Beskriv kandidatens faktiska kompetens genom konkreta händelser från intervjun.  
+      – Fokus på vad kandidaten GJORDE, inte vad kandidaten ÄR.  
+      – Exempel:
+        "Nils beskriver hur han genomför sin behovsanalys genom att ställa strukturerade frågor och koppla kundens svar till verksamhetslogik. Det visar att han arbetar metodiskt och med god förmåga att skapa klarhet."
+      – Undvik tekniska listningar. Teknik hör hemma i TEKNISK KUNSKAP-sektionen.
+
+   – Lyft även kandidatens styrkor samt motivation för att söka sig vidare, om detta framgår tydligt i intervjun.  
+   – Om intervjun visar mognad, ansvarstagande eller utvecklingsområden kan detta beskrivas — men aldrig spekuleras.
 
 3. VIKTIGT:
-   - Basera på kandidatens beskrivningar av sitt arbetssätt
-   - Var konkret - referera till exempel från intervjun
-   - Undvik generiska värderingar
+   – Beskriv endast det som faktiskt framgår i intervjumaterialet.  
+   – Var konkret: observation → exempel → vad det innebär i praktiken.  
+   – Undvik generiska värdeord eller säljande språk.  
+   – Kommentaren ska vara reflekterande och professionell, inte marknadsförande.
 
 4. FÖRBJUDNA AVSLUTNINGSFRASER:
-   ❌ "Jag rekommenderar starkt att ni överväger..."
-   ❌ "Jag rekommenderar att ni träffar..."
-   ❌ "[Namn] skulle vara en utmärkt kandidat för..."
-   ❌ "Vi bör definitivt gå vidare med..."
-   ❌ Alla andra explicit rekommenderande meningar
+   ❌ "Jag rekommenderar starkt att ni överväger…"  
+   ❌ "Ni bör träffa…"  
+   ❌ "Utmärkt kandidat för…"  
+   ❌ Alla former av rekommendation eller matchningsbedömning.
 
-5. SLUTA när du beskrivit intryck, styrkor och motivation. Ingen "avslutande" rekommendation.
+5. Avsluta kommentaren när du beskrivit intryck, arbetsstil, kommunikationsstil, kompetens och motivation.  
+   Ingen sammanfattande värdering eller rekommendation.
+
+**STILINSTRUKTION FÖR REKRYTERARENS KOMMENTAR (NY SEKTOR – KRITISK):**
+
+Skriv kommentaren i en rådgivande och reflekterande ton som liknar hur en erfaren senior rekryterare resonerar internt:
+
+– Beskriv det du observerat och hur det tar sig uttryck i kandidatens arbetssätt.  
+– Lägg till en kort tolkning: vad betyder detta i en praktisk arbetskontext?  
+– Var nyanserad och undvik värdeord; fokusera på hur kandidaten faktiskt fungerar.  
+– Lyft både styrkor och eventuella begränsningar om intervjun ger stöd för detta.  
+– Skriv sakligt och professionellt, inte säljigt eller marknadsförande.  
+– Var konkret: observation → konsekvens → vad det innebär för rätt rollmiljö.  
+– Använd ett språk som är rådgivande snarare än marknadsförande, t.ex.:  
+  "Det här visar att…", "I praktiken innebär det att…", "Utifrån intervjun framgår att…"
+
+Undvik:
+– känslomässiga adjektiv  
+– rekommendationer  
+– generiska lovord  
+– sammanfattande slutsatser om rollmatchning
+
+Kommentaren ska vara ett kort, reflekterande resonemang, inte en värdering.
+
 
 **Privat (Optional - kort text):**
 Inkludera ENDAST om relevant information finns i intervjun:
@@ -416,6 +448,8 @@ Och här är mallen som sammanfattningen ska följa: {refmall_text}
 
 Skriv en färdig referenssammanställning enligt mallen ovan. Håll en professionell och sammanhängande ton. Sammanfatta innehållet konkret och strukturera texten tydligt under varje rubrik. Inkludera en avslutande punkt med vilka gemensamma teman som återkommer i båda referenserna.
 Använda tonaliteten från tidigare sammanfattning i {refstyle_text}, Obs ingen information från denna text ska användas i sammanfattningen.
+
+
 
 KRITISKA BEGRÄNSNINGAR:
 🚫 Hitta ALDRIG på detaljer som inte nämns
