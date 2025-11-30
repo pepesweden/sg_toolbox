@@ -416,6 +416,12 @@ Och här är mallen som sammanfattningen ska följa: {refmall_text}
 
 Skriv en färdig referenssammanställning enligt mallen ovan. Håll en professionell och sammanhängande ton. Sammanfatta innehållet konkret och strukturera texten tydligt under varje rubrik. Inkludera en avslutande punkt med vilka gemensamma teman som återkommer i båda referenserna.
 Använda tonaliteten från tidigare sammanfattning i {refstyle_text}, Obs ingen information från denna text ska användas i sammanfattningen.
+
+KRITISKA BEGRÄNSNINGAR:
+🚫 Hitta ALDRIG på detaljer som inte nämns
+🚫 Använd ALDRIG spekulativa fraser ("troligtvis", "förmodligen", "det verkar som")
+🚫 Lägg INTE till information som inte finns i källmaterialet
+🚫 Skriv ALDRIG rekommendationer ("Jag rekommenderar...", "Bör träffa...", "Utmärkt för...") om inte rekryteraren explicit skrev detta i intervjun
 """
 
 def create_job_ad_prompt(doc_text, job_ad_mall_text, job_ad_style_text):
