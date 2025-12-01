@@ -17,7 +17,11 @@ summary_automation/
 │   │   │   └── storage_fs.py
 │   │   └── api/
 │   │       └── http.py                 # Flask endpoints - finns inte ännu
+│   │
+│   ├── review_service/
+│   │
 │   └── wsgi.py
+│
 ├── infra/
 │   ├── docker/
 │   │   ├── Dockerfile
