@@ -1,7 +1,27 @@
 # Salesgroup Toolbox - adminstrative atuomation tools
 
-## Project Structure
+## What is SG Toolbox?
+SG Toolbox is a Flask-based web application that automates the creation of recruitment documents using OpenAI's API. It processes CVs, interview notes, and reference materials to generate professional Swedish-language recruitment summaries, candidate presentations (KP), reference summaries, and job advertisements.
 
+The system is designed to integrate with Salesgroup's ATS (Ponty) and follows established document templates and writing styles to maintain consistency across the organization.
+
+## Features
+
+### Current Capabilities
+- **Candidate Summaries** - Generate traditional candidate summaries from interview notes and CVs
+- **Candidate Presentations (KP)** - Create formal candidate presentations following Salesgroup templates
+- **Reference Summaries** - Compile structured summaries from multiple reference interviews
+- **Job Advertisements** - Generate job ads from requirement profiles for Salesgroup's website
+- **User Authentication** - Secure login system with PostgreSQL backend
+- **Document Processing** - OCR support for PDFs, DOCX text extraction, automated formatting
+
+### Document Processing
+- Accepts `.docx` and `.pdf` files
+- OCR capabilities using Tesseract for scanned documents
+- Structured output with Salesgroup branding and formatting
+- Downloads as ready-to-use Word documents
+
+## Project Structure
 ```
 sg_toolbox/
 ├── src/                          # Application source code
@@ -44,12 +64,31 @@ sg_toolbox/
 └── scripts/                      # Utility scripts
     ├── deploy_summary_docker.sh  # Local Docker deployment
     └── bootstrap-keyvault.sh     # Key Vault access setup
-
 ```
+
+## Tech Stack
+**Backend:**
+- Python 3.12 with Flask
+- PostgreSQL 16 (via psycopg2)
+- OpenAI API (GPT-4o)
+- Docker & Docker Compose
+
+**Infrastructure:**
+- Azure Container Apps
+- Azure Container Registry
+- Azure PostgreSQL Flexible Server
+- Azure Key Vault (secrets management)
+- Terraform (Infrastructure as Code)
+- GitHub Actions (CI/CD)
+
+**Document Processing:**
+- python-docx (Word document generation)
+- PyPDF2 (PDF text extraction)
+- pytesseract (OCR)
+- pdf2image (PDF to image conversion)
 
 
 ## Quick Start
-
 ### Prerequisites
 
 - Docker & Docker Compose
