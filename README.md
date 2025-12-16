@@ -1,4 +1,5 @@
 # Salesgroup Toolbox - adminstrative atuomation tools
+🚧 **UNDER CONSTUCTION** 🚧
 
 ## What is SG Toolbox?
 SG Toolbox is a Flask-based web application that automates the creation of recruitment documents using OpenAI's API. It processes CVs, interview notes, and reference materials to generate professional Swedish-language recruitment summaries, candidate presentations (KP), reference summaries, and job advertisements.
