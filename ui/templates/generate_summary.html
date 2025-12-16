@@ -17,6 +17,11 @@
                 <img src="{{ url_for('static', filename='logo/house-icon.png') }}" alt="Hem" height="80">
             </a>
         </div>
+        <!-- Logout knapp -->
+        <div class="text-end">
+            <span class="text-light me-3">Inloggad som: {{ current_user.username }}</span>
+            <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">Logga ut</a>
+        </div>
         <div class="text-center mb-4">
             <h1 class="display-5">Sammanfattningsverktyg</h1>
             <!--<p class="text-muted">Skapa proffsiga kandidatsammanfattningar på sekunder</p>-->
