@@ -123,5 +123,28 @@ OPENAI_API_KEY=your-openai-api-key
 ADMIN_PASSWORD=your-admin-password
 ```
 
+3. **Add required files:**
+   ```bash
+   # Copy logos and backgrounds to ui/static/
+   ui/static/logo/           # Company logos
+   ui/static/backgrounds/    # UI backgrounds
+   
+   # Add reference templates to data/reference/
+   data/reference/           # Template documents for style reference
+   ```
+
+4. **Start the application:**
+   ```bash
+   docker compose -f infrastructure/compose.yaml up -d --build
+   ```
+
+5. **Access the application:**
+   - Open browser: `http://localhost:8000`
+   - Login with username `admin` and your `ADMIN_PASSWORD`
+
+6. **Stop the application:**
+   ```bash
+   docker compose -f infrastructure/compose.yaml down
+   ```
 
 ##
