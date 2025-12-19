@@ -438,11 +438,8 @@ def create_refsum_prompt(doc_text, refmall_text, refstyle_text, transcript_text=
       return f"""
 Här är referensanteckningar från kollegor till en kandidat:
 
-Referens 1:
+Referens:
 {doc_text}
-
-Referens 2:
-[KLIPP IN FULLTEXT FRÅN REFERENSINTERVJU 2]
 
 Och här är mallen som sammanfattningen ska följa: {refmall_text}
 
