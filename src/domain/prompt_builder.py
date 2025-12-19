@@ -449,7 +449,9 @@ Och här är mallen som sammanfattningen ska följa: {refmall_text}
 Skriv en färdig referenssammanställning enligt mallen ovan. Håll en professionell och sammanhängande ton. Sammanfatta innehållet konkret och strukturera texten tydligt under varje rubrik. Inkludera en avslutande punkt med vilka gemensamma teman som återkommer i båda referenserna.
 Använda tonaliteten från tidigare sammanfattning i {refstyle_text}, Obs ingen information från denna text ska användas i sammanfattningen.
 
-
+VIKTIGT:
+- Om de uppladdade referensdokumenten bara innehåller ett namn på en referensgivare, hänvisa till **Referenten** i texten OCH rubriker
+- Om de uppladdade referensdokumenten innehåller två eller fler namn på referensgivare, hänvisa till **Referenterna** i texten OCH rubriker
 
 KRITISKA BEGRÄNSNINGAR:
 🚫 Hitta ALDRIG på detaljer som inte nämns
