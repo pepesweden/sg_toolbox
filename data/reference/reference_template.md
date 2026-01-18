@@ -1,11 +1,11 @@
 # SAMMANFATTNING REFERENSER
 
 ## GRUNDDATA
-**KANDIDAT:** [Namn]
-**REFERENTER:** [Namn 1, Namn 2]
-**REFERENSTAGARE:** [Rekryterarens namn]
-**KUND:** [Företagsnamn]
-**DATUM FÖR REFERENSTAGNING:** [YYYY-MM-DD]
+-**KANDIDAT:** [Namn]
+-**REFERENTER:** [Namn 1, Namn 2]
+-**REFERENSTAGARE:** [Rekryterarens namn]
+-**KUND:** [Företagsnamn]
+-**DATUM FÖR REFERENSTAGNING:** [YYYY-MM-DD]
 
 **Instruktion för grunddata:**
 - Om information saknas: skriv "Ej angivet"

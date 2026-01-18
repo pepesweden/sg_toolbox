@@ -220,6 +220,7 @@ def create_table_from_json(doc, table_data):
 def add_title(doc, line):
     text = line.replace("# ", "").replace("**", "")
     heading = doc.add_heading(text, level=0)
+    heading.runs[0].font.size = Pt(20)
     heading.runs[0].font.bold = True
     heading.runs[0].font.name = "Arial"
     heading.runs[0].font.color.rgb = RGBColor(69, 40, 111) 
