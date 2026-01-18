@@ -239,7 +239,8 @@ def generate_kp():
     return send_file(os.path.abspath(filepath), as_attachment=True)
     #return send_file(filepath, as_attachment=True)
 
-# Generera referenssammanfattning från uppladdade filer
+# Generera referenssammanfattning från uppladdade filee
+#
 @app.route("/generate_reference", methods=["POST"])
 @login_required
 def generate_reference():
