@@ -142,7 +142,7 @@ def generate_job_ad():
         # Skapa filnamn och spara sammanfattningen
         filename = f"sammanfattning_{bolagsnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-        save_summary_to_docx(summary, bolagsnamn, filepath)
+        save_summary_to_docx(summary, filepath)
     else:
         filename = f"sammanfattning_{bolagsnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
@@ -188,7 +188,7 @@ def generate():
     # 2. Save the file to the output folder
     filename = f"sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
     filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-    save_summary_to_docx(summary, candidate_name, filepath)
+    save_summary_to_docx(summary, filepath)
     
 
     print(f"✅ Fil sparad: {filepath}")
@@ -231,7 +231,7 @@ def generate_kp():
     if summary:
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-        save_summary_to_docx(summary, kandidatnamn, filepath)
+        save_summary_to_docx(summary, filepath)
     else:
         filename = f"DOWNLOAD_FOLDER_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
 
@@ -279,7 +279,7 @@ def generate_reference():
         # Skapa filnamn och spara sammanfattningen
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)
-        save_summary_to_docx(summary, kandidatnamn, filepath)
+        save_summary_to_docx(summary, filepath)
     else:
         filename = f"sammanfattning_{kandidatnamn.lower().replace(' ', '_')}.docx"  # fallback om något är knas
         filepath = os.path.join(app.config["DOWNLOAD_FOLDER"], filename)

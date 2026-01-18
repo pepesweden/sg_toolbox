@@ -27,7 +27,7 @@ def build_prompt_for_document_type(doc_type, doc_text, cv_text):
         }
         
     elif doc_type == DOC_TYPE_KP:
-        kpmall_text = read_md_text("data/reference/kp_template.md")
+        kpmall_text = read_md_text("data/reference/kp_template_json.md")
         kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
 
         #Create the LLM "kandidatpresentation" creation prompt

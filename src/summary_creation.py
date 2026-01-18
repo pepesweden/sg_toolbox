@@ -142,7 +142,8 @@ if __name__ == "__main__":
     if summary:
         filename = f"sammanfattning_{candidate_name.lower().replace(' ', '_')}.docx"
         filepath = os.path.join(DOWNLOAD_FOLDER, filename)
-        save_summary_to_docx(summary, candidate_name, filepath)
+        save_summary_to_docx(summary, filepath)
+        # save_summary_to_docx(summary, candidate_name, filepath)
         print("✅ Sammanfattningenär klar.")
     else:
         print("❌ Sammanfattningen kunde inte genereras.")
