@@ -102,7 +102,7 @@
 
 ## NYCKELTAL
 
-*(Inkludera ENDAST om konkreta siffror finns i intervjun, annars ta bort hela sektionen)*
+*(Inkludera ENDAST om konkreta siffror finns i intervjun, annars skriv bara ut rubriken)*
 
 - [Nyckeltal 1]
 - [Nyckeltal 2]
