@@ -133,7 +133,7 @@
 
 ## Privat
 
-*(Inkludera ENDAST om relevant information finns, annars ta bort hela sektionen)*
+*(Inkludera ENDAST om konkreta siffror finns i intervjun, annars skriv bara ut rubriken)*
 
 [Kort text om civilstånd, bostadsort, fritidsintressen]
 
