@@ -266,6 +266,12 @@ STEG 2 - Skriv kandidatpresentationen enligt denna struktur:
 {mall_text}
 </STRUKTURMALL>
 
+OUTPUT FORMAT:
+- Använd strukturmallen
+- Returnera först en huvurubrik me markdon format enligt STRUKTURMALL
+- Returnera ett JSON-block för sektionen **GRUNDDATA** från STUKTURMALLEN:
+- Resterande skall vara i markdown format enligt STRUKTURMALLEN ovan .
+
 STEG 3 - Följ denna EXAKTA stil och ton:
 
 <STILREFERENS - KOPIERA DENNA STIL>
@@ -333,10 +339,10 @@ Format: word1, word2, word3, word4, etc.
 - Format: [Utbildning], [Institution], [År om känt]
 - Om ingen formell utbildning finns dokumenterad: skriv "Ej dokumenterad"
 
-**NYCKELTAL (punktlista):**
+**Nyckeltal (punktlista):**
 - Teamstorlek, budgetansvar, försäljningsmål, antal kunder, projektantal, prestationsmått
 - Format som punktlista
-- Om inga konkreta siffror finns eller identifieras: skriv "Ej dokumenterad"
+- Om inga konkreta siffror finns eller identifieras: skriv "Ej Angivet"
 - Skriv ALLTID ut rubriken 
 
 **Rekryterarens kommentarer (Löpande text):**
@@ -404,14 +410,13 @@ Undvik:
 
 Kommentaren ska vara ett kort, reflekterande resonemang, inte en värdering.
 
-
 **Privat:**
 - Civilstånd, bostadsort, fritidsintressen
 - Håll det mycket kort (1-3 meningar max)
 - Om ingen sådan info finns: skriv "Ej angivet"
 - Skriv ALLTID ut rubriken 
 
-**Övrigt (Optional - kort text):**
+**Övrigt (kort text):**
 - Inkludera sådant som inte passar in någonannanstans
 - Om ingen sådan info finns: skriv "Ej angivet"
 - Skriv ALLTID ut rubriken 
@@ -424,12 +429,10 @@ KRITISKA BEGRÄNSNINGAR:
 🚫 Lägg INTE till information som inte finns i källmaterialet
 🚫 Skriv ALDRIG rekommendationer ("Jag rekommenderar...", "Bör träffa...", "Utmärkt för...") om inte rekryteraren explicit skrev detta i intervjun
 🚫 Avsluta INTE Rekryterarens kommentarer med avslutningsfraser
-🚫 Inkludera INTE sektioner NYCKELTAL eller PRIVAT om relevant information saknas - hoppa över dem helt
+
 
 OUTPUT FORMAT:
-- Grunddata: Tabell enligt formatet ovan
-- Alla andra sektioner: Löpande text eller listor enligt instruktioner (INTE tabeller)
-- Använd **dubbla asterisker** eller VERSALER för rubriker
+- Använd **dubbla asterisker** för rubriker
 - Lämna en tom rad före varje ny sektion
 - Inga extra kommentarer, förklaringar eller rubriker utöver strukturen
 - Svara på svenska

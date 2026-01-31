@@ -137,7 +137,7 @@
 **Instruktion:**
 - Mycket kort (1-3 meningar max)
 - Endast om sådan info finns i intervjun
-- Om ingen sådan info skriv ut rubriken 
+- Om ingen sådan info lägg till rubriken och skriv: "Ej dokumenterat"
 - Skriv ALLTID ut rubriken 
 
 
