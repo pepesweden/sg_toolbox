@@ -333,11 +333,11 @@ Format: word1, word2, word3, word4, etc.
 - Format: [Utbildning], [Institution], [År om känt]
 - Om ingen formell utbildning finns dokumenterad: skriv "Ej dokumenterad"
 
-**NYCKELTAL (Optional - punktlista):**
-Inkludera ENDAST om konkreta nyckeltal eller mätetal finns i intervjun:
+**NYCKELTAL (punktlista):**
 - Teamstorlek, budgetansvar, försäljningsmål, antal kunder, projektantal, prestationsmått
 - Format som punktlista
-- Om inga konkreta siffror finns: HOPPA ÖVER HELA SEKTIONEN
+- Om inga konkreta siffror finns eller identifieras: skriv "Ej dokumenterad"
+- Skriv ALLTID ut rubriken 
 
 **Rekryterarens kommentarer (Löpande text):**
 
@@ -405,14 +405,16 @@ Undvik:
 Kommentaren ska vara ett kort, reflekterande resonemang, inte en värdering.
 
 
-**Privat (Optional - kort text):**
-Inkludera ENDAST om relevant information finns i intervjun:
+**Privat:**
 - Civilstånd, bostadsort, fritidsintressen
 - Håll det mycket kort (1-3 meningar max)
-- Om ingen sådan info finns: HOPPA ÖVER HELA SEKTIONEN
+- Om ingen sådan info finns: skriv "Ej angivet"
+- Skriv ALLTID ut rubriken 
 
 **Övrigt (Optional - kort text):**
 - Inkludera sådant som inte passar in någonannanstans
+- Om ingen sådan info finns: skriv "Ej angivet"
+- Skriv ALLTID ut rubriken 
 
 KRITISKA BEGRÄNSNINGAR:
 🚫 Gissa ALDRIG årtal, lön, ålder om de inte finns i materialet

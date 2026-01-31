@@ -51,7 +51,7 @@
 
 ---
 
-## ALLMÄNT
+## Allmänt
 
 [Kronologisk karriärberättelse i löpande text]
 
@@ -100,18 +100,17 @@
 
 ---
 
-## NYCKELTAL
-
-*(Inkludera ENDAST om konkreta siffror finns i intervjun, annars skriv bara ut rubriken)*
+## Nyckeltal
 
 - [Nyckeltal 1]
 - [Nyckeltal 2]
 - [Nyckeltal 3]
 
 **Instruktion:**
-- Endast om konkreta mätetal finns: teamstorlek, budget, försäljningsmål, antal kunder, etc.
+- Om konkreta mätetal finns: teamstorlek, budget, försäljningsmål, antal kunder, etc.
 - Punktlista
-- Om inga siffror finns: HOPPA ÖVER HELA SEKTIONEN
+- Om inga konkreta mätetal finns eller identifieras: skriv "Ej angivet"
+- Skriv ALLTID ut rubriken 
 
 ---
 
@@ -133,11 +132,20 @@
 
 ## Privat
 
-*(Inkludera ENDAST om konkreta siffror finns i intervjun, annars skriv bara ut rubriken)*
-
 [Kort text om civilstånd, bostadsort, fritidsintressen]
 
 **Instruktion:**
 - Mycket kort (1-3 meningar max)
 - Endast om sådan info finns i intervjun
-- Om ingen sådan info: HOPPA ÖVER HELA SEKTIONEN
+- Om ingen sådan info skriv ut rubriken 
+- Skriv ALLTID ut rubriken 
+
+
+## Övrigt
+
+[Skriv ut annan information som inte matchar ovan reflektion]
+
+**Instruktion:**
+- Mycket kort (1-3 meningar max)
+- Endast om sådan info finns i intervjun
+- Om ingen sådan info lägg till rubriken och skriv: "Ej dokumenterat"
