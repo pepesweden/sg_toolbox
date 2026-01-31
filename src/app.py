@@ -158,16 +158,23 @@ def generate():
     fil = request.files["intervjufil"]
     #transcript_file = request.files.get("transcript")
     candidate_name = request.form["namn"]
-    cv_file = request.files["cv"]
+    cv_file = request.files.get("cv")
+    cv_path = None
 
-    # Make sure it is a .docx file
-    if not fil or not fil.filename.endswith(".docx"):
+    # Make sure interview file it is a .docx or pdf file
+    if not fil or not fil.filename.endswith((".docx", ".pdf")):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
-
-
-    ###Importerad filhanteringslogik###
+    
     intervju_path = write_file_to_storage(fil.read(), fil.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
-    cv_path = write_file_to_storage(cv_file.read(), cv_file.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
+    
+    if cv_file and cv_file.filename:
+        if not cv_file.filename.endswith((".docx", ".pdf")):
+            return "❌ Felaktig filtyp för CV. Endast .docx tillåtet."
+        cv_path = write_file_to_storage(cv_file.read(), cv_file.filename, UPLOAD_FOLDER)
+
+    
+    
+    #cv_path = write_file_to_storage(cv_file.read(), cv_file.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
 
     # Skapa prompt och generera sammanfattning
     try:
@@ -202,15 +209,21 @@ def generate_kp():
     # Get infrormation (files and candidate name) from the web form
     fil = request.files["intervjufil"]
     kandidatnamn = request.form["namn"]
-    cv_file = request.files["cv"]
+    cv_file = request.files.get("cv")
 
-    # Kontrollera att det är en .docx-fil
-    if not fil or not fil.filename.endswith(".docx"):
+    # Make sure interview file it is a .docx or pdf file
+    if not fil or not fil.filename.endswith((".docx", ".pdf")):
         return "❌ Felaktig filtyp. Endast .docx tillåtet."
-
-    # Imported file management logic
+    
     intervju_path = write_file_to_storage(fil.read(), fil.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
-    cv_path = write_file_to_storage(cv_file.read(), cv_file.filename, UPLOAD_FOLDER) #REMEMBER Filestorage object from flask!!
+    
+    #CV field, file handling logic
+    cv_path = None
+    if cv_file and cv_file.filename:
+        if not cv_file.filename.endswith((".docx", ".pdf")):
+            return "❌ Felaktig filtyp för CV. Endast .docx tillåtet."
+        cv_path = write_file_to_storage(cv_file.read(), cv_file.filename, UPLOAD_FOLDER)
+
 
     # Create prompt and generate summary
     try:

@@ -21,12 +21,24 @@ def add_bullet_list(items, doc):
         run.font.size = Pt(10)
         run.font.color.rgb = RGBColor(0, 0, 0)
 
+
+#####################################
+### Docx file creation function   ###
+#####################################
 def save_summary_to_docx(response_text, filename):
     """
     Parsar AI-svar UPPIFRÅN OCH NER.
     Identifierar varje element och formaterar det.
     """
     doc = Document()
+
+    # Lägg till logotyp i sidhuvud
+    section = doc.sections[0]
+    header = section.header
+    header_paragraph = header.paragraphs[0]
+    run = header_paragraph.add_run()
+    run.add_picture("ui/static/logo/standard.png", width=Inches(1.5))
+    header_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
     
     lines = response_text.split('\n')
     i = 0
