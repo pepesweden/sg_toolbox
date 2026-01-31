@@ -9,8 +9,6 @@ from docx.oxml import OxmlElement
 # Laddar json bibliotek
 import json
 
-#Definera mappar för static content
-
 
 # Definierar punktlista definerar punklista
 def add_bullet_list(items, doc):
@@ -69,7 +67,7 @@ def save_summary_to_docx(response_text, filename):
     doc.save(filename)
 
 
-# Formatterar och Sparar sammanfattning i en word fil
+# !!!UNUSED!!!
 def save_summary_to_docx_OLD(summary_text, candidate_name, filepath):
     doc = Document()
 
