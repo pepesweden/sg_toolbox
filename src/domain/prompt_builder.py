@@ -280,14 +280,10 @@ STEG 3 - Följ denna EXAKTA stil och ton:
 
 DETALJERADE INSTRUKTIONER FÖR VARJE SEKTION:
 
-**GRUNDDATA (Tabellformat):**
-Skapa en tabell med följande struktur:
+**GRUNDDATA (Tabellformat från JSON):**
+- Här skall JSON-block från STUKTURMALLEN läggas in
+- Verifiera att blocket startar med [Start json]
 
-| NAMN | [Namn från intervju] | ÅLDER | [Ålder om känd, annars "Ej angivet"] |
-| BEFATTNING | [Nuvarande titel] | KONTAKT | [Telefon/email om angivet, annars "Ej angivet"] |
-| UPPSÄGNINGSTID | [Period eller "Förhandlingsbart"] | PUBLICERAD | [Datum eller lämna tom] |
-| LÖNENIVÅ | [Exakt formulering från intervju om angiven, annars "Ej angivet"] |
-| FÖRMÅNER | [Lista förmåner om angivna, annars "Ej angivet"] |
 
 VIKTIGT FÖR GRUNDDATA:
 - Om information saknas: skriv "Ej angivet" istället för att gissa

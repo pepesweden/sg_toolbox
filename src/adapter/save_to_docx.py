@@ -262,7 +262,25 @@ def add_json_table(doc, lines, start_index):
     
     # Parsa JSON
     json_str = '\n'.join(json_lines)
+
+    # ════════════════════════════════════#
+    #       Cleamup chagpt garbage.       #
+    # ════════════════════════════════════#
+    
+    # 1. Ta bort markdown code fences
+    json_str = json_str.replace('```json', '')
+    json_str = json_str.replace('```', '')
+    
+    # 2. Ta bort dubbla klammer
     json_str = json_str.replace('{{', '{').replace('}}', '}')
+    
+    # 3. Ta bort trailing commas
+    import re
+    json_str = re.sub(r',(\s*[}\]])', r'\1', json_str)
+    json_str = json_str.replace('{{', '{').replace('}}', '}')
+
+
+    ### Parse Json###
     table_data = json.loads(json_str)
     
     # Skapa tabell
