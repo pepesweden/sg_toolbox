@@ -8,6 +8,11 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 # Lägg till src-mappen i Python's import-sökväg så så Python hittar moduler både i /app och /app/src (fungerade inmports)
 ENV PYTHONPATH="/app:/app/src"
 
+# ---- Install system dependencies ----
+RUN apt-get update && apt-get install -y \
+    poppler-utils \
+    && rm -rf /var/lib/apt/lists/*
+
 # ---- Workdir ----
 WORKDIR /app
 
