@@ -167,7 +167,58 @@ class AuthManager:
                 #conn.close() #<- close individal user database connection
                 self.connection_pool.putconn(conn)  # ← Returns connectio to pool   
 
-    #Create admin user when auth manager initialises (see __Init__)    
+    # Updates a user's password after verifying their old one
+    def change_password(self, username, old_password, new_password):
+        # Get a connection from the pool
+        conn = self.connection_pool.getconn()
+        try:
+            cursor = conn.cursor()
+
+            # Fetch the current stored password hash for this user
+            cursor.execute(
+                "SELECT password_hash FROM users WHERE username = %s",
+                (username,)
+            )
+            result = cursor.fetchone()
+
+            # User not found in database
+            if result is None:
+                return False
+
+            password_hash = result[0]
+
+            # psycopg2 returns BYTEA columns as memoryview — convert to bytes
+            if isinstance(password_hash, memoryview):
+                password_hash = bytes(password_hash)
+
+            # Verify the supplied old password matches the stored hash
+            if not bcrypt.checkpw(old_password.encode('utf-8'), password_hash):
+                return False  # Old password is wrong — reject the update
+
+            # Hash the new password with a fresh random salt
+            new_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+            # Persist the new password hash to the users table
+            cursor.execute(
+                "UPDATE users SET password_hash = %s WHERE username = %s",
+                (new_hash, username)
+            )
+            conn.commit()
+            logger.debug(f"✅ Password updated successfully for user '{username}'")
+            return True
+
+        except Exception as e:
+            # Roll back any partial changes if something went wrong
+            conn.rollback()
+            logger.error(f"❌ change_password error for '{username}': {e}")
+            raise
+
+        finally:
+            # Always close cursor and return connection to the pool
+            cursor.close()
+            self.connection_pool.putconn(conn)
+
+    #Create admin user when auth manager initialises (see __Init__)
     def create_default_admin(self):
         import os
 

@@ -17,10 +17,12 @@
                 <img src="{{ url_for('static', filename='logo/house-icon.png') }}" alt="Hem" height="80">
             </a>
         </div>
-        <!-- Logout knapp -->
+        <!-- Navigation: user info, logout, and change-password links -->
         <div class="text-end">
             <span class="text-light me-3">Inloggad som: {{ current_user.username }}</span>
             <a href="{{ url_for('logout') }}" class="btn btn-outline-light btn-sm">Logga ut</a>
+            <!-- Link to the change-password page, shown below the logout button -->
+            <a href="{{ url_for('change_password') }}" class="btn btn-outline-light btn-sm ms-2">Byt lösenord</a>
         </div>
         <div class="text-center mb-4">
             <h1 class="display-5">Sammanfattningsverktyg</h1>

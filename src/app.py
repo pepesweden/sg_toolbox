@@ -101,6 +101,37 @@ def logout():
 def welcome_page():
     return render_template("welcome_page.html")
 
+@app.route('/change-password', methods=['GET', 'POST'])
+@login_required
+def change_password():
+    # Handle the password change form submission
+    if request.method == 'POST':
+        old_password    = request.form['old_password']
+        new_password    = request.form['new_password']
+        confirm_password = request.form['confirm_password']
+
+        # Validate that the two new-password fields agree before hitting the DB
+        if new_password != confirm_password:
+            flash('De nya lösenorden matchar inte.')
+            return redirect('/change-password')
+
+        # Delegate verification and DB update to auth_manager
+        success = auth_manager.change_password(
+            current_user.username, old_password, new_password
+        )
+
+        if success:
+            # Password updated — send the user back to the dashboard
+            flash('Lösenordet har uppdaterats.')
+            return redirect('/welcome_page')
+        else:
+            # Old password was wrong
+            flash('Fel gammalt lösenord.')
+            return redirect('/change-password')
+
+    # GET request — just render the empty form
+    return render_template('change_password.html')
+
 @app.route("/generate-seo")
 @login_required
 def generate_seo_page():
