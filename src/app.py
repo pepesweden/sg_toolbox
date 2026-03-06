@@ -2,10 +2,11 @@
 import logging
 from flask_seasurf import SeaSurf
 from flask_talisman import Talisman
-from flask import Flask, render_template, request, send_file, redirect, flash, session
+from flask import Flask, render_template, request, send_file, redirect, flash, session, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from auth.auth_manager import AuthManager
 from auth.models import User
+from auth.decorators import admin_required
 import os
 
 # Import toolbox specific modules
@@ -101,8 +102,46 @@ def logout():
 def welcome_page():
     return render_template("welcome_page.html")
 
-@app.route('/change-password', methods=['GET', 'POST'])
+@app.route('/admin-page')
 @login_required
+@admin_required
+def admin_page():
+    return render_template("admin_page.html")
+
+@app.route('/update-user', methods=['POST'])
+@login_required
+@admin_required
+def update_user():
+    user_searchstr = request.form['email_str']
+    username = auth_manager.search_user(user_searchstr) # <-- Skapar user object
+    if username is None:
+        return jsonify({"error": "Användaren hittades inte"})
+    else:
+        user = {
+                "username": username.username,
+                "email": username.email
+                }
+        return jsonify(user) 
+
+@app.route('/get-user/<username>', methods=['GET'])
+@login_required
+@admin_required
+def retrieve_user_data(username):
+    user_data = auth_manager.get_user(username)
+    if user_data is None:
+        return jsonify({"error": "Ingen användardata hittades"})
+    else:
+        data = {
+                "username": user_data.username,
+                "e-mail": user_data.email,
+                "User Active": user_data.is_active,
+                "Admin role": user_data.is_admin,
+                "Created at": user_data.created_at
+                }
+        return jsonify(data)
+
+@app.route('/change-password', methods=['GET', 'POST'])
+@login_required     
 def change_password():
     # Handle the password change form submission
     if request.method == 'POST':
@@ -131,16 +170,6 @@ def change_password():
 
     # GET request — just render the empty form
     return render_template('change_password.html')
-
-@app.route("/generate-seo")
-@login_required
-def generate_seo_page():
-    return render_template("generate_seo.html")
-
-@app.route("/generate-offer")
-@login_required
-def generate_offer_page():
-    return render_template("generate_offer.html")
 
 @app.route("/generate_jobad", methods=["POST"])
 @login_required

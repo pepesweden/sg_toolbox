@@ -134,9 +134,11 @@ ADMIN_PASSWORD=your-admin-password
    ```
 
 4. **Start the application:**
-   ```bash
-   docker compose -f infrastructure/compose.yaml up -d --build
-   ```
+```bash
+# Run command from project root 
+docker compose -f infrastructure/compose.yaml --env-file .env up -d --build
+
+```
 
 5. **Access the application:**
    - Open browser: `http://localhost:8000`
@@ -147,4 +149,39 @@ ADMIN_PASSWORD=your-admin-password
    docker compose -f infrastructure/compose.yaml down
    ```
 
-##
+## Documentation 
+### Code Comment Legend
+
+#### HTML
+This project uses a consistent commenting system across all HTML templates.
+
+**Hierarchy levels:**
+
+`[LAYOUT]` — Structural containers that control positioning and page layout.
+
+`[BLOCK]` — A self-contained functional area of the page (e.g. a form, a card).
+
+`[NAVIGATION]` — Menu or selection elements that control what is shown.
+
+`[FORMS]` — The dynamic content area where functional forms are rendered.
+
+`[SECTION]` — A logical group of elements within a block.
+
+`[ELEMENT]` — A single element within a section.
+
+**Format:**
+```
+<!-- START [LABEL]: Descriptive name -->
+    ... content ...
+<!-- END [LABEL] -->
+```
+
+**Example:**
+```
+<!-- START [LAYOUT]: Page container -->
+    <!-- START [NAVIGATION]: Module selection -->
+        <!-- START [ELEMENT]: Create user blurb -->
+        <!-- END [ELEMENT] -->
+    <!-- END [NAVIGATION] -->
+<!-- END [LAYOUT] -->
+```

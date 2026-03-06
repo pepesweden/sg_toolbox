@@ -40,7 +40,8 @@ class AuthManager:
                     email VARCHAR(255) NOT NULL UNIQUE,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     last_login TIMESTAMP,
-                    is_active BOOLEAN DEFAULT TRUE
+                    is_active BOOLEAN DEFAULT TRUE,
+                    is_admin BOOLEAN DEFAULT FALSE
                 )
             ''')
             conn.commit()
@@ -55,7 +56,7 @@ class AuthManager:
             self.connection_pool.putconn(conn)  # ← Returns connectio to pool
 
     # Takes dependency injection and inserts data into postgres
-    def create_user(self, username, password, email=None):
+    def create_user(self, username, password, email=None, is_admin=False):
         # 1. Hash Password
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         # 2. Connect to database
@@ -67,8 +68,8 @@ class AuthManager:
             try:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "INSERT INTO users (username, password_hash, email) VALUES (%s, %s, %s)",
-                    (username, hashed, email)
+                    "INSERT INTO users (username, password_hash, email, is_admin) VALUES (%s, %s, %s)",
+                    (username, hashed, email, is_admin)
                 )
                 conn.commit()
                 return True  # Lyckades!
@@ -138,20 +139,22 @@ class AuthManager:
             try:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT username, email, created_at FROM users WHERE username = %s",
+                    "SELECT username, email, created_at, is_active, is_admin FROM users WHERE username = %s",
                     (username,)
-                )
+                )   
                 result = cursor.fetchone()
                 
                 if result is None:
                     return None
                 
-                # result är tuple: (username, email, created_at)
+                # result är tuple: (username, email, created_at, is_admin)
                 from auth.models import User
                 return User(
                     username=result[0],
                     email=result[1],
-                    created_at=result[2]
+                    created_at=result[2],
+                    is_active=result[3],
+                    is_admin=result[4]
                 )
             except Exception as e:
                 logger.error(f"Database error fetching user '{username}': {e}")
@@ -165,7 +168,48 @@ class AuthManager:
             # 3. Close/return database connection if it exists
             if conn is not None:  # ← Kolla att conn finns
                 #conn.close() #<- close individal user database connection
-                self.connection_pool.putconn(conn)  # ← Returns connectio to pool   
+                self.connection_pool.putconn(conn)  # ← Returns connectio to pool  
+
+
+    def search_user(self, email):
+        # 1. Connect to database
+        conn = None
+        try:
+            # conn = psycopg2.connect(self.database_url) #<- Intividual connetion by user 
+            conn = self.connection_pool.getconn() #Use connection pooling
+
+            # 3. Get user data and create user object
+            try:
+                cursor = conn.cursor()
+                cursor.execute(
+                    "SELECT email FROM users WHERE email LIKE = '%%'",
+                    (email,)
+                )   
+                result = cursor.fetchone()
+                
+                if result is None:
+                    return None
+                
+                # result är tuple: (username, email, created_at, is_admin)
+                from auth.models import User
+                return User(
+                    username=result[0],
+                    email=result[1],
+                )
+            except Exception as e:
+                logger.error(f"Database error fetching user '{username}': {e}")
+                return None
+    
+        except Exception as e:
+            logger.error(f"Failed to get database connection: {e}")
+            return None
+
+        finally:
+            # 3. Close/return database connection if it exists
+            if conn is not None:  # ← Kolla att conn finns
+                #conn.close() #<- close individal user database connection
+                self.connection_pool.putconn(conn)  # ← Returns connectio to pool
+
 
     # Updates a user's password after verifying their old one
     def change_password(self, username, old_password, new_password):
@@ -229,7 +273,7 @@ class AuthManager:
         if self.get_user('admin'):
             return  # Admin finns redan
     
-        self.create_user('admin', admin_password, 'admin@salesgroup.se')
+        self.create_user('admin', admin_password, 'admin@salesgroup.se', True)
         print("✅ Admin-användare skapad")
      
 
