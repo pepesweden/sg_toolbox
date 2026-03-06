@@ -49,6 +49,20 @@
                     </div>
                 </div>
             </div>
+            {% if current_user.is_admin %}
+            <div class="col-md-4 mb-4">
+                <div class="module-blurb shadow-lg h-100">
+                    <div class="blurb-icon-container text-center pt-3">
+                        <span class="svg-icon-fa icon">⚙️</span>
+                    </div>
+                    <div class="blurb-content-wrapper p-3">
+                        <h2 class="blurb-heading h4">Adminverktyg</h2>
+                        <p class="small">hantera användare i toolbox</p>
+                        <p class="small"><a href="/admin-page" class="btn btn-outline-light mt-2">Starta</a></p>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
             <!--
             <div class="col-md-4 mb-4">
                 <div class="module-blurb shadow-lg h-100">

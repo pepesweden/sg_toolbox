@@ -2,10 +2,11 @@
 import logging
 from flask_seasurf import SeaSurf
 from flask_talisman import Talisman
-from flask import Flask, render_template, request, send_file, redirect, flash, session
+from flask import Flask, render_template, request, send_file, redirect, flash, session, jsonify
 from flask_login import LoginManager, login_user, login_required, logout_user, current_user
 from auth.auth_manager import AuthManager
 from auth.models import User
+from auth.decorators import admin_required
 import os
 
 # Import toolbox specific modules
@@ -13,6 +14,7 @@ from adapter.file_manager import write_file_to_storage
 from summary_creation import generate_summary, save_summary_to_docx, trigger_generation, TRIGGER_SUMMARY, TRIGGER_KP, TRIGGER_REFERENCE, TRIGGER_JOB_AD
 from adapter.save_to_docx import save_summary_to_docx
 from adapter.summary_generation import generate_summary
+
 
 
 # Configure logging
@@ -27,6 +29,7 @@ logging.basicConfig(
 app = Flask(__name__,
             template_folder='../ui/templates',    # Redirects to a higher folder level, ui/templates
             static_folder='../ui/static',)         # Redirects to a higher folder level, ui/static
+
 
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 # Session security configuration
@@ -47,9 +50,27 @@ DOWNLOAD_FOLDER = "data/output"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["DOWNLOAD_FOLDER"] = DOWNLOAD_FOLDER    
 
-# Auth setup
+# Auth setup -  define connection string fpr postgres to send as self in AuthManager class
 DATABASE_URL = os.getenv('DATABASE_URL')
 auth_manager = AuthManager(DATABASE_URL)
+
+
+##########################################
+### Import and register Blueprints     ###
+##########################################
+"""To keep app.py clean blueprints are used group routes
+Current Blueprint groups are:
+/admin/users -> /blueprints/admin/users.py
+"""
+
+from blueprints.admin import admin_blueprint
+admin_blueprint.auth_manager = auth_manager  # ← skickar instansen
+app.register_blueprint(admin_blueprint)
+
+
+##########################################
+### Setup Login manager                ###
+##########################################
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -101,8 +122,48 @@ def logout():
 def welcome_page():
     return render_template("welcome_page.html")
 
-@app.route('/change-password', methods=['GET', 'POST'])
+@app.route('/admin-page')
 @login_required
+@admin_required
+def admin_page():
+    return render_template("admin_page.html")
+
+
+"""Permantently moved to blueprints/"""
+#@app.route('/update-user', methods=['POST'])
+#@login_required
+#@admin_required
+#def update_user():
+#    user_searchstr = request.form['email_str']
+#    username = auth_manager.search_user(user_searchstr) # <-- Skapar user object
+#    if username is None:
+#        return jsonify({"error": "Användaren hittades inte"})
+#    else:
+#        user = {
+#                "username": username.username,
+#                "email": username.email
+#                }
+#        return jsonify(user) 
+
+#@app.route('/get-user/<username>', methods=['GET'])
+#@login_required
+#@admin_required
+#def retrieve_user_data(username):
+#    user_data = auth_manager.get_user(username)
+#    if user_data is None:
+#        return jsonify({"error": "Ingen användardata hittades"})
+#    else:
+#        data = {
+#                "username": user_data.username,
+#                "email": user_data.email,
+#                "User Active": user_data.active_user,
+#               "Admin role": user_data.is_admin,
+#                "Created at": user_data.created_at
+#                }
+#        return jsonify(data)
+
+@app.route('/change-password', methods=['GET', 'POST'])
+@login_required     
 def change_password():
     # Handle the password change form submission
     if request.method == 'POST':
@@ -131,16 +192,6 @@ def change_password():
 
     # GET request — just render the empty form
     return render_template('change_password.html')
-
-@app.route("/generate-seo")
-@login_required
-def generate_seo_page():
-    return render_template("generate_seo.html")
-
-@app.route("/generate-offer")
-@login_required
-def generate_offer_page():
-    return render_template("generate_offer.html")
 
 @app.route("/generate_jobad", methods=["POST"])
 @login_required
