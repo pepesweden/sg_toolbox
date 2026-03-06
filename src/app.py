@@ -16,6 +16,7 @@ from adapter.save_to_docx import save_summary_to_docx
 from adapter.summary_generation import generate_summary
 
 
+
 # Configure logging
 log_level = os.getenv('LOG_LEVEL', 'INFO')
 logging.basicConfig(
@@ -28,6 +29,7 @@ logging.basicConfig(
 app = Flask(__name__,
             template_folder='../ui/templates',    # Redirects to a higher folder level, ui/templates
             static_folder='../ui/static',)         # Redirects to a higher folder level, ui/static
+
 
 app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 # Session security configuration
@@ -48,9 +50,27 @@ DOWNLOAD_FOLDER = "data/output"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["DOWNLOAD_FOLDER"] = DOWNLOAD_FOLDER    
 
-# Auth setup
+# Auth setup -  define connection string fpr postgres to send as self in AuthManager class
 DATABASE_URL = os.getenv('DATABASE_URL')
 auth_manager = AuthManager(DATABASE_URL)
+
+
+##########################################
+### Import and register Blueprints     ###
+##########################################
+"""To keep app.py clean blueprints are used group routes
+Current Blueprint groups are:
+/admin/users -> /blueprints/admin/users.py
+"""
+
+from blueprints.admin import admin_blueprint
+admin_blueprint.auth_manager = auth_manager  # ← skickar instansen
+app.register_blueprint(admin_blueprint)
+
+
+##########################################
+### Setup Login manager                ###
+##########################################
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -108,37 +128,39 @@ def welcome_page():
 def admin_page():
     return render_template("admin_page.html")
 
-@app.route('/update-user', methods=['POST'])
-@login_required
-@admin_required
-def update_user():
-    user_searchstr = request.form['email_str']
-    username = auth_manager.search_user(user_searchstr) # <-- Skapar user object
-    if username is None:
-        return jsonify({"error": "Användaren hittades inte"})
-    else:
-        user = {
-                "username": username.username,
-                "email": username.email
-                }
-        return jsonify(user) 
 
-@app.route('/get-user/<username>', methods=['GET'])
-@login_required
-@admin_required
-def retrieve_user_data(username):
-    user_data = auth_manager.get_user(username)
-    if user_data is None:
-        return jsonify({"error": "Ingen användardata hittades"})
-    else:
-        data = {
-                "username": user_data.username,
-                "e-mail": user_data.email,
-                "User Active": user_data.is_active,
-                "Admin role": user_data.is_admin,
-                "Created at": user_data.created_at
-                }
-        return jsonify(data)
+"""Permantently moved to blueprints/"""
+#@app.route('/update-user', methods=['POST'])
+#@login_required
+#@admin_required
+#def update_user():
+#    user_searchstr = request.form['email_str']
+#    username = auth_manager.search_user(user_searchstr) # <-- Skapar user object
+#    if username is None:
+#        return jsonify({"error": "Användaren hittades inte"})
+#    else:
+#        user = {
+#                "username": username.username,
+#                "email": username.email
+#                }
+#        return jsonify(user) 
+
+#@app.route('/get-user/<username>', methods=['GET'])
+#@login_required
+#@admin_required
+#def retrieve_user_data(username):
+#    user_data = auth_manager.get_user(username)
+#    if user_data is None:
+#        return jsonify({"error": "Ingen användardata hittades"})
+#    else:
+#        data = {
+#                "username": user_data.username,
+#                "email": user_data.email,
+#                "User Active": user_data.active_user,
+#               "Admin role": user_data.is_admin,
+#                "Created at": user_data.created_at
+#                }
+#        return jsonify(data)
 
 @app.route('/change-password', methods=['GET', 'POST'])
 @login_required     

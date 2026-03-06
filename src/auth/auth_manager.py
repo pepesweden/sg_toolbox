@@ -68,8 +68,8 @@ class AuthManager:
             try:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "INSERT INTO users (username, password_hash, email, is_admin) VALUES (%s, %s, %s)",
-                    (username, hashed, email, is_admin)
+                    "INSERT INTO users (username, password_hash, email, is_admin) VALUES (%s, %s, %s, %s)",
+                    (username, hashed, email, is_admin) # <-- This is a tuple in order to get one value for each %s in the SQL query
                 )
                 conn.commit()
                 return True  # Lyckades!
@@ -77,6 +77,37 @@ class AuthManager:
             except psycopg2.IntegrityError as e:
                 logger.error(f"⚠️ Data already exists - conflict?: {e}")
                 return False  # Username finns redan (PRIMARY KEY konflikt)
+        
+        except Exception as e:
+            logger.error(f" ❌ Failed to get database connection: {e}")
+            return None  # Retur None = "login failed"
+        
+        #Stäng anslutningen till DB oavsett fel,
+        finally:
+            if conn is not None:  # ← Kolla att conn finns
+                #conn.close() #<- close individal user database connection
+                self.connection_pool.putconn(conn)  # ← Returns connectio to pool
+
+
+    def update_user(self, username, active_user,  email=None, is_admin=False):
+        # 1. Hash Password
+        #hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+        # 2. Connect to database
+        conn = None
+        try:
+            # conn = psycopg2.connect(self.database_url) #<- Intividual connetion by user 
+            conn = self.connection_pool.getconn() #Use connection pooling
+            # 3. INSERT query
+            
+            cursor = conn.cursor()
+            cursor.execute(
+                #"INSERT INTO users (username, is_active , email, is_admin) VALUES (%s, %s, %s, %s)",
+                "UPDATE public.users SET is_active = %s, email = %s, is_admin = %s WHERE username = %s",
+                (active_user, email, is_admin, username) # <-- This is a tuple in order to get one value for each %s in the SQL query
+            )
+            conn.commit()
+            return True  # Lyckades!
+            
         
         except Exception as e:
             logger.error(f" ❌ Failed to get database connection: {e}")
@@ -153,7 +184,7 @@ class AuthManager:
                     username=result[0],
                     email=result[1],
                     created_at=result[2],
-                    is_active=result[3],
+                    active_user=result[3],
                     is_admin=result[4]
                 )
             except Exception as e:
@@ -182,8 +213,8 @@ class AuthManager:
             try:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT email FROM users WHERE email LIKE = '%%'",
-                    (email,)
+                    "SELECT username, email FROM users WHERE email LIKE %s",
+                    (f"%{email}%",) 
                 )   
                 result = cursor.fetchone()
                 
@@ -197,7 +228,7 @@ class AuthManager:
                     email=result[1],
                 )
             except Exception as e:
-                logger.error(f"Database error fetching user '{username}': {e}")
+                logger.error(f"Database error fetching user '{email}': {e}")
                 return None
     
         except Exception as e:

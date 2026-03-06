@@ -62,6 +62,21 @@
             </div>
           </div>
           <!-- END: Navigation -->
+          <!-- Flash messages (success or error feedback from the server) -->
+          {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                  <div class="row justify-content-center mb-4">
+                      <div class="col-md-4">
+                          {% for message in messages %}
+                              <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                  {{ message }}
+                                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                              </div>
+                          {% endfor %}
+                      </div>
+                  </div>
+              {% endif %}
+          {% endwith %}
           <!-- START [FORMS] - Dynamic content area -->
           <div class="module-blurb">  
               <!-- START: Update User in backend - MAIN FORM -->
@@ -71,7 +86,7 @@
                   <p>Uppdaterar användare information om en avnändare</p>
                 </div>
                 <!-- START [SECTION]: Search users in database - FORM -->
-                <form id="search-form" action="/update-user" method="post" enctype="multipart/form-data">
+                <form id="search-form" action="/admin/users/search" method="post" enctype="multipart/form-data">
                   <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
                   <div class="mb-3">
                     <label for="namn" class="form-label">Användarnamn:</label>
@@ -88,6 +103,32 @@
           <!-- END [FORMS] -->
         </div>
         <!-- END [LAYOUT]: Page container -->
+      <!-- Osynlig template i HTML-filen -->
+      <template id="user-detail-template">
+          <form id="updateUser" action="/admin/users/save" method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <div>
+                <label for="detail-username">Användarnamn</label>
+                <input type="text" id="detail-username" name="detail-username" readonly>
+            </div>
+            <div>
+                <label for="detail-email">E-post</label>
+                <input type="text" id="detail-email" name="detail-email">
+            </div>
+            <div>
+                <label for="detail-active">Aktiv</label>
+                <input type="checkbox" id="detail-active" name="detail-active">
+            </div>
+            <div>
+                <label for="detail-admin">Admin</label>
+                <input type="checkbox" id="detail-admin" name="detail-admin">
+            </div>
+            <div>
+                <button type="submit" id="detail-uppdatera">Uppdatera</button>
+                <button type="button" id="detail-cancel" onclick=cancelUpdate()>Avbryt</button>
+            </div>
+          </form>
+      </template>
       <script>
         function showForm(type) {
           // Dölj alla formulär
@@ -106,7 +147,7 @@
           event.preventDefault()  // Stoppar normal sidladdning
           
           const formData = new FormData(document.getElementById("search-form"))
-          fetch("/update-user", {
+          fetch("/admin/users/search", {
               method: "POST",
               body: formData
           })
@@ -117,13 +158,40 @@
         })
         // Render usernames fetched from backend
         function loadUser(username) {
-          fetch(`/get-user/${username}`, {
+          fetch(`/admin/users/get-user/${username}`, {
               method: "GET",
           })
           .then(response => response.json())
           .then(data => {
-            document.getElementById("user-detail").innerHTML = data.username, data.is_admin
+            // Steg 1: Hämta templaten
+            const template = document.getElementById("user-detail-template")
+
+            // Steg 2: Klona den
+            const klon = template.content.cloneNode(true)
+
+            // Steg 3: Fyll med data
+            klon.querySelector("#detail-username").value = data.username
+            klon.querySelector("#detail-email").value = data.email
+            klon.querySelector("#detail-active").checked = data["User Active"]
+            klon.querySelector("#detail-admin").checked = data["Admin role"]
+
+            // Töm platshållaren innan ny klon läggs in
+            document.getElementById("user-detail").innerHTML = ""
+
+            // Steg 4: Stoppa in i platshållaren
+            document.getElementById("user-detail").appendChild(klon)
+            //document.getElementById("user-detail").innerHTML = data.username + data.is_admin
           })
+        }
+        function updateUser(type) {
+          document.getElementById("detail-uppdatera").addEventListener("submit", function(event) {
+          const usernameData = new FormData(document.getElementById("detail-username"))
+          
+          })
+        }
+        function cancelUpdate() {
+          document.getElementById("user-detail").innerHTML = ""
+          document.getElementById("search-results").innerHTML = ""
         }
       </script>
     </body>
