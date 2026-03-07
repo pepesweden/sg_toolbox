@@ -16,15 +16,20 @@ def search_users():
     user_searchstr = request.form['email_str']
     if user_searchstr is None:
         print("❌ Ingen data tas emot från front end")
-    username = auth_manager.search_user(user_searchstr) # <-- Skapar user object
-    if username is None:
-        return jsonify({"error": "Användaren hittades inte"})
+    #username = auth_manager.search_user(user_searchstr) # <-- Skapar user object
+    user_object_list = auth_manager.search_user(user_searchstr) # <-- Skapar user object
+    user_list = []
+    if not user_object_list: # If no user 
+        return jsonify({"error": "Inga användare hittades"})
     else:
-        user = {
-                "username": username.username,
-                "email": username.email
+        for object in user_object_list:
+            user = {
+                "username": object.username,
+                "email": object.email
                 }
-        return jsonify(user)
+            user_list.append(user)
+        print(user_list)
+        return jsonify(user_list)
     
 @admin_blueprint.route('/users/get-user/<username>', methods=['GET'])
 @login_required

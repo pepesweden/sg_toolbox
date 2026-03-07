@@ -216,17 +216,24 @@ class AuthManager:
                     "SELECT username, email FROM users WHERE email LIKE %s",
                     (f"%{email}%",) 
                 )   
-                result = cursor.fetchone()
+                result = cursor.fetchall()
                 
-                if result is None:
-                    return None
+                if not result:
+                    return []
                 
                 # result är tuple: (username, email, created_at, is_admin)
                 from auth.models import User
-                return User(
-                    username=result[0],
-                    email=result[1],
+                user_list = []
+                for r in result:
+                    user_object = User(
+                    username=r[0],
+                    email=r[1],
                 )
+                    user_list.append(user_object)
+                    # r =+ 1
+
+                return user_list
+            
             except Exception as e:
                 logger.error(f"Database error fetching user '{email}': {e}")
                 return None

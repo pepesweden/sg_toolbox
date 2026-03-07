@@ -281,6 +281,7 @@ def generate():
     
 
     print(f"✅ Fil sparad: {filepath}")
+    
     return send_file(os.path.abspath(filepath), as_attachment=True)
     #return send_file(filepath, as_attachment=True)
 

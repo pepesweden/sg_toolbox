@@ -95,26 +95,43 @@
                   <button type="submit" class="btn btn-outline-light">Sök användare</button>
                 </form>
                 <br>
-                <div id="search-results"><p>Search Results</p></div>
-                <div id="user-detail"><p>User form details</p></div>
+                <div class="card p-4 mb-4 bg-white shadow-sm" id="search-results">
+                  <p>Search Results</p>
+                </div>
+                <div class="card p-4 mb-4 bg-white shadow-sm" id="user-detail">
+                  <p>User form details</p>
+                </div>
               </div>
               <!-- END [SECTION] -->
           </div>
           <!-- END [FORMS] -->
         </div>
         <!-- END [LAYOUT]: Page container -->
+
+      <!-- Osynliga templates i HTML-filen -->
+      <template id="user-list-template">
+          <form id="updateUser" action="/admin/users/save" method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+            <div class="mb-3">
+                <label for="detail-username" class="form-label">Användarnamn</label>
+                <input class="form-control" type="text" id="detail-username" name="detail-username" readonly>
+            </div>
+          </form>
+      </template>
       <!-- Osynlig template i HTML-filen -->
       <template id="user-detail-template">
           <form id="updateUser" action="/admin/users/save" method="post">
             <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
             <div>
-                <label for="detail-username">Användarnamn</label>
-                <input type="text" id="detail-username" name="detail-username" readonly>
+                <label for="detail-username" class="form-label">Användarnamn</label>
+                <input class="form-control" type="text" id="detail-username" name="detail-username" readonly>
             </div>
+            <br>
             <div>
-                <label for="detail-email">E-post</label>
-                <input type="text" id="detail-email" name="detail-email">
+                <label class="form-label" for="detail-email">E-post</label>
+                <input class="form-control" type="text" id="detail-email" name="detail-email">
             </div>
+            <br>
             <div>
                 <label for="detail-active">Aktiv</label>
                 <input type="checkbox" id="detail-active" name="detail-active">
@@ -123,13 +140,15 @@
                 <label for="detail-admin">Admin</label>
                 <input type="checkbox" id="detail-admin" name="detail-admin">
             </div>
+            <br>
             <div>
-                <button type="submit" id="detail-uppdatera">Uppdatera</button>
-                <button type="button" id="detail-cancel" onclick=cancelUpdate()>Avbryt</button>
+                <button class="btn btn-outline-light" type="submit" id="detail-uppdatera">Uppdatera</button>
+                <button class="btn btn-outline-light" type="button" id="detail-cancel" onclick=cancelUpdate()>Avbryt</button>
             </div>
           </form>
       </template>
       <script>
+        // START - Showform Javascript function
         function showForm(type) {
           // Dölj alla formulär
           document.querySelectorAll('.form-section').forEach(div => {
@@ -142,18 +161,25 @@
             target.style.display = 'block';
           }
         }
+        // END - Showform Javascript function
+        // START - Event listener to run search an list results
+        document.getElementById("search-form").addEventListener("submit", function(event) {
+        event.preventDefault()  // Stoppar normal sidladdning
         
-          document.getElementById("search-form").addEventListener("submit", function(event) {
-          event.preventDefault()  // Stoppar normal sidladdning
-          
-          const formData = new FormData(document.getElementById("search-form"))
-          fetch("/admin/users/search", {
-              method: "POST",
-              body: formData
-          })
-          .then(response => response.json())
-          .then(data => {
-            document.getElementById("search-results").innerHTML = `<p onclick="loadUser('${data.username}')">${data.username}</p>`
+        const formData = new FormData(document.getElementById("search-form"))
+        fetch("/admin/users/search", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+          const users_objects = data
+          let users = ""
+          users_objects.forEach(element => {
+            users += `<p onclick="loadUser('${element.username}')">${element.username}</p>`
+          });
+          document.getElementById("search-results").innerHTML = users
           })
         })
         // Render usernames fetched from backend
@@ -192,6 +218,7 @@
         function cancelUpdate() {
           document.getElementById("user-detail").innerHTML = ""
           document.getElementById("search-results").innerHTML = ""
+          document.getElementById("email_str").value = ""
         }
       </script>
     </body>
