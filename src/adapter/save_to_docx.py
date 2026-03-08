@@ -286,7 +286,7 @@ def add_json_table(doc, lines, start_index):
     ### Parse Json###
     table_data = json.loads(json_str)
 
-    ### Set published date ###
+    ### Set published date in JSON  ###
     """
     Loops through the JSON dict and replaces the value in-place
     """
