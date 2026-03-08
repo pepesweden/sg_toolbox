@@ -134,14 +134,14 @@ p, li {
 }
 
 /* Hover effect for form sections */
-.form-section:hover {
-    background-color: #432774;  /* Same lighter purple as module-blurb hover */
+/* .form-section:hover {
+    background-color: #432774;
     transform: scale(1.02);
-}
+} */
 
 /* Style the cards inside form sections */
-.form-section .card {
-    background-color: rgba(255, 255, 255, 0.1) !important;  /* Semi-transparent white */
+/* .form-section .card {
+    background-color: rgba(255, 255, 255, 0.1) !important;
     color: white !important;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -152,4 +152,44 @@ p, li {
 
 .form-section .card p {
     color: #f0f0f0 !important;
+} */
+
+/* Outer navigation container - dark purple, no hover */
+.nav-module-container {
+    background-color: #23153D;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+/* Individual nav module cards - slightly lighter, individual hover */
+.nav-module-card {
+    background-color: #2d1a4a;
+    color: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    height: 100%;
+}
+
+.nav-module-card:hover {
+    background-color: #432774;
+    transform: scale(1.02);
+}
+
+/* Lighter card inside form sections */
+.form-section-card {
+    background-color: #2d1a4a;
+    color: white;
+    padding: 1.25rem 1.5rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.form-section-card h3 {
+    color: white;
+}
+
+.form-section-card p {
+    color: #d0c9dd;
 }

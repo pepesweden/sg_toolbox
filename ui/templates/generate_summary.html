@@ -9,6 +9,7 @@
     </head>
     
     <body class="bg-light">
+      <div class="container py-5">
         <div class="d-flex justify-content-center align-items-center gap-4 mb-4">
             <a href="{{ url_for('welcome_page') }}">
                 <img src="{{ url_for('static', filename='logo/white.png') }}" alt="Logotyp" height="80">
@@ -25,50 +26,69 @@
             <a href="{{ url_for('change_password') }}" class="btn btn-outline-light btn-sm ms-2">Byt lösenord</a>
         </div>
         <div class="text-center mb-4">
-            <h1 class="display-5">Sammanfattningsverktyg</h1>
+            <h1 class="display-5">Leveransverktyg</h1>
             <!--<p class="text-muted">Skapa proffsiga kandidatsammanfattningar på sekunder</p>-->
         </div>
         <div class="container mt-5">
-          <div class="module-blurb">
-            <div class="blurb-container" style="display: flex; gap: 20px; flex-wrap: wrap;">
+          <!-- START [NAVIGATION] - Module selection row -->
+          <div class="nav-module-container mb-4">
+            <div class="row g-3">
 
               <!-- Annons -->
-              <div class="blurb" onclick="showForm('annons')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
-                <div class="blurb-icon-container">
-                  <i class="fas fa-file-alt"></i>
+              <div class="col-md-3">
+                <div class="nav-module-card" onclick="showForm('annons')">
+                  <div class="blurb-icon-container">
+                    <i class="fas fa-file-alt"></i>
+                  </div>
+                  <h3>Annonser</h3>
+                  <p>Skapa en annons för Salesgroup web.</p>
                 </div>
-                <h3>Annonser</h3>
-                <p>Skapa en annons för Salesgoup web.</p>
               </div>
 
-            
               <!-- Sammanfattning -->
-              <div class="blurb" onclick="showForm('summary')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
-                <div class="blurb-icon-container">
-                  <i class="fas fa-file-alt"></i>
+              <div class="col-md-3">
+                <div class="nav-module-card" onclick="showForm('summary')">
+                  <div class="blurb-icon-container">
+                    <i class="fas fa-file-alt"></i>
+                  </div>
+                  <h3>Sammanfattning</h3>
+                  <p>Skapa en traditionell kandidatsammanfattning baserat på intervjuanteckningar.</p>
                 </div>
-                <h3>Sammanfattning</h3>
-                <p>Skapa en traditionell kandidatsammanfattning baserat på intervjuanteckningar.</p>
               </div>
 
-              <!-- KP -->
-              <div class="blurb" onclick="showForm('kp')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
-                <h3>📄 Kandidatpresentation</h3>
-                <p>Generera en presentation enligt Salesgroup-mallen.</p>
+              <!-- Kandidatpresentation -->
+              <div class="col-md-3">
+                <div class="nav-module-card" onclick="showForm('kp')">
+                  <div class="blurb-icon-container">
+                    <i class="fas fa-id-card"></i>
+                  </div>
+                  <h3>Kandidatpresentation</h3>
+                  <p>Generera en presentation enligt Salesgroup-mallen.</p>
+                </div>
               </div>
 
-              <!-- Referens -->
-              <div class="blurb" onclick="showForm('reference')" style="flex: 1; border: 1px solid #ccc; padding: 20px; border-radius: 12px; cursor: pointer;">
-                <h3>👥 Referenssammanfattning</h3>
-                <p>Skapa en referenssammanställning från referensintervjuer.</p>
+              <!-- Referenssammanfattning -->
+              <div class="col-md-3">
+                <div class="nav-module-card" onclick="showForm('reference')">
+                  <div class="blurb-icon-container">
+                    <i class="fas fa-users"></i>
+                  </div>
+                  <h3>Sammanställning <br> referenser</h3>
+                  <p>Skapa en referenssammanställning från referensintervjuer.</p>
+                </div>
               </div>
+
             </div>
           </div>
-          <div class="module-blurb">  
-              <!-- Skapa ANnons-->
+          <!-- END [NAVIGATION] -->
+          <div>
+              <!-- Skapa Annons-->
               <div id="annons-form" class="form-section" style="display: none;">
-                <div class="card p-4 mb-4 bg-white shadow-sm">
-                  <h3>📰 Skapa annons</h3>
+                <div class="form-section-card mb-4">
+                  <div class="blurb-icon-container">
+                    
+                  </div>
+                  <h3><i class="fas fa-file-alt"></i>&nbsp; Annonser</h3>
                   <p>Skapa en annons för ett rekryteringsuppdrag.</p>
                 </div>
                 <form action="/generate_jobad" method="post" enctype="multipart/form-data">
@@ -85,12 +105,10 @@
                   <button type="submit" class="btn btn-outline-light">Skapa Annons</button>
                 </form>
               </div>
-
-
               <!--<h1>Skapa kandidatsammanfattning</h1>-->
               <div id="summary-form" class="form-section" style="display: none;">
-                <div class="card p-4 mb-4 bg-white shadow-sm">
-                  <h3>📄 kandidatsammanfattning</h3>
+                <div class="form-section-card mb-4">
+                  <h3>📄 Kandidatsammanfattning</h3>
                   <p>Generera en sammanfattning baserat på intervjuanteckningar.</p>
                 </div>
                 <form action="/generate" method="post" enctype="multipart/form-data">
@@ -113,7 +131,7 @@
 
               <!--<h1>Skapa Kandidatpresentation </h1>-->
               <div id="kp-form" class="form-section" style="display: none;">
-                <div class="card p-4 mb-4 bg-white shadow-sm">
+                <div class="form-section-card mb-4">
                   <h3>📄 Kandidatpresentation</h3>
                   <p>Generera en kandidatpresentation baserat på intervjuanteckningar.</p>
                 </div>
@@ -138,7 +156,7 @@
 
               <!-- Referenssammanfattning endpoint-->
               <div id="reference-form" class="form-section" style="display: none;">
-                <div class="card p-4 mb-4 bg-white shadow-sm">
+                <div class="form-section-card mb-4">
                   <h3>👥 Referenssammanfattning</h3>
                   <p>Skapa en sammanställning från referenssamtal.</p>
                 </div>
@@ -163,6 +181,8 @@
               </div>
           </div>
         </div>
+      </div>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
       <script>
         function showForm(type) {
           // Dölj alla formulär

@@ -56,7 +56,7 @@ class AuthManager:
             self.connection_pool.putconn(conn)  # ← Returns connectio to pool
 
     # Takes dependency injection and inserts data into postgres
-    def create_user(self, username, password, email=None, is_admin=False):
+    def create_user(self, username, password, email=None, is_admin=False, active_user=True):
         # 1. Hash Password
         hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         # 2. Connect to database
@@ -68,8 +68,8 @@ class AuthManager:
             try:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "INSERT INTO users (username, password_hash, email, is_admin) VALUES (%s, %s, %s, %s)",
-                    (username, hashed, email, is_admin) # <-- This is a tuple in order to get one value for each %s in the SQL query
+                    "INSERT INTO users (username, password_hash, email, is_admin, is_active) VALUES (%s, %s, %s, %s, %s)",
+                    (username, hashed, email, is_admin, active_user) # <-- This is a tuple in order to get one value for each %s in the SQL query
                 )
                 conn.commit()
                 return True  # Lyckades!

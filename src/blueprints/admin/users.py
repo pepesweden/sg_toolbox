@@ -65,5 +65,37 @@ def save_user_data():
     flash('✅ Användarinformation uppdaterad')
     return redirect('/admin-page')
     
+@admin_blueprint.route('/users/create', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def create_user():
+    auth_manager = admin_blueprint.auth_manager
+    # Handle the password change form submission
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        active_user = request.form.get('active') == 'on'
+        is_admin = request.form.get('admin') == 'on'
+        password    = request.form['password']
+        confirm_password = request.form['confirm_password']
 
+        # Validate that the two new-password fields agree before hitting the DB
+        if password != confirm_password:
+            flash(' ❌ Lösenorden matchar inte.')
+            return redirect('/users/create')
+
+        # Delegate verification and DB update to auth_manager
+        success = auth_manager.create_user(username, password, email, is_admin, active_user )
+
+        if success:
+            # Password updated — send the user back to the dashboard
+            flash(' ✅ Användaren har skapats.')
+            return redirect('/admin-page')
+        else:
+            # Old password was wrong
+            flash('Fel gammalt lösenord.')
+            return redirect('/users/create')
+
+    # GET request — just render the empty form
+    return render_template('admin_page.html')
     
