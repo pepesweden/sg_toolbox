@@ -5,9 +5,12 @@ from docx.shared import Pt, Inches, RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from docx.oxml.ns import qn
 from docx.oxml import OxmlElement
+from datetime import datetime
 
 # Laddar json bibliotek
 import json
+
+today = datetime.today().strftime("%Y-%m-%d")
 
 
 # Definierar punktlista definerar punklista
@@ -279,10 +282,24 @@ def add_json_table(doc, lines, start_index):
     json_str = re.sub(r',(\s*[}\]])', r'\1', json_str)
     json_str = json_str.replace('{{', '{').replace('}}', '}')
 
-
+    
     ### Parse Json###
     table_data = json.loads(json_str)
-    
+
+    ### Set published date ###
+    """
+    Loops through the JSON dict and replaces the value in-place
+    """
+    for row in table_data.get("tabell", []):
+        for cell in row.get("cells", []):
+            label = cell.get("label", "").strip().lower()
+
+            if label == "publicerad":
+                print("DEBUG före:", cell["value"])
+                cell["value"] = today
+                print("DEBUG efter:", cell["value"])
+                
+        
     # Skapa tabell
     create_table_from_json(doc, table_data)
     

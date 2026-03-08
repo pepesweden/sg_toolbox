@@ -14,6 +14,7 @@
 - Om information saknas: skriv "Ej angivet"
 - För lön: använd kandidatens exakta formulering från intervjun
 - Alla fält måste fyllas i
+- VIKTIGT! för [Datum] skriv ALLTID ut dagens datum
 
 ---
 

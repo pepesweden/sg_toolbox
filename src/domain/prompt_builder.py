@@ -3,6 +3,10 @@
 #Imports
 from adapter.text_extractor import read_docx_text, read_md_text  # <-- Function to load and
 
+from datetime import datetime
+
+today = datetime.today().strftime("%Y-%m-%d")
+
 #Doctype constants
 DOC_TYPE_SUMMARY = "summary"
 DOC_TYPE_KP = "kp" 
@@ -12,7 +16,6 @@ DOC_TYPE_JOB_AD = "job_ad"
 #Function to build prompt dependen on documen chosen to generate
 def build_prompt_for_document_type(doc_type, doc_text, cv_text):
     """Bygger prompt för given dokumenttyp"""
-    
     if doc_type == DOC_TYPE_SUMMARY:
         mall_text = read_md_text("data/reference/summary_template.md")
         style_text = read_docx_text("data/reference/Sammanfattning-claes.docx")
@@ -28,6 +31,7 @@ def build_prompt_for_document_type(doc_type, doc_text, cv_text):
         
     elif doc_type == DOC_TYPE_KP:
         kpmall_text = read_md_text("data/reference/kp_template_json.md")
+        kpmall_text = kpmall_text.replace("[dagens datum]", today)
         kpstyle_text = read_docx_text("data/reference/kp_ic.docx")
 
         #Create the LLM "kandidatpresentation" creation prompt
