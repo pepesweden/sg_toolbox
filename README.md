@@ -135,8 +135,17 @@ ADMIN_PASSWORD=your-admin-password
 
 4. **Start the application:**
 ```bash
+### Build prod instance locally
 # Run command from project root 
 docker compose -f infrastructure/compose.yaml --env-file .env up -d --build
+
+### Run local flask app for quick testing without needing to rebuild -from project root
+#NOTE: requires posgres container instance to be running!!!
+#load environemtal variables
+soruce .env
+
+#Start app
+python3 src/app.py
 
 ```
 
