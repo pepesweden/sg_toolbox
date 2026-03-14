@@ -1,4 +1,4 @@
-from flask import request, jsonify, redirect, flash
+from flask import request, jsonify, redirect, flash, render_template
 from flask_login import login_required
 from . import admin_blueprint
 from auth.decorators import admin_required
@@ -93,9 +93,41 @@ def create_user():
             return redirect('/admin-page')
         else:
             # Old password was wrong
-            flash('Fel gammalt lösenord.')
+            flash(' ❌ Fel gammalt lösenord.')
             return redirect('/users/create')
 
     # GET request — just render the empty form
     return render_template('admin_page.html')
+
+@admin_blueprint.route('/users/passwordupdate', methods=['POST']) #removed 'GET'
+@login_required     
+@admin_required
+def update_password():
+    auth_manager = admin_blueprint.auth_manager
+    # Handle the password change form submission
+    #if request.method == 'POST':
+    username = request.form['detail-username-value']
+    print(username)
+    new_password = request.form['new_password']
+    confirm_password = request.form['confirm_password']
+
+    # Validate that the two new-password fields agree before hitting the DB
+    if new_password != confirm_password:
+        flash('De lösenorden matchar inte.')
+        return redirect('/users/passwordupdate')
+
+    # Delegate verification and DB update to auth_manager
+    # success = 
+    auth_manager.update_password(username, new_password)
+
+    #if success:
+        # Password updated — send the user back to the dashboard
+    flash('✅ Lösenordet har uppdaterats.')
+    return redirect('/admin-page')
+    #else:
+    #    flash(' ❌ Något gick fel.')
+    #    return redirect('/change-password')
+
+    # GET request — just render the empty form
+    # return render_template('change_password.html')
     

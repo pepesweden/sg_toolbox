@@ -213,7 +213,8 @@ class AuthManager:
             try:
                 cursor = conn.cursor()
                 cursor.execute(
-                    "SELECT username, email FROM users WHERE email LIKE %s",
+                    "SELECT username, email FROM users WHERE email ILIKE %s",
+                    #"SELECT * FROM users WHERE username ILIKE '%s' OR email ILIKE '%patrick%';
                     (f"%{email}%",) 
                 )   
                 result = cursor.fetchall()
@@ -276,6 +277,51 @@ class AuthManager:
             # Verify the supplied old password matches the stored hash
             if not bcrypt.checkpw(old_password.encode('utf-8'), password_hash):
                 return False  # Old password is wrong — reject the update
+
+            # Hash the new password with a fresh random salt
+            new_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+            # Persist the new password hash to the users table
+            cursor.execute(
+                "UPDATE users SET password_hash = %s WHERE username = %s",
+                (new_hash, username)
+            )
+            conn.commit()
+            logger.debug(f"✅ Password updated successfully for user '{username}'")
+            return True
+
+        except Exception as e:
+            # Roll back any partial changes if something went wrong
+            conn.rollback()
+            logger.error(f"❌ change_password error for '{username}': {e}")
+            raise
+
+        finally:
+            # Always close cursor and return connection to the pool
+            cursor.close()
+            self.connection_pool.putconn(conn)
+
+    def update_password(self, username, new_password):
+        # Get a connection from the pool
+        conn = self.connection_pool.getconn()
+        try:
+            cursor = conn.cursor()
+
+            # Fetch theusername for this user
+            cursor.execute(
+                "SELECT username FROM users WHERE username = %s",
+                (username,)
+            )
+            result = cursor.fetchone()
+
+            # User not found in database
+            if result is None:
+                return False
+
+            print(result[0])
+            print("👋Hallå!👋")
+            #username = result[0]
+            
 
             # Hash the new password with a fresh random salt
             new_hash = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
